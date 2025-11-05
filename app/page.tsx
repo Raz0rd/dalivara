@@ -12,6 +12,7 @@ import FeaturedCarousel from "@/components/FeaturedCarousel";
 import LocationConfirmationModal from "@/components/LocationConfirmationModal";
 import DeliveryBanner from "@/components/DeliveryBanner";
 import AddToCartModal from "@/components/AddToCartModal";
+import DesktopCart from "@/components/DesktopCart";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/useToast";
 import { useLocation } from "@/hooks/useLocation";
@@ -27,9 +28,14 @@ export default function Home() {
   const deliciasRef = useRef<HTMLDivElement>(null);
   const milkshakeRef = useRef<HTMLDivElement>(null);
   const bebidasRef = useRef<HTMLDivElement>(null);
+  const reviewsRef = useRef<HTMLDivElement>(null);
   const { addItem } = useCart();
   const { toast, showToast, hideToast } = useToast();
   const { location, loading, showConfirmation, tempLocation, confirmLocation } = useLocation();
+
+  const scrollToReviews = () => {
+    reviewsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   const handleAddToCart = (product: any) => {
     setCurrentProduct(product);
@@ -113,7 +119,7 @@ export default function Home() {
       price: 38.99,
       originalPrice: 45.99,
       discount: 15,
-      image: "/products/combo-1kg.jpg",
+      image: "/products/caixa1L.jpg",
     },
     {
       id: "2",
@@ -226,82 +232,90 @@ export default function Home() {
         onQuantityChange={handleQuantityChange}
       />
 
-      <HomeHeader />
+      <HomeHeader onReviewsClick={scrollToReviews} />
       
-      {/* Banner de entrega */}
-      {location && (
-        <DeliveryBanner
-          city={location.city}
-          deliveryTime={location.deliveryTime}
+      {/* Carrinho Desktop (Lateral Direita) */}
+      <DesktopCart />
+      
+      {/* Container centralizado para desktop */}
+      <div className="max-w-2xl mx-auto lg:mr-[420px]">
+        {/* Banner de entrega */}
+        {location && (
+          <DeliveryBanner
+            city={location.city}
+            deliveryTime={location.deliveryTime}
+          />
+        )}
+
+        {/* Informações da Loja */}
+        <StoreInfo 
+          city={location?.city} 
+          state={location?.region}
+          deliveryTime={location?.deliveryTime}
+          activeTab={activeTab}
+          onTabChange={handleTabChange}
         />
-      )}
 
-      {/* Informações da Loja */}
-      <StoreInfo 
-        city={location?.city} 
-        state={location?.region}
-        deliveryTime={location?.deliveryTime}
-        activeTab={activeTab}
-        onTabChange={handleTabChange}
-      />
+        {/* Destaque - Carousel */}
+        <FeaturedCarousel products={destaqueProducts} />
 
-      {/* Destaque - Carousel */}
-      <FeaturedCarousel products={destaqueProducts} />
-
-      {/* Combos */}
-      <div ref={combosRef} className="bg-white mb-2">
-        <div className="px-4 py-3 flex items-center gap-2">
-          <h2 className="text-lg font-bold text-gray-900">Combos</h2>
-          <span className="text-xs font-bold px-2 py-1 rounded uppercase text-primary">
-            COMBOS
-          </span>
+        {/* Combos */}
+        <div ref={combosRef} className="bg-white mb-2">
+          <div className="px-4 py-3 flex items-center gap-2">
+            <h2 className="text-lg font-bold text-gray-900">Combos</h2>
+            <span className="text-xs font-bold px-2 py-1 rounded uppercase text-primary">
+              COMBOS
+            </span>
+          </div>
+          {combosProducts.map((product) => (
+            <ProductListCard key={product.id} product={product} />
+          ))}
         </div>
-        {combosProducts.map((product) => (
-          <ProductListCard key={product.id} product={product} />
-        ))}
-      </div>
 
-      {/* Delícias na Caixa 1L */}
-      <div ref={deliciasRef} className="bg-white mb-2">
-        <div className="px-4 py-3 flex items-center gap-2">
-          <h2 className="text-lg font-bold text-gray-900">Delícias na Caixa 1L</h2>
-          <span className="text-xs font-bold px-2 py-1 rounded uppercase text-primary">
-            21,99!!!
-          </span>
+        {/* Delícias na Caixa 1L */}
+        <div ref={deliciasRef} className="bg-white mb-2">
+          <div className="px-4 py-3 flex items-center gap-2">
+            <h2 className="text-lg font-bold text-gray-900">Delícias na Caixa 1L</h2>
+            <span className="text-xs font-bold px-2 py-1 rounded uppercase text-primary">
+              21,99!!!
+            </span>
+          </div>
+          {deliciasProducts.map((product) => (
+            <ProductListCard key={product.id} product={product} />
+          ))}
         </div>
-        {deliciasProducts.map((product) => (
-          <ProductListCard key={product.id} product={product} />
-        ))}
-      </div>
 
-      {/* Milk-Shake */}
-      <div ref={milkshakeRef} className="bg-white mb-2">
-        <div className="px-4 py-3 flex items-center gap-2">
-          <h2 className="text-lg font-bold text-primary">Milk-Shake</h2>
-          <span className="text-xs font-bold px-2 py-1 rounded uppercase bg-primary text-white">
-            PROMO
-          </span>
+        {/* Milk-Shake */}
+        <div ref={milkshakeRef} className="bg-white mb-2">
+          <div className="px-4 py-3 flex items-center gap-2">
+            <h2 className="text-lg font-bold text-primary">Milk-Shake</h2>
+            <span className="text-xs font-bold px-2 py-1 rounded uppercase bg-primary text-white">
+              PROMO
+            </span>
+          </div>
+          {milkShakeProducts.map((product) => (
+            <ProductListCard key={product.id} product={product} />
+          ))}
         </div>
-        {milkShakeProducts.map((product) => (
-          <ProductListCard key={product.id} product={product} />
-        ))}
-      </div>
 
-      {/* Bebidas */}
-      <div ref={bebidasRef} className="bg-white mb-2">
-        <div className="px-4 py-3">
-          <h2 className="text-lg font-bold text-gray-900">Bebidas</h2>
+        {/* Bebidas */}
+        <div ref={bebidasRef} className="bg-white mb-2">
+          <div className="px-4 py-3">
+            <h2 className="text-lg font-bold text-gray-900">Bebidas</h2>
+          </div>
+          {bebidasProducts.map((product) => (
+            <ProductListCard key={product.id} product={product} />
+          ))}
         </div>
-        {bebidasProducts.map((product) => (
-          <ProductListCard key={product.id} product={product} />
-        ))}
+
+        {/* Reviews Section */}
+        <div ref={reviewsRef}>
+          <ReviewsSection />
+
+          {/* Reviews Carousel */}
+          <ReviewsCarousel reviews={reviews} />
+        </div>
       </div>
-
-      {/* Reviews Section */}
-      <ReviewsSection />
-
-      {/* Reviews Carousel */}
-      <ReviewsCarousel reviews={reviews} />
 
       <BottomNav />
     </main>

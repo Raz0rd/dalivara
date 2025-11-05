@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Instagram, Info, Coins, Bike, MapPin, Star, Circle, Clock } from "lucide-react";
+import CompanyInfoModal from "./CompanyInfoModal";
 
 interface StoreInfoProps {
   city?: string;
@@ -23,6 +24,7 @@ export default function StoreInfo({
     closingTime: "",
     showClosingTime: false,
   });
+  const [showInfoModal, setShowInfoModal] = useState(false);
 
   const tabs = [
     { id: "combos", label: "Combos", icon: "🍨" },
@@ -80,6 +82,7 @@ export default function StoreInfo({
               <Instagram size={22} strokeWidth={2} />
             </a>
             <button
+              onClick={() => setShowInfoModal(true)}
               className="text-gray-600 hover:text-primary transition-colors"
               aria-label="Informações"
             >
@@ -87,6 +90,12 @@ export default function StoreInfo({
             </button>
           </div>
         </div>
+
+        {/* Modal de Informações */}
+        <CompanyInfoModal
+          isOpen={showInfoModal}
+          onClose={() => setShowInfoModal(false)}
+        />
 
         {/* Pedido Mínimo e Entrega */}
         <div className="flex items-center justify-center gap-4 mb-2 text-sm text-gray-700">
@@ -161,18 +170,20 @@ export default function StoreInfo({
 
       {/* Menu de navegação horizontal */}
       <div className="bg-white overflow-x-auto border-t border-gray-200">
-        <div className="flex gap-1 px-2 py-2">
+        <div className="flex gap-2 px-2 py-3">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => onTabChange?.(tab.id)}
-              className={`flex items-center gap-1 px-4 py-2 rounded-full whitespace-nowrap text-sm font-medium transition-colors ${
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-full whitespace-nowrap text-sm font-semibold transition-all duration-300 transform ${
                 activeTab === tab.id
-                  ? "bg-primary text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  ? "bg-gradient-to-r from-primary to-purple-600 text-white shadow-lg scale-105 ring-2 ring-primary/30"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200 hover:scale-105 hover:shadow-md"
               }`}
             >
-              <span>{tab.icon}</span>
+              <span className={`text-lg ${activeTab === tab.id ? "animate-bounce" : ""}`}>
+                {tab.icon}
+              </span>
               <span>{tab.label}</span>
             </button>
           ))}

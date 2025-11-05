@@ -229,6 +229,11 @@ export default function IfoodPayPage() {
           
           // Limpar carrinho após pagamento confirmado
           clearCart();
+          
+          // Redirecionar para página de pedidos após 5 segundos
+          setTimeout(() => {
+            router.push('/pedidos');
+          }, 5000);
         }
       } catch (error) {
         console.error('Erro ao verificar status:', error);
@@ -279,7 +284,15 @@ export default function IfoodPayPage() {
     // Limpar pedido pendente
     localStorage.removeItem('pendingOrder');
     
-    alert('✅ Pagamento simulado com sucesso!');
+    // Limpar carrinho
+    clearCart();
+    
+    alert('✅ Pagamento simulado com sucesso! Redirecionando para pedidos...');
+    
+    // Redirecionar para página de pedidos após 2 segundos
+    setTimeout(() => {
+      router.push('/pedidos');
+    }, 2000);
   };
 
   return (

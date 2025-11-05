@@ -36,6 +36,15 @@ export default function RootLayout({
             />
           </>
         )}
+
+        {/* Utmify Script */}
+        <script
+          src="https://cdn.utmify.com.br/scripts/utms/latest.js"
+          data-utmify-prevent-xcod-sck
+          data-utmify-prevent-subids
+          async
+          defer
+        ></script>
       </head>
       <body>
         <UserProvider>

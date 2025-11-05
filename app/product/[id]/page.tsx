@@ -21,7 +21,7 @@ const productsData: Record<string, any> = {
     price: 38.99,
     originalPrice: 45.99,
     discount: 15,
-    image: "/products/combo-1kg.jpg",
+    image: "/products/caixa1L.jpg",
   },
   "destaque-1": {
     id: "destaque-1",
@@ -136,9 +136,11 @@ export default function ProductPage() {
       />
       <Header title="Detalhes do produto" onBack={() => router.push("/")} />
       
-      <ProductInfo product={product} />
+      {/* Container centralizado para desktop */}
+      <div className="max-w-2xl mx-auto">
+        <ProductInfo product={product} />
 
-      <div className="px-4 space-y-4">
+        <div className="px-4 space-y-4">
         <AdditionalSelector
           title="Açaí e Cremes"
           description="Escolha entre 1 a 4 itens"
@@ -176,15 +178,15 @@ export default function ProductPage() {
 
         {/* Brinde Grátis */}
         <FreebieSelector onSelect={setSelectedFreebie} />
+        </div>
+
+        <CartButton
+          price={product.price}
+          onAddToCart={handleAddToCart}
+          disabled={!canAddToCart}
+        />
       </div>
 
-      <CartButton
-        price={product.price}
-        onAddToCart={handleAddToCart}
-        disabled={!canAddToCart}
-      />
-
-      {/* Modal de produto adicionado ao carrinho */}
       <AddToCartModal
         isOpen={showAddToCartModal}
         onClose={() => setShowAddToCartModal(false)}

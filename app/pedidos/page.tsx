@@ -71,18 +71,22 @@ export default function PedidosPage() {
     <main className="min-h-screen bg-gray-50 flex flex-col pb-20">
       {/* Header */}
       <header className="sticky top-0 bg-white z-50 shadow-sm">
-        <div className="flex items-center gap-4 px-4 py-4">
-          <button
-            onClick={() => router.push("/")}
-            className="p-1 hover:bg-gray-100 rounded-full transition-colors"
-            aria-label="Voltar"
-          >
-            <ChevronLeft size={24} color="#333" strokeWidth={2} />
-          </button>
-          <h1 className="text-lg font-semibold text-gray-900">Meus Pedidos</h1>
+        <div className="max-w-2xl mx-auto">
+          <div className="flex items-center gap-4 px-4 py-4">
+            <button
+              onClick={() => router.push("/")}
+              className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+              aria-label="Voltar"
+            >
+              <ChevronLeft size={24} color="#333" strokeWidth={2} />
+            </button>
+            <h1 className="text-lg font-semibold text-gray-900">Meus Pedidos</h1>
+          </div>
         </div>
       </header>
 
+      {/* Container centralizado para desktop */}
+      <div className="max-w-2xl mx-auto w-full">
       {/* Conteúdo */}
       {totalOrders === 0 ? (
         /* Estado Vazio */
@@ -218,6 +222,7 @@ export default function PedidosPage() {
           ))}
         </div>
       )}
+      </div>
 
       <BottomNav />
     </main>

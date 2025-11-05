@@ -79,17 +79,22 @@ export default function CarrinhoPage() {
       />
       {/* Header */}
       <header className="sticky top-0 bg-white z-50 shadow-sm">
-        <div className="flex items-center gap-4 px-4 py-4">
-          <button
-            onClick={() => router.push("/")}
-            className="p-1 hover:bg-gray-100 rounded-full transition-colors"
-            aria-label="Voltar"
-          >
-            <ChevronLeft size={24} color="#333" strokeWidth={2} />
-          </button>
-          <h1 className="text-lg font-semibold text-gray-900">Carrinho</h1>
+        <div className="max-w-2xl mx-auto">
+          <div className="flex items-center gap-4 px-4 py-4">
+            <button
+              onClick={() => router.push("/")}
+              className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+              aria-label="Voltar"
+            >
+              <ChevronLeft size={24} color="#333" strokeWidth={2} />
+            </button>
+            <h1 className="text-lg font-semibold text-gray-900">Carrinho</h1>
+          </div>
         </div>
       </header>
+
+      {/* Container centralizado para desktop */}
+      <div className="max-w-2xl mx-auto">
 
       {/* Aviso de Carrinho Bloqueado */}
       {hasBlockedCart && (
@@ -266,6 +271,7 @@ export default function CarrinhoPage() {
             Ver cardápio
           </button>
         )}
+      </div>
       </div>
     </main>
   );
