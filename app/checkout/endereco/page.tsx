@@ -88,7 +88,7 @@ export default function EnderecoPage() {
         const data = await response.json();
 
         if (data.erro) {
-          setCepError("CEP não encontrado");
+          setCepError("CEP não encontrado. Preencha manualmente.");
           setAddress({
             cep: formatted,
             street: "",
@@ -99,13 +99,20 @@ export default function EnderecoPage() {
             complement: "",
           });
         } else {
+          // Se retornar dados vazios (como logradouro vazio), permitir preenchimento manual
+          const hasEmptyFields = !data.logradouro || !data.bairro;
+          
+          if (hasEmptyFields) {
+            setCepError("CEP encontrado, mas preencha os dados manualmente.");
+          }
+          
           setAddress({
             cep: formatted,
-            street: data.logradouro,
+            street: data.logradouro || "",
             number: address.number || "",
-            neighborhood: data.bairro,
-            city: data.localidade,
-            state: data.uf,
+            neighborhood: data.bairro || "",
+            city: data.localidade || "",
+            state: data.uf || "",
             complement: "",
           });
         }
@@ -141,8 +148,11 @@ export default function EnderecoPage() {
     fullName.trim().length > 0 &&
     email.trim().length > 0 &&
     cep.replace(/\D/g, "").length === 8 &&
-    address.street.length > 0 &&
-    address.number.trim().length > 0;
+    address.street.trim().length > 0 &&
+    address.number.trim().length > 0 &&
+    address.neighborhood.trim().length > 0 &&
+    address.city.trim().length > 0 &&
+    address.state.trim().length > 0;
 
   return (
     <main className="min-h-screen bg-gray-50 flex flex-col pb-32">
@@ -218,18 +228,21 @@ export default function EnderecoPage() {
           {cepError && <p className="text-red-500 text-sm mt-1">{cepError}</p>}
         </div>
 
-        {/* Endereço (auto-preenchido) */}
-        {address.street && (
+        {/* Endereço */}
+        {cep.replace(/\D/g, "").length === 8 && (
           <>
             <div>
               <label className="block text-sm font-semibold text-gray-900 mb-2">
-                Endereço
+                Endereço (Rua/Avenida) *
               </label>
               <input
                 type="text"
                 value={address.street}
-                readOnly
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-base bg-gray-50"
+                onChange={(e) =>
+                  setAddress({ ...address, street: e.target.value })
+                }
+                placeholder="Nome da rua/avenida"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
 
@@ -249,28 +262,50 @@ export default function EnderecoPage() {
               />
             </div>
 
+            <div>
+              <label className="block text-sm font-semibold text-gray-900 mb-2">
+                Bairro *
+              </label>
+              <input
+                type="text"
+                value={address.neighborhood}
+                onChange={(e) =>
+                  setAddress({ ...address, neighborhood: e.target.value })
+                }
+                placeholder="Nome do bairro"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-semibold text-gray-900 mb-2">
-                  Bairro
+                  Cidade *
                 </label>
                 <input
                   type="text"
-                  value={address.neighborhood}
-                  readOnly
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-base bg-gray-50"
+                  value={address.city}
+                  onChange={(e) =>
+                    setAddress({ ...address, city: e.target.value })
+                  }
+                  placeholder="Cidade"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-semibold text-gray-900 mb-2">
-                  Cidade
+                  Estado *
                 </label>
                 <input
                   type="text"
-                  value={`${address.city} - ${address.state}`}
-                  readOnly
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-base bg-gray-50"
+                  value={address.state}
+                  onChange={(e) =>
+                    setAddress({ ...address, state: e.target.value })
+                  }
+                  placeholder="UF"
+                  maxLength={2}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-primary uppercase"
                 />
               </div>
             </div>
