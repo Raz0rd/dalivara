@@ -82,10 +82,16 @@ sudo chown -R $USER:$USER /var/www/nacional-acai
 ```
 
 ```bash
-cd /var/www/nacional-acai
+cd /var/www
 ```
 
-**Agora faça upload dos arquivos do projeto via FTP/SFTP ou git clone**
+```bash
+git clone https://github.com/Raz0rd/dalivara.git nacional-acai
+```
+
+```bash
+cd /var/www/nacional-acai
+```
 
 ---
 

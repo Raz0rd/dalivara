@@ -5,7 +5,7 @@ import { UserProvider } from "@/contexts/UserContext";
 import { GOOGLE_ADS_CONFIG } from "@/config/googleAds";
 
 export const metadata: Metadata = {
-  title: "Nacional Açaí Polar - O melhor açaí do mundo!",
+  title: "Nacional Açaí - O melhor açaí do mundo!",
   description: "Faça seu pedido online agora mesmo no Nacional Açaí!",
 };
 
