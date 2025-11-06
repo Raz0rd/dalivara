@@ -5,13 +5,14 @@ import { useRouter } from "next/navigation";
 import { ChevronDown, ChevronRight, Info, LockKeyhole } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useUser } from "@/contexts/UserContext";
+import { reportConversion } from "@/utils/googleAds";
+import { gtag_report_conversion } from "@/config/googleAds";
 import DeliveryOptions from "@/components/DeliveryOptions";
 import OrderSummary from "@/components/OrderSummary";
 import PixPayment from "@/components/PixPayment";
 import LoadingOverlay from "@/components/LoadingOverlay";
 import RecoverOrderModal from "@/components/RecoverOrderModal";
 import Image from "next/image";
-import { reportConversion } from "@/utils/googleAds";
 
 export default function IfoodPayPage() {
   const router = useRouter();
@@ -227,15 +228,8 @@ export default function IfoodPayPage() {
             transactionId // ID da transação
           );
           
-          // Disparar conversão AW-17707310232 (novo)
-          if (typeof window !== 'undefined' && (window as any).gtag) {
-            (window as any).gtag('event', 'conversion', {
-              'send_to': 'AW-17707310232/mmHKCLi41robEJi5wPtB',
-              'value': totalWithTip,
-              'currency': 'BRL',
-              'transaction_id': transactionId
-            });
-          }
+          // Disparar conversão AW-17707310232 (novo) usando função oficial
+          gtag_report_conversion(totalWithTip, transactionId);
           
           // Limpar carrinho após pagamento confirmado
           clearCart();
@@ -296,15 +290,8 @@ export default function IfoodPayPage() {
     // Limpar pedido pendente
     localStorage.removeItem('pendingOrder');
     
-    // Disparar conversão AW-17707310232
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'conversion', {
-        'send_to': 'AW-17707310232/mmHKCLi41robEJi5wPtB',
-        'value': totalPrice,
-        'currency': 'BRL',
-        'transaction_id': transactionId
-      });
-    }
+    // Disparar conversão AW-17707310232 usando função oficial
+    gtag_report_conversion(totalPrice, transactionId);
     
     // Limpar carrinho
     clearCart();

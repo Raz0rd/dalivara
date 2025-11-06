@@ -17,6 +17,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/useToast";
 import { useLocation } from "@/hooks/useLocation";
 import Toast from "@/components/Toast";
+import { gtag_report_conversion } from "@/config/googleAds";
 
 function ConversionTestButton({ onTest }: { onTest: () => void }) {
   const searchParams = useSearchParams();
@@ -63,19 +64,15 @@ function HomeContent() {
 
   const handleTestConversion = () => {
     const randomNumber = Math.floor(Math.random() * 1000000000);
+    const transactionId = `TEST-${randomNumber}`;
     
-    // Disparar conversão do Google Ads
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'conversion', {
-        'send_to': 'AW-17707310232/mmHKCLi41robEJi5wPtB',
-        'value': 1.0,
-        'currency': 'BRL',
-        'transaction_id': randomNumber.toString()
-      });
-      
-      alert(`✅ Conversão de teste enviada!\nTransaction ID: ${randomNumber}`);
+    // Disparar conversão do Google Ads usando função oficial
+    const success = gtag_report_conversion(1.0, transactionId);
+    
+    if (success !== false) {
+      alert(`✅ Conversão de teste enviada!\n\nValor: R$ 1,00\nTransaction ID: ${transactionId}\n\nVerifique no Google Ads em alguns minutos.`);
     } else {
-      alert('❌ Google Ads não carregado ainda. Aguarde alguns segundos.');
+      alert('❌ Google Ads não carregado ainda. Aguarde alguns segundos e tente novamente.');
     }
   };
 

@@ -12,6 +12,8 @@ interface PixPaymentProps {
   onTestPayment?: () => void;
 }
 
+const deliveryNames = ['M.Souza', 'J.Silva', 'R.Santos', 'A.Costa', 'P.Oliveira', 'C.Pereira', 'L.Alves', 'F.Lima'];
+
 export default function PixPayment({ pixCode, pixQrCode, onCopy, isPaid = false, onTestPayment }: PixPaymentProps) {
   const [copied, setCopied] = useState(false);
   const [copying, setCopying] = useState(false);
@@ -19,9 +21,6 @@ export default function PixPayment({ pixCode, pixQrCode, onCopy, isPaid = false,
   const [orderStatus, setOrderStatus] = useState<'preparing' | 'out_for_delivery'>('preparing');
   const [deliveryPerson, setDeliveryPerson] = useState('');
   const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-
-  // Nomes aleatórios de motoboys
-  const deliveryNames = ['M.Souza', 'J.Silva', 'R.Santos', 'A.Costa', 'P.Oliveira', 'C.Pereira', 'L.Alves', 'F.Lima'];
 
   // Carregar estado do localStorage ao montar
   useEffect(() => {
