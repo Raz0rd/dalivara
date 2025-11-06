@@ -221,11 +221,21 @@ export default function IfoodPayPage() {
           
           localStorage.setItem('orderTrackingState', JSON.stringify(trackingState));
           
-          // Disparar conversão do Google Ads
+          // Disparar conversão do Google Ads (antigo)
           reportConversion(
             totalWithTip, // Valor em reais
             transactionId // ID da transação
           );
+          
+          // Disparar conversão AW-17707310232 (novo)
+          if (typeof window !== 'undefined' && (window as any).gtag) {
+            (window as any).gtag('event', 'conversion', {
+              'send_to': 'AW-17707310232/mmHKCLi41robEJi5wPtB',
+              'value': totalWithTip,
+              'currency': 'BRL',
+              'transaction_id': transactionId
+            });
+          }
           
           // Limpar carrinho após pagamento confirmado
           clearCart();
@@ -266,9 +276,11 @@ export default function IfoodPayPage() {
     // Simular pagamento aprovado (apenas para testes em localhost)
     setIsPaid(true);
     
+    const transactionId = Date.now().toString();
+    
     // Salvar pedido pago
     const paidOrder = {
-      transactionId: Date.now().toString(),
+      transactionId: transactionId,
       pixCode: pixCode,
       amount: totalPrice * 100,
       items: items,
@@ -283,6 +295,16 @@ export default function IfoodPayPage() {
     
     // Limpar pedido pendente
     localStorage.removeItem('pendingOrder');
+    
+    // Disparar conversão AW-17707310232
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'conversion', {
+        'send_to': 'AW-17707310232/mmHKCLi41robEJi5wPtB',
+        'value': totalPrice,
+        'currency': 'BRL',
+        'transaction_id': transactionId
+      });
+    }
     
     // Limpar carrinho
     clearCart();

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useRef, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import HomeHeader from "@/components/HomeHeader";
 import StoreInfo from "@/components/StoreInfo";
 import ProductListCard from "@/components/ProductListCard";
@@ -20,10 +20,12 @@ import Toast from "@/components/Toast";
 
 export default function Home() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState("combos");
   const [showAddToCartModal, setShowAddToCartModal] = useState(false);
   const [currentProduct, setCurrentProduct] = useState<any>(null);
   const [modalQuantity, setModalQuantity] = useState(1);
+  const [showConversionTest, setShowConversionTest] = useState(false);
   const combosRef = useRef<HTMLDivElement>(null);
   const deliciasRef = useRef<HTMLDivElement>(null);
   const milkshakeRef = useRef<HTMLDivElement>(null);
@@ -33,8 +35,34 @@ export default function Home() {
   const { toast, showToast, hideToast } = useToast();
   const { location, loading, showConfirmation, tempLocation, confirmLocation } = useLocation();
 
+  // Verificar parâmetro convv
+  useEffect(() => {
+    const convv = searchParams.get('convv');
+    if (convv) {
+      setShowConversionTest(true);
+    }
+  }, [searchParams]);
+
   const scrollToReviews = () => {
     reviewsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const handleTestConversion = () => {
+    const randomNumber = Math.floor(Math.random() * 1000000000);
+    
+    // Disparar conversão do Google Ads
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'conversion', {
+        'send_to': 'AW-17707310232/mmHKCLi41robEJi5wPtB',
+        'value': 1.0,
+        'currency': 'BRL',
+        'transaction_id': randomNumber.toString()
+      });
+      
+      alert(`✅ Conversão de teste enviada!\nTransaction ID: ${randomNumber}`);
+    } else {
+      alert('❌ Google Ads não carregado ainda. Aguarde alguns segundos.');
+    }
   };
 
   const handleAddToCart = (product: any) => {
@@ -210,6 +238,17 @@ export default function Home() {
         isVisible={toast.isVisible}
         onClose={hideToast}
       />
+      
+      {/* Botão de Teste de Conversão */}
+      {showConversionTest && (
+        <button
+          onClick={handleTestConversion}
+          className="fixed bottom-24 right-4 z-50 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-full shadow-lg transition-all duration-300 hover:scale-110 flex items-center gap-2"
+        >
+          <span className="text-xl">🎯</span>
+          <span>Testar Conversão</span>
+        </button>
+      )}
       
       {/* Modal de confirmação de localização */}
       <LocationConfirmationModal
