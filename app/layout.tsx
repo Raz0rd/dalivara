@@ -37,6 +37,22 @@ export default function RootLayout({
           </>
         )}
 
+        {/* Google tag (gtag.js) - AW-17707310232 */}
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=AW-17707310232"
+        ></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'AW-17707310232');
+            `,
+          }}
+        />
+
         {/* Utmify Script */}
         <script
           src="https://cdn.utmify.com.br/scripts/utms/latest.js"
