@@ -7,7 +7,7 @@ export const GOOGLE_ADS_CONFIG = {
   conversionLabel: 'CONVERSIONLABEL',
   
   // Ativar/desativar tracking (útil para desenvolvimento)
-  enabled: true,
+  enabled: false, // Desabilitado - usando apenas a nova conta
   
   // Nova conta Google Ads para conversões
   newAccountId: 'AW-17707310232',
