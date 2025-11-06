@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import HomeHeader from "@/components/HomeHeader";
 import StoreInfo from "@/components/StoreInfo";
@@ -18,14 +18,36 @@ import { useToast } from "@/hooks/useToast";
 import { useLocation } from "@/hooks/useLocation";
 import Toast from "@/components/Toast";
 
-export default function Home() {
-  const router = useRouter();
+function ConversionTestButton({ onTest }: { onTest: () => void }) {
   const searchParams = useSearchParams();
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    const convv = searchParams.get('convv');
+    if (convv) {
+      setShow(true);
+    }
+  }, [searchParams]);
+
+  if (!show) return null;
+
+  return (
+    <button
+      onClick={onTest}
+      className="fixed bottom-24 right-4 z-50 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-full shadow-lg transition-all duration-300 hover:scale-110 flex items-center gap-2"
+    >
+      <span className="text-xl">🎯</span>
+      <span>Testar Conversão</span>
+    </button>
+  );
+}
+
+function HomeContent() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("combos");
   const [showAddToCartModal, setShowAddToCartModal] = useState(false);
   const [currentProduct, setCurrentProduct] = useState<any>(null);
   const [modalQuantity, setModalQuantity] = useState(1);
-  const [showConversionTest, setShowConversionTest] = useState(false);
   const combosRef = useRef<HTMLDivElement>(null);
   const deliciasRef = useRef<HTMLDivElement>(null);
   const milkshakeRef = useRef<HTMLDivElement>(null);
@@ -34,14 +56,6 @@ export default function Home() {
   const { addItem } = useCart();
   const { toast, showToast, hideToast } = useToast();
   const { location, loading, showConfirmation, tempLocation, confirmLocation } = useLocation();
-
-  // Verificar parâmetro convv
-  useEffect(() => {
-    const convv = searchParams.get('convv');
-    if (convv) {
-      setShowConversionTest(true);
-    }
-  }, [searchParams]);
 
   const scrollToReviews = () => {
     reviewsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -240,15 +254,9 @@ export default function Home() {
       />
       
       {/* Botão de Teste de Conversão */}
-      {showConversionTest && (
-        <button
-          onClick={handleTestConversion}
-          className="fixed bottom-24 right-4 z-50 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-full shadow-lg transition-all duration-300 hover:scale-110 flex items-center gap-2"
-        >
-          <span className="text-xl">🎯</span>
-          <span>Testar Conversão</span>
-        </button>
-      )}
+      <Suspense fallback={null}>
+        <ConversionTestButton onTest={handleTestConversion} />
+      </Suspense>
       
       {/* Modal de confirmação de localização */}
       <LocationConfirmationModal
@@ -358,5 +366,13 @@ export default function Home() {
 
       <BottomNav />
     </main>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-gray-50" />}>
+      <HomeContent />
+    </Suspense>
   );
 }
