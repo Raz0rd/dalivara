@@ -172,11 +172,11 @@ export default function IfoodPayPage() {
 
   const startStatusPolling = (transactionId: string) => {
     let interval: NodeJS.Timeout;
+    let isPollingActive = true;
 
     const checkStatus = async () => {
-      // Só verificar se o usuário ainda está na página de pagamento
-      if (currentStep !== 'payment') {
-        if (interval) clearInterval(interval);
+      // Verificar se o polling ainda está ativo
+      if (!isPollingActive) {
         return;
       }
 
@@ -184,8 +184,18 @@ export default function IfoodPayPage() {
         const response = await fetch(`/api/payment/status/${transactionId}`);
         const data = await response.json();
 
+        console.log('🔍 Verificando status do pagamento:', {
+          transactionId,
+          status: data.status,
+          paid: data.paid,
+          timestamp: new Date().toLocaleTimeString()
+        });
+
         if (data.success && data.paid) {
+          console.log('✅ Pagamento confirmado! Processando...');
+          
           if (interval) clearInterval(interval);
+          isPollingActive = false;
           localStorage.removeItem('pendingOrder'); // Limpar pedido salvo
           
           // Atualizar estado para mostrar confirmação
@@ -222,6 +232,8 @@ export default function IfoodPayPage() {
           
           localStorage.setItem('orderTrackingState', JSON.stringify(trackingState));
           
+          console.log('📊 Disparando conversões do Google Ads...');
+          
           // Disparar conversão do Google Ads (antigo)
           reportConversion(
             totalWithTip, // Valor em reais
@@ -231,8 +243,12 @@ export default function IfoodPayPage() {
           // Disparar conversão AW-17707310232 (novo) usando função oficial
           gtag_report_conversion(totalWithTip, transactionId);
           
+          console.log('✅ Conversões disparadas com sucesso!');
+          
           // Limpar carrinho após pagamento confirmado
           clearCart();
+          
+          console.log('🚀 Redirecionando para /pedidos em 5 segundos...');
           
           // Redirecionar para página de pedidos após 5 segundos
           setTimeout(() => {
@@ -240,11 +256,12 @@ export default function IfoodPayPage() {
           }, 5000);
         }
       } catch (error) {
-        console.error('Erro ao verificar status:', error);
+        console.error('❌ Erro ao verificar status:', error);
       }
     };
 
     // Verificar imediatamente
+    console.log('🔄 Iniciando polling de status para transação:', transactionId);
     checkStatus();
 
     // Depois verificar a cada 10 segundos
@@ -252,13 +269,17 @@ export default function IfoodPayPage() {
 
     // Limpar após 30 minutos (tempo de expiração do PIX)
     setTimeout(() => {
+      console.log('⏰ Timeout de 30 minutos atingido, parando polling');
       if (interval) clearInterval(interval);
+      isPollingActive = false;
       localStorage.removeItem('pendingOrder');
     }, 30 * 60 * 1000);
 
     // Retornar função de limpeza
     return () => {
+      console.log('🧹 Limpando polling');
       if (interval) clearInterval(interval);
+      isPollingActive = false;
     };
   };
 
