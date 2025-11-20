@@ -29,6 +29,7 @@ export async function POST(req: NextRequest) {
     
     console.log("\n👻 [GhostPay] Iniciando geração de PIX");
     console.log("🌐 [GhostPay] Valor: R$", (body.amount / 100).toFixed(2));
+    console.log("📊 [GhostPay] UTMs recebidos no body:", body.utmParams);
 
     // Auth Basic pré-codificado (SECRET_KEY:COMPANY_ID em base64)
     const authString = 'c2tfbGl2ZV9wU3hlaHA5Y2p3MEtMa3d2ZWhwV29XeU5yYklQRVBnNGdOdmJobjl6RFFjZkxUTEY6NzQxYTcyMzEtMjIyMy00NzViLWJiYzItN2VlYzFhOWZmYTFh';

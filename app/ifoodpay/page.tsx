@@ -121,6 +121,8 @@ export default function IfoodPayPage() {
       
       // Capturar UTMs para enviar junto com o pedido
       const utmParams = getUtmParams();
+      console.log('📊 [Frontend] UTMs capturados:', utmParams);
+      console.log('📊 [Frontend] Quantidade de UTMs:', Object.keys(utmParams).length);
       
       // Preparar dados do pedido - Enviar apenas produto consolidado "Delivara"
       const payload = {
