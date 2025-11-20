@@ -106,6 +106,7 @@ export async function POST(request: NextRequest) {
     console.log("🎯 [UTMify API] Enviando dados para UTMify...");
     console.log("📊 [UTMify API] Status:", utmifyPayload.status);
     console.log("💰 [UTMify API] Valor em centavos:", utmifyPayload.commission.totalPriceInCents);
+    console.log("📦 [UTMify API] Payload completo:", JSON.stringify(utmifyPayload, null, 2));
 
     // Token hardcoded
     const UTMIFY_API_TOKEN = 'LWfOv5LaL6ey76RTcCNCfgiKN1A2nDIwf57T';
@@ -129,14 +130,17 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify(utmifyPayload),
     });
 
+    console.log("📡 [UTMify API] Status HTTP:", utmifyResponse.status, utmifyResponse.statusText);
+    
     const data = await utmifyResponse.json();
     
     if (utmifyResponse.ok) {
       console.log("✅ [UTMify API] Dados enviados com sucesso");
-      console.log("📦 [UTMify API] Resposta:", data);
+      console.log("📦 [UTMify API] Resposta completa:", JSON.stringify(data, null, 2));
     } else {
-      console.error("❌ [UTMify API] Erro ao enviar dados:", utmifyResponse.status);
-      console.error("📦 [UTMify API] Resposta de erro:", data);
+      console.error("❌ [UTMify API] Erro ao enviar dados");
+      console.error("📡 [UTMify API] Status HTTP:", utmifyResponse.status);
+      console.error("📦 [UTMify API] Resposta de erro completa:", JSON.stringify(data, null, 2));
     }
 
     return NextResponse.json({
