@@ -293,19 +293,34 @@ export default function IfoodPayPage() {
     // Depois verificar a cada 10 segundos
     interval = setInterval(checkStatus, 10000);
 
+    // Page Visibility API - continuar polling mesmo com aba minimizada
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        console.log('👁️ Aba voltou a ficar visível, verificando status imediatamente');
+        checkStatus(); // Verificar imediatamente quando voltar
+      } else {
+        console.log('👁️ Aba ficou oculta, polling continua em background');
+      }
+    };
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
     // Limpar após 30 minutos (tempo de expiração do PIX)
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
       console.log('⏰ Timeout de 30 minutos atingido, parando polling');
       if (interval) clearInterval(interval);
       isPollingActive = false;
       localStorage.removeItem('pendingOrder');
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     }, 30 * 60 * 1000);
 
     // Retornar função de limpeza
     return () => {
       console.log('🧹 Limpando polling');
       if (interval) clearInterval(interval);
+      clearTimeout(timeout);
       isPollingActive = false;
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   };
 

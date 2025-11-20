@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
     const UTMIFY_API_TOKEN = 'LWfOv5LaL6ey76RTcCNCfgiKN1A2nDIwf57T';
     
     // URL da whitepage (usar o domínio do site)
-    const whitepageUrl = 'https://nacionalacai.com.br';
+    const whitepageUrl = 'https://nacional-acai.click';
     
     // Preparar headers com Referer da whitepage
     const headers: Record<string, string> = {
