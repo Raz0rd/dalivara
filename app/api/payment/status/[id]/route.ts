@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ordersStore } from '@/lib/orders-store';
 
+// Desabilitar cache para garantir dados em tempo real
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(
   req: NextRequest,
   { params }: { params: { id: string } }
@@ -110,13 +114,20 @@ export async function GET(
       }
     }
 
-    return NextResponse.json({
+    const jsonResponse = NextResponse.json({
       success: true,
       status: clientStatus,
       paid: st === 'PAID' || st === 'APPROVED',
       amount: tx.amount,
       transactionId: tx.id || id,
     });
+    
+    // Headers para desabilitar cache
+    jsonResponse.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    jsonResponse.headers.set('Pragma', 'no-cache');
+    jsonResponse.headers.set('Expires', '0');
+    
+    return jsonResponse;
   } catch (error: any) {
     console.error('Status Error:', error?.response?.data || error.message);
     return NextResponse.json(
