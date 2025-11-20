@@ -1,82 +1,117 @@
 import { NextRequest, NextResponse } from 'next/server';
-import axios from 'axios';
 import QRCode from 'qrcode';
-
-const KEY_NITRO = 'dd3ceZq6igABxvpUxmY1eGgf9bPDJwqRppZTdzvnw9SCrTZpMDOWBB6tLlWj';
 
 // Store temporário (em produção, use Redis ou banco de dados)
 const ordersStore = new Map();
 
-function getUmbrelaHeaders() {
-  return {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-  };
+// Função para gerar email fake baseado no nome
+function generateFakeEmail(name: string): string {
+  const cleanName = name.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
+  return `${cleanName}@gmail.com`;
+}
+
+// Extrair nome do domínio (ex: www.nacionalacai.com -> nacionalacai)
+function extractDomainName(url: string): string {
+  try {
+    const hostname = new URL(url).hostname;
+    const parts = hostname.split('.');
+    if (parts[0] === 'www' && parts.length > 1) {
+      return parts[1];
+    }
+    return parts[0];
+  } catch {
+    return 'produto';
+  }
 }
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const hostname = body?.hostname || 'localhost';
-    const separa = hostname.split('.')[0].toUpperCase();
+    
+    console.log("\n👻 [GhostPay] Iniciando geração de PIX");
+    console.log("🌐 [GhostPay] Valor: R$", (body.amount / 100).toFixed(2));
+    
+    // Auth Basic pré-codificado (SECRET_KEY:COMPANY_ID em base64)
+    const authString = 'c2tfbGl2ZV9wU3hlaHA5Y2p3MEtMa3d2ZWhwV29XeU5yYklQRVBnNGdOdmJobjl6RFFjZkxUTEY6NzQxYTcyMzEtMjIyMy00NzViLWJiYzItN2VlYzFhOWZmYTFh';
+    console.log("🔐 [GhostPay] Auth configurado");
 
-    const Payload = {
+    const domainName = extractDomainName(`https://${hostname}`);
+    const customerEmail = body.email || generateFakeEmail(body.nome);
+
+    const ghostPayload = {
       amount: body.amount,
-      offer_hash: separa,
-      payment_method: 'pix',
+      paymentMethod: 'pix',
       customer: {
         name: body.nome,
-        email: body.email,
-        phone_number: body.phone,
-        document: body.cpf,
-        street_name: body.address?.street || 'Nome da Rua',
-        number: body.address?.number || 'sn',
-        complement: body.address?.complement || '',
-        neighborhood: body.address?.neighborhood || 'Centro',
-        city: body.address?.city || 'Cidade',
-        state: body.address?.state || 'Estado',
-        zip_code: body.address?.cep?.replace(/\D/g, '') || '00000000',
+        email: customerEmail,
+        phone: body.phone,
+        document: {
+          number: body.cpf,
+          type: 'cpf'
+        }
       },
-      cart: [{
-        product_hash: separa,
-        title: body.productTitle || 'Delivara',
-        cover: null,
-        price: body.amount, // Preço total em centavos
-        quantity: body.quantity || 1,
-        operation_type: 1,
-        tangible: false,
-      }],
-      installments: 12,
-      expire_in_days: 1,
-      postback_url: 'https://enf8p6q9i44zv.x.pipedream.net/',
+      items: [
+        {
+          title: `Produto Digital ${domainName}`,
+          unitPrice: body.amount,
+          quantity: 1,
+          tangible: false
+        }
+      ]
     };
+    
+    console.log("📤 [GhostPay] Enviando requisição...");
+    
+    const response = await fetch("https://api.ghostspaysv2.com/functions/v1/transactions", {
+      method: "POST",
+      headers: {
+        'Authorization': `Basic ${authString}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(ghostPayload),
+    });
 
-    const { data } = await axios.post(
-      `https://api.nitropagamentos.com/api/public/v1/transactions?api_token=${KEY_NITRO}`,
-      Payload,
-      {
-        headers: getUmbrelaHeaders(),
-        timeout: 20000,
-      }
-    );
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("❌ [GhostPay] ERROR RESPONSE:", {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText,
+      });
+      
+      throw new Error(`Erro na API de pagamento: ${response.status}`);
+    }
 
-    const qrCode = data.pix.pix_qr_code;
-    const txId = data.id;
-    const qrCodeBase64 = await QRCode.toDataURL(qrCode, { errorCorrectionLevel: 'H' });
+    const data = await response.json();
+
+    // Extrair informações da resposta GhostPay
+    const transactionId = data.id || data.transaction_id || data.transactionId;
+    const pixCode = data.pix?.qrcode || data.pixCode || data.pix_code || data.code;
+    const qrCodeImage = data.qrCode || data.qr_code || data.qr_code_url || data.pix?.qr_code_url;
+    
+    console.log("✅ [GhostPay] PIX gerado - ID:", transactionId);
+    
+    // Gerar QR Code base64 se não vier da API
+    let qrCodeBase64 = qrCodeImage;
+    if (!qrCodeBase64 && pixCode) {
+      qrCodeBase64 = await QRCode.toDataURL(pixCode, { errorCorrectionLevel: 'H' });
+    }
 
     // Salvar dados do pedido incluindo UTMs
-    ordersStore.set(String(txId), {
+    ordersStore.set(String(transactionId), {
       hostname,
       productName: body.productTitle || 'Delivara',
       totalAmount: body.amount,
       quantity: body.quantity || 1,
       customer: {
         name: body.nome || null,
-        email: body.email || null,
+        email: customerEmail,
         phone: body.phone || null,
         document: body.cpf || null,
       },
       utmParams: body.utmParams || {}, // Salvar UTMs capturados
+      gateway: 'ghostpay',
       createdAt: new Date().toISOString(),
     });
 
@@ -85,11 +120,13 @@ export async function POST(req: NextRequest) {
       console.log('📊 UTMs recebidos no pedido:', body.utmParams);
     }
 
+    console.log("🎉 [GhostPay] Pedido criado com sucesso!");
+
     return NextResponse.json({
       success: true,
-      transactionId: data.hash,
+      transactionId: transactionId,
       pixData: {
-        code: qrCode,
+        code: pixCode,
         qrCode: qrCodeBase64,
       },
     });

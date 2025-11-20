@@ -1,14 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import axios from 'axios';
-
-const KEY_NITRO = 'dd3ceZq6igABxvpUxmY1eGgf9bPDJwqRppZTdzvnw9SCrTZpMDOWBB6tLlWj';
-
-function getUmbrelaHeaders() {
-  return {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-  };
-}
 
 export async function GET(
   req: NextRequest,
@@ -17,28 +7,48 @@ export async function GET(
   try {
     const { id } = params;
 
-    // Consulta status na Nitro
-    const { data } = await axios.get(
-      `https://api.nitropagamentos.com/api/public/v1/transactions/${id}?api_token=${KEY_NITRO}`,
+    // Auth Basic pré-codificado (SECRET_KEY:COMPANY_ID em base64)
+    const authString = 'c2tfbGl2ZV9wU3hlaHA5Y2p3MEtMa3d2ZWhwV29XeU5yYklQRVBnNGdOdmJobjl6RFFjZkxUTEY6NzQxYTcyMzEtMjIyMy00NzViLWJiYzItN2VlYzFhOWZmYTFh';
+    
+    console.log("🔍 [GhostPay] Consultando status - ID:", id);
+
+    // Consulta status no GhostPay
+    const response = await fetch(
+      `https://api.ghostspaysv2.com/functions/v1/transactions/${id}`,
       {
-        headers: getUmbrelaHeaders(),
-        timeout: 15000,
+        method: 'GET',
+        headers: {
+          'Authorization': `Basic ${authString}`,
+          'Content-Type': 'application/json',
+        },
       }
     );
 
-    if (!data.payment_status) {
-      throw new Error(data.message || 'Erro ao consultar transação');
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("❌ [GhostPay] Erro ao consultar status:", {
+        status: response.status,
+        body: errorText
+      });
+      throw new Error('Erro ao consultar transação');
+    }
+
+    const data = await response.json();
+    
+    if (!data.status) {
+      throw new Error('Resposta inválida da API');
     }
 
     const tx = data;
-    const st = String(tx?.payment_status || '').toUpperCase();
+    const st = String(tx?.status || '').toUpperCase();
 
-    // Mapeia status
+    // Mapeia status do GhostPay
     const statusMap: Record<string, string> = {
       PAID: 'paid',
-      WAITING_PAYMENT: 'waiting_payment',
+      APPROVED: 'paid',
+      PENDING: 'waiting_payment',
+      WAITING: 'waiting_payment',
       PROCESSING: 'processing',
-      AUTHORIZED: 'processing',
       REFUSED: 'refused',
       CANCELED: 'canceled',
       REFUNDED: 'refunded',
@@ -48,14 +58,14 @@ export async function GET(
     const clientStatus = statusMap[st] || 'unknown';
 
     // Log detalhado quando pagamento for confirmado
-    if (st === 'PAID') {
-      console.log('\n========================================');
+    if (st === 'PAID' || st === 'APPROVED') {
+      console.log('\n========================================')
       console.log('💰 PAGAMENTO CONFIRMADO (PAID)');
-      console.log('========================================');
+      console.log('========================================')
       console.log('⏰ Timestamp:', new Date().toISOString());
-      console.log('🆔 Transaction ID:', tx.hash);
+      console.log('🆔 Transaction ID:', tx.id || id);
       console.log('💵 Valor:', `R$ ${(tx.amount / 100).toFixed(2)}`);
-      console.log('📊 Status Nitro:', st);
+      console.log('📊 Status GhostPay:', st);
       console.log('🎯 Cliente receberá conversão PAID no Utmify');
       console.log('========================================\n');
     }
@@ -63,9 +73,9 @@ export async function GET(
     return NextResponse.json({
       success: true,
       status: clientStatus,
-      paid: st === 'PAID',
+      paid: st === 'PAID' || st === 'APPROVED',
       amount: tx.amount,
-      transactionId: tx.hash,
+      transactionId: tx.id || id,
     });
   } catch (error: any) {
     console.error('Status Error:', error?.response?.data || error.message);
