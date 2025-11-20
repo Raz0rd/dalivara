@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
     const txId = data.id;
     const qrCodeBase64 = await QRCode.toDataURL(qrCode, { errorCorrectionLevel: 'H' });
 
-    // Salvar dados do pedido
+    // Salvar dados do pedido incluindo UTMs
     ordersStore.set(String(txId), {
       hostname,
       productName: body.productTitle || 'Delivara',
@@ -76,7 +76,14 @@ export async function POST(req: NextRequest) {
         phone: body.phone || null,
         document: body.cpf || null,
       },
+      utmParams: body.utmParams || {}, // Salvar UTMs capturados
+      createdAt: new Date().toISOString(),
     });
+
+    // Log dos UTMs recebidos
+    if (body.utmParams && Object.keys(body.utmParams).length > 0) {
+      console.log('📊 UTMs recebidos no pedido:', body.utmParams);
+    }
 
     return NextResponse.json({
       success: true,

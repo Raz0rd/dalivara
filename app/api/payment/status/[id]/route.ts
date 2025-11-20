@@ -47,6 +47,19 @@ export async function GET(
 
     const clientStatus = statusMap[st] || 'unknown';
 
+    // Log detalhado quando pagamento for confirmado
+    if (st === 'PAID') {
+      console.log('\n========================================');
+      console.log('💰 PAGAMENTO CONFIRMADO (PAID)');
+      console.log('========================================');
+      console.log('⏰ Timestamp:', new Date().toISOString());
+      console.log('🆔 Transaction ID:', tx.hash);
+      console.log('💵 Valor:', `R$ ${(tx.amount / 100).toFixed(2)}`);
+      console.log('📊 Status Nitro:', st);
+      console.log('🎯 Cliente receberá conversão PAID no Utmify');
+      console.log('========================================\n');
+    }
+
     return NextResponse.json({
       success: true,
       status: clientStatus,

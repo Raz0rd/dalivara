@@ -5,8 +5,7 @@ import { useRouter } from "next/navigation";
 import { ChevronDown, ChevronRight, Info, LockKeyhole } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useUser } from "@/contexts/UserContext";
-import { reportConversion } from "@/utils/googleAds";
-import { gtag_report_conversion } from "@/config/googleAds";
+import { sendUtmifyConversion, saveUtmsToStorage, getUtmParams } from "@/utils/utmify";
 import DeliveryOptions from "@/components/DeliveryOptions";
 import OrderSummary from "@/components/OrderSummary";
 import PixPayment from "@/components/PixPayment";
@@ -45,6 +44,12 @@ export default function IfoodPayPage() {
       }
     };
   }, [cleanupPolling]);
+
+  // Salvar UTMs ao carregar a página
+  useEffect(() => {
+    saveUtmsToStorage();
+    console.log('📊 UTMs capturados na página:', getUtmParams());
+  }, []);
 
   // Verificar pedido salvo no localStorage
   useEffect(() => {
@@ -114,6 +119,9 @@ export default function IfoodPayPage() {
       // Converter para centavos (multiplicar por 100) e garantir que é inteiro
       const amountInCents = Math.round(totalWithTip * 100);
       
+      // Capturar UTMs para enviar junto com o pedido
+      const utmParams = getUtmParams();
+      
       // Preparar dados do pedido - Enviar apenas produto consolidado "Delivara"
       const payload = {
         hostname: window.location.hostname,
@@ -125,6 +133,7 @@ export default function IfoodPayPage() {
         quantity: 1, // Sempre 1 produto consolidado
         productTitle: "Delivara", // Nome fixo para o gateway
         address: userData?.address,
+        utmParams: utmParams, // Incluir UTMs no payload
       };
 
       // Fazer requisição para gerar PIX
@@ -232,18 +241,23 @@ export default function IfoodPayPage() {
           
           localStorage.setItem('orderTrackingState', JSON.stringify(trackingState));
           
-          console.log('📊 Disparando conversões do Google Ads...');
+          console.log('📊 Disparando conversão PAID para o Utmify...');
           
-          // Disparar conversão do Google Ads (antigo)
-          reportConversion(
-            totalWithTip, // Valor em reais
-            transactionId // ID da transação
+          // Disparar conversão para o Utmify com todos os UTMs
+          // O Google Pixel do Utmify já captura as conversões do Google Ads automaticamente
+          const conversionResult = await sendUtmifyConversion(
+            transactionId,
+            totalWithTip,
+            userData?.email,
+            phone
           );
           
-          // Disparar conversão AW-17707310232 (novo) usando função oficial
-          gtag_report_conversion(totalWithTip, transactionId);
-          
-          console.log('✅ Conversões disparadas com sucesso!');
+          if (conversionResult?.success) {
+            console.log('✅ Conversão PAID enviada com sucesso!');
+            console.log('📊 UTMs enviados:', conversionResult.utmParams);
+          } else {
+            console.warn('⚠️ Conversão enviada mas API do Utmify pode não estar disponível');
+          }
           
           // Limpar carrinho após pagamento confirmado
           clearCart();
@@ -287,7 +301,7 @@ export default function IfoodPayPage() {
     // Função vazia, o componente PixPayment já gerencia a cópia
   };
 
-  const handleTestPayment = () => {
+  const handleTestPayment = async () => {
     // Simular pagamento aprovado (apenas para testes em localhost)
     setIsPaid(true);
     
@@ -311,8 +325,8 @@ export default function IfoodPayPage() {
     // Limpar pedido pendente
     localStorage.removeItem('pendingOrder');
     
-    // Disparar conversão AW-17707310232 usando função oficial
-    gtag_report_conversion(totalPrice, transactionId);
+    // Disparar conversão para o Utmify (teste)
+    await sendUtmifyConversion(transactionId, totalPrice, userData?.email, phone);
     
     // Limpar carrinho
     clearCart();

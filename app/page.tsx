@@ -17,31 +17,6 @@ import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/useToast";
 import { useLocation } from "@/hooks/useLocation";
 import Toast from "@/components/Toast";
-import { gtag_report_conversion } from "@/config/googleAds";
-
-function ConversionTestButton({ onTest }: { onTest: () => void }) {
-  const searchParams = useSearchParams();
-  const [show, setShow] = useState(false);
-
-  useEffect(() => {
-    const convv = searchParams.get('convv');
-    if (convv) {
-      setShow(true);
-    }
-  }, [searchParams]);
-
-  if (!show) return null;
-
-  return (
-    <button
-      onClick={onTest}
-      className="fixed bottom-24 right-4 z-50 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-full shadow-lg transition-all duration-300 hover:scale-110 flex items-center gap-2"
-    >
-      <span className="text-xl">🎯</span>
-      <span>Testar Conversão</span>
-    </button>
-  );
-}
 
 function HomeContent() {
   const router = useRouter();
@@ -62,19 +37,7 @@ function HomeContent() {
     reviewsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const handleTestConversion = () => {
-    const randomNumber = Math.floor(Math.random() * 1000000000);
-    const transactionId = `TEST-${randomNumber}`;
-    
-    // Disparar conversão do Google Ads usando função oficial
-    const success = gtag_report_conversion(1.0, transactionId);
-    
-    if (success !== false) {
-      alert(`✅ Conversão de teste enviada!\n\nValor: R$ 1,00\nTransaction ID: ${transactionId}\n\nVerifique no Google Ads em alguns minutos.`);
-    } else {
-      alert('❌ Google Ads não carregado ainda. Aguarde alguns segundos e tente novamente.');
-    }
-  };
+  // Função de teste removida - conversões agora são gerenciadas pelo Utmify Google Pixel
 
   const handleAddToCart = (product: any) => {
     setCurrentProduct(product);
@@ -249,11 +212,6 @@ function HomeContent() {
         isVisible={toast.isVisible}
         onClose={hideToast}
       />
-      
-      {/* Botão de Teste de Conversão */}
-      <Suspense fallback={null}>
-        <ConversionTestButton onTest={handleTestConversion} />
-      </Suspense>
       
       {/* Modal de confirmação de localização */}
       <LocationConfirmationModal

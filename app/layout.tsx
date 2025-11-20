@@ -61,6 +61,20 @@ export default function RootLayout({
           async
           defer
         ></script>
+
+        {/* Utmify Google Pixel */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.googlePixelId = "691e5f8cd0a1fe99b32e1fd8";
+              var a = document.createElement("script");
+              a.setAttribute("async", "");
+              a.setAttribute("defer", "");
+              a.setAttribute("src", "https://cdn.utmify.com.br/scripts/pixel/pixel-google.js");
+              document.head.appendChild(a);
+            `,
+          }}
+        />
       </head>
       <body>
         <UserProvider>
