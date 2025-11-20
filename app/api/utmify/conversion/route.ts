@@ -38,6 +38,18 @@ export async function POST(request: NextRequest) {
       console.warn("⚠️ [UTMify API] Isso pode afetar o tracking. Verifique se os UTMs estão sendo capturados.");
     }
 
+    // Normalizar UTMs (utm_campaigndid -> utm_campaign)
+    const trackingParams = orderData.trackingParameters || {};
+    const normalizedParams: Record<string, any> = { ...trackingParams };
+    
+    // Se tiver utm_campaigndid mas não tiver utm_campaign, usar o campaigndid
+    if (normalizedParams.utm_campaigndid && !normalizedParams.utm_campaign) {
+      normalizedParams.utm_campaign = normalizedParams.utm_campaigndid;
+      console.log('📝 [Utmify] Usando utm_campaigndid como utm_campaign:', normalizedParams.utm_campaigndid);
+    }
+    
+    console.log('📊 [Utmify] Parâmetros normalizados:', normalizedParams);
+
     // Preparar dados para UTMify no formato correto da documentação
     const utmifyPayload = {
       orderId: orderData.orderId,
@@ -66,20 +78,22 @@ export async function POST(request: NextRequest) {
         }
       ],
       trackingParameters: {
-        src: orderData.trackingParameters?.src || null,
-        sck: orderData.trackingParameters?.sck || null,
-        utm_source: orderData.trackingParameters?.utm_source || null,
-        utm_campaign: orderData.trackingParameters?.utm_campaign || null,
-        utm_medium: orderData.trackingParameters?.utm_medium || null,
-        utm_content: orderData.trackingParameters?.utm_content || null,
-        utm_term: orderData.trackingParameters?.utm_term || null,
-        gclid: orderData.trackingParameters?.gclid || null,
-        xcod: orderData.trackingParameters?.xcod || null,
-        keyword: orderData.trackingParameters?.keyword || null,
-        device: orderData.trackingParameters?.device || null,
-        network: orderData.trackingParameters?.network || null,
-        gad_source: orderData.trackingParameters?.gad_source || null,
-        gbraid: orderData.trackingParameters?.gbraid || null
+        src: normalizedParams.src || null,
+        sck: normalizedParams.sck || null,
+        utm_source: normalizedParams.utm_source || null,
+        utm_campaign: normalizedParams.utm_campaign || null, // Já normalizado de utm_campaigndid
+        utm_medium: normalizedParams.utm_medium || null,
+        utm_content: normalizedParams.utm_content || null,
+        utm_term: normalizedParams.utm_term || null,
+        gclid: normalizedParams.gclid || null,
+        fbclid: normalizedParams.fbclid || null,
+        msclkid: normalizedParams.msclkid || null,
+        xcod: normalizedParams.xcod || null,
+        keyword: normalizedParams.keyword || null,
+        device: normalizedParams.device || null,
+        network: normalizedParams.network || null,
+        gad_source: normalizedParams.gad_source || null,
+        gbraid: normalizedParams.gbraid || null
       },
       commission: {
         totalPriceInCents: amountInCents,

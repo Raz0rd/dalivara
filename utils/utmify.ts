@@ -9,17 +9,23 @@ export function getUtmParams(): Record<string, string> {
 
   const utmParams: Record<string, string> = {};
 
-  // Lista completa de parâmetros UTM
+  // Lista completa de parâmetros UTM e Google Ads
   const utmKeys = [
     'utm_source',
+    'gad_source',
     'utm_medium',
     'utm_campaign',
+    'utm_campaigndid', // Google Ads campaign ID
     'utm_term',
     'utm_content',
     'utm_id',
     'utm_source_platform',
+    'gad_campaignid',
     'utm_creative_format',
     'utm_marketing_tactic',
+    'gclid', // Google Click ID
+    'fbclid', // Facebook Click ID
+    'msclkid', // Microsoft Click ID
   ];
 
   // 1. Tentar pegar da URL atual
@@ -97,6 +103,25 @@ export function getUtmParams(): Record<string, string> {
   }
 
   return utmParams;
+}
+
+/**
+ * Normaliza UTMs para enviar ao Utmify
+ * Converte utm_campaigndid para utm_campaign se necessário
+ */
+export function normalizeUtmsForUtmify(utmParams: Record<string, string>): Record<string, string> {
+  const normalized = { ...utmParams };
+  
+  // Se tiver utm_campaigndid mas não tiver utm_campaign, usar o campaigndid
+  if (normalized.utm_campaigndid && !normalized.utm_campaign) {
+    normalized.utm_campaign = normalized.utm_campaigndid;
+    console.log('📝 [Utmify] Usando utm_campaigndid como utm_campaign:', normalized.utm_campaigndid);
+  }
+  
+  // Remover utm_campaigndid do payload do Utmify (ele espera utm_campaign)
+  delete normalized.utm_campaigndid;
+  
+  return normalized;
 }
 
 /**

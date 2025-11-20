@@ -120,9 +120,19 @@ export default function IfoodPayPage() {
       const amountInCents = Math.round(totalWithTip * 100);
       
       // Capturar UTMs para enviar junto com o pedido
-      const utmParams = getUtmParams();
+      let utmParams = getUtmParams();
       console.log('📊 [Frontend] UTMs capturados:', utmParams);
       console.log('📊 [Frontend] Quantidade de UTMs:', Object.keys(utmParams).length);
+      
+      // Se não houver UTMs, usar organic como fallback
+      if (Object.keys(utmParams).length === 0) {
+        console.log('⚠️ [Frontend] Nenhum UTM encontrado, usando organic como fallback');
+        utmParams = {
+          utm_source: 'organic',
+          utm_medium: 'direct',
+          utm_campaign: 'none'
+        };
+      }
       
       // Preparar dados do pedido - Enviar apenas produto consolidado "Delivara"
       const payload = {
