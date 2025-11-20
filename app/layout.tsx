@@ -56,6 +56,7 @@ export default function RootLayout({
         {/* Utmify Script */}
         <script
           src="https://cdn.utmify.com.br/scripts/utms/latest.js"
+          data-utmify-key="LWfOv5LaL6ey76RTcCNCfgiKN1A2nDIwf57T"
           data-utmify-prevent-xcod-sck
           data-utmify-prevent-subids
           async

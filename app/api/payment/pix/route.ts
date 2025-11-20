@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     
     console.log("\n👻 [GhostPay] Iniciando geração de PIX");
     console.log("🌐 [GhostPay] Valor: R$", (body.amount / 100).toFixed(2));
-    
+
     // Auth Basic pré-codificado (SECRET_KEY:COMPANY_ID em base64)
     const authString = 'c2tfbGl2ZV9wU3hlaHA5Y2p3MEtMa3d2ZWhwV29XeU5yYklQRVBnNGdOdmJobjl6RFFjZkxUTEY6NzQxYTcyMzEtMjIyMy00NzViLWJiYzItN2VlYzFhOWZmYTFh';
     console.log("🔐 [GhostPay] Auth configurado");
@@ -121,6 +121,36 @@ export async function POST(req: NextRequest) {
     }
 
     console.log("🎉 [GhostPay] Pedido criado com sucesso!");
+
+    // Enviar evento waiting_payment ao Utmify
+    try {
+      console.log("📤 [Utmify] Enviando evento waiting_payment...");
+      
+      const utmifyPayload = {
+        orderId: transactionId,
+        status: "pending",
+        amount: body.amount,
+        customerData: {
+          name: body.nome,
+          email: customerEmail,
+          phone: body.phone,
+          document: body.cpf
+        },
+        productName: body.productTitle || 'Delivara',
+        trackingParameters: body.utmParams || {}
+      };
+      
+      await fetch(`${req.nextUrl.origin}/api/utmify/conversion`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(utmifyPayload)
+      });
+      
+      console.log("✅ [Utmify] Evento waiting_payment enviado");
+    } catch (utmifyError) {
+      console.error("⚠️ [Utmify] Erro ao enviar waiting_payment:", utmifyError);
+      // Não falhar a requisição se Utmify falhar
+    }
 
     return NextResponse.json({
       success: true,

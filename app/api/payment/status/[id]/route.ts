@@ -68,6 +68,40 @@ export async function GET(
       console.log('📊 Status GhostPay:', st);
       console.log('🎯 Cliente receberá conversão PAID no Utmify');
       console.log('========================================\n');
+      
+      // Enviar evento paid ao Utmify
+      try {
+        console.log("📤 [Utmify] Enviando evento paid...");
+        
+        const utmifyPayload = {
+          orderId: tx.id || id,
+          status: "paid",
+          amount: tx.amount,
+          customerData: {
+            name: tx.customer?.name || "",
+            email: tx.customer?.email || "",
+            phone: tx.customer?.phone || "",
+            document: tx.customer?.document || ""
+          },
+          productName: tx.items?.[0]?.title || 'Delivara',
+          trackingParameters: tx.metadata?.utmParams || {}
+        };
+        
+        const host = req.headers.get('host');
+        const protocol = req.headers.get('x-forwarded-proto') || 'https';
+        const baseUrl = `${protocol}://${host}`;
+        
+        await fetch(`${baseUrl}/api/utmify/conversion`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(utmifyPayload)
+        });
+        
+        console.log("✅ [Utmify] Evento paid enviado");
+      } catch (utmifyError) {
+        console.error("⚠️ [Utmify] Erro ao enviar paid:", utmifyError);
+        // Não falhar a requisição se Utmify falhar
+      }
     }
 
     return NextResponse.json({
