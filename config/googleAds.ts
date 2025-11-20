@@ -10,7 +10,7 @@ export const GOOGLE_ADS_CONFIG = {
   enabled: false, // Desabilitado - usando apenas a nova conta
   
   // Nova conta Google Ads para conversões
-  newAccountId: 'AW-17707310232',
+  newAccountId: 'AW-17719649597',
   newConversionLabel: 'mmHKCLi41robEJi5wPtB',
 };
 
