@@ -22,6 +22,39 @@ const productsData: Record<string, any> = {
     originalPrice: 45.99,
     discount: 15,
     image: "/products/caixa1L.jpg",
+    maxAcaiCremes: 4,
+    maxAdicionais: 6,
+    maxCoberturas: 2,
+  },
+  "2": {
+    id: "2",
+    name: "Combo 300g",
+    description: "Escolha até 2 opções entre açaí e cremes, até 2 adicionais e até 1 cobertura. Obs.: Todos os cremes, adicionais e coberturas escolhidos no combo serão inclusos no peso.",
+    price: 15.99,
+    image: "/products/combo-300g.jpg",
+    maxAcaiCremes: 2,
+    maxAdicionais: 2,
+    maxCoberturas: 1,
+  },
+  "3": {
+    id: "3",
+    name: "Combo 500g",
+    description: "Escolha até 3 opções entre açaí e cremes, até 3 adicionais e até 2 coberturas. Obs.: Todos os cremes, adicionais e coberturas escolhidos no combo serão inclusos no peso.",
+    price: 23.99,
+    image: "/products/combo-500g.jpg",
+    maxAcaiCremes: 3,
+    maxAdicionais: 3,
+    maxCoberturas: 2,
+  },
+  "4": {
+    id: "4",
+    name: "Combo 750g",
+    description: "Escolha até 4 opções entre açaí e cremes, até 4 adicionais e até 2 coberturas. Obs.: Todos os cremes, adicionais e coberturas escolhidos no combo serão inclusos no peso.",
+    price: 34.99,
+    image: "/products/combo-750g.jpg",
+    maxAcaiCremes: 4,
+    maxAdicionais: 4,
+    maxCoberturas: 2,
   },
   "destaque-1": {
     id: "destaque-1",
@@ -31,6 +64,9 @@ const productsData: Record<string, any> = {
     originalPrice: 49.80,
     discount: 48,
     image: "/products/zero1.webp",
+    maxAcaiCremes: 4,
+    maxAdicionais: 6,
+    maxCoberturas: 2,
   },
   "destaque-2": {
     id: "destaque-2",
@@ -40,6 +76,9 @@ const productsData: Record<string, any> = {
     originalPrice: 59.80,
     discount: 50,
     image: "/products/zero2.webp",
+    maxAcaiCremes: 4,
+    maxAdicionais: 6,
+    maxCoberturas: 2,
   },
   "destaque-3": {
     id: "destaque-3",
@@ -49,6 +88,9 @@ const productsData: Record<string, any> = {
     originalPrice: 75.80,
     discount: 50,
     image: "/products/copo2.webp",
+    maxAcaiCremes: 4,
+    maxAdicionais: 6,
+    maxCoberturas: 2,
   },
 };
 
@@ -124,7 +166,11 @@ export default function ProductPage() {
     setModalQuantity(newQuantity);
   };
 
-  const canAddToCart = selectedItems.acaiCremes.length >= 1 && selectedItems.acaiCremes.length <= 4;
+  const maxAcaiCremes = product.maxAcaiCremes || 4;
+  const maxAdicionais = product.maxAdicionais || 6;
+  const maxCoberturas = product.maxCoberturas || 2;
+  
+  const canAddToCart = selectedItems.acaiCremes.length >= 1 && selectedItems.acaiCremes.length <= maxAcaiCremes;
 
   return (
     <main className="min-h-screen bg-white pb-24">
@@ -143,37 +189,37 @@ export default function ProductPage() {
         <div className="px-4 space-y-4">
         <AdditionalSelector
           title="Açaí e Cremes"
-          description="Escolha entre 1 a 4 itens"
+          description={`Escolha entre 1 a ${maxAcaiCremes} ${maxAcaiCremes === 1 ? 'item' : 'itens'}`}
           items={acaiCremes}
           selectedItems={selectedItems.acaiCremes}
           onSelectionChange={(items) =>
             setSelectedItems({ ...selectedItems, acaiCremes: items })
           }
           minItems={1}
-          maxItems={4}
+          maxItems={maxAcaiCremes}
           required
         />
 
         <AdditionalSelector
           title="Adicionais"
-          description="Escolha até 6 itens"
+          description={`Escolha até ${maxAdicionais} ${maxAdicionais === 1 ? 'item' : 'itens'}`}
           items={adicionais}
           selectedItems={selectedItems.adicionais}
           onSelectionChange={(items) =>
             setSelectedItems({ ...selectedItems, adicionais: items })
           }
-          maxItems={6}
+          maxItems={maxAdicionais}
         />
 
         <AdditionalSelector
           title="Coberturas"
-          description="Escolha até 2 itens"
+          description={`Escolha até ${maxCoberturas} ${maxCoberturas === 1 ? 'item' : 'itens'}`}
           items={coberturas}
           selectedItems={selectedItems.coberturas}
           onSelectionChange={(items) =>
             setSelectedItems({ ...selectedItems, coberturas: items })
           }
-          maxItems={2}
+          maxItems={maxCoberturas}
         />
 
         {/* Brinde Grátis */}
