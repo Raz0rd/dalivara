@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import QRCode from 'qrcode';
-
-// Store temporário (em produção, use Redis ou banco de dados)
-const ordersStore = new Map();
+import { ordersStore } from '@/lib/orders-store';
 
 // Função para gerar email fake baseado no nome
 function generateFakeEmail(name: string): string {

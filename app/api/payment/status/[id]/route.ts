@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { ordersStore } from '@/lib/orders-store';
 
 export async function GET(
   req: NextRequest,
@@ -73,18 +74,24 @@ export async function GET(
       try {
         console.log("📤 [Utmify] Enviando evento paid...");
         
+        // Buscar dados do pedido salvos (incluindo UTMs)
+        const orderData = ordersStore.get(id);
+        const utmParams = orderData?.utmParams || {};
+        
+        console.log("📊 [Utmify] UTMs recuperados do pedido:", utmParams);
+        
         const utmifyPayload = {
           orderId: tx.id || id,
           status: "paid",
           amount: tx.amount,
           customerData: {
-            name: tx.customer?.name || "",
-            email: tx.customer?.email || "",
-            phone: tx.customer?.phone || "",
-            document: tx.customer?.document || ""
+            name: orderData?.customer?.name || tx.customer?.name || "",
+            email: orderData?.customer?.email || tx.customer?.email || "",
+            phone: orderData?.customer?.phone || tx.customer?.phone || "",
+            document: orderData?.customer?.document || tx.customer?.document || ""
           },
-          productName: tx.items?.[0]?.title || 'Delivara',
-          trackingParameters: tx.metadata?.utmParams || {}
+          productName: orderData?.productTitle || tx.items?.[0]?.title || 'Delivara',
+          trackingParameters: utmParams
         };
         
         // Usar localhost para evitar problemas de SSL
