@@ -1,24 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// Função para obter timestamp do Brasil
-function getBrazilTimestamp(): string {
-  return new Date().toLocaleString('pt-BR', { 
-    timeZone: 'America/Sao_Paulo',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit'
-  });
+// Função para obter timestamp em UTC ISO 8601
+function getUTCTimestamp(): string {
+  return new Date().toISOString();
 }
 
 export async function POST(request: NextRequest) {
   try {
     const orderData = await request.json();
     
-    const brazilTimestamp = getBrazilTimestamp();
-    console.log(`\n[Brazil Timestamp] ${brazilTimestamp}`);
+    const utcTimestamp = getUTCTimestamp();
+    console.log(`\n[UTC Timestamp] ${utcTimestamp}`);
     console.log("📊 [UTMify API] Status:", orderData.status);
     console.log("💰 [UTMify API] Valor:", orderData.amount);
     
@@ -52,8 +44,8 @@ export async function POST(request: NextRequest) {
       platform: "Nacional Açaí", // Nome da plataforma
       paymentMethod: "pix",
       status: orderData.status === "pending" ? "waiting_payment" : "paid",
-      createdAt: brazilTimestamp,
-      approvedDate: orderData.status === "paid" ? brazilTimestamp : null,
+      createdAt: utcTimestamp,
+      approvedDate: orderData.status === "paid" ? utcTimestamp : null,
       refundedAt: null,
       customer: {
         name: orderData.customerData?.name || "",

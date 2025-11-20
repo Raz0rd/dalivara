@@ -87,9 +87,8 @@ export async function GET(
           trackingParameters: tx.metadata?.utmParams || {}
         };
         
-        const host = req.headers.get('host');
-        const protocol = req.headers.get('x-forwarded-proto') || 'https';
-        const baseUrl = `${protocol}://${host}`;
+        // Usar localhost para evitar problemas de SSL
+        const baseUrl = 'http://localhost:3000';
         
         await fetch(`${baseUrl}/api/utmify/conversion`, {
           method: 'POST',

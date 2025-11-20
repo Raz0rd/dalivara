@@ -140,7 +140,12 @@ export async function POST(req: NextRequest) {
         trackingParameters: body.utmParams || {}
       };
       
-      await fetch(`${req.nextUrl.origin}/api/utmify/conversion`, {
+      // Usar localhost para evitar problemas de SSL em produção
+      const baseUrl = process.env.NODE_ENV === 'production' 
+        ? 'http://localhost:3000' 
+        : 'http://localhost:3000';
+      
+      await fetch(`${baseUrl}/api/utmify/conversion`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(utmifyPayload)
