@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { ChevronDown, ChevronRight, Info, LockKeyhole } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useUser } from "@/contexts/UserContext";
-import { sendUtmifyConversion, saveUtmsToStorage, getUtmParams } from "@/utils/utmify";
+import { sendUtmifyConversion, saveUtmsToStorage, getUtmParams, sendGoogleAdsConversion } from "@/utils/utmify";
 import DeliveryOptions from "@/components/DeliveryOptions";
 import OrderSummary from "@/components/OrderSummary";
 import PixPayment from "@/components/PixPayment";
@@ -267,8 +267,20 @@ export default function IfoodPayPage() {
           if (conversionResult?.success) {
             console.log('✅ Conversão PAID enviada com sucesso!');
             console.log('📊 UTMs enviados:', conversionResult.utmParams);
+            
+            // Se não houver UTMs capturados, enviar conversão direta ao Google Ads
+            const hasUtms = conversionResult.utmParams && Object.keys(conversionResult.utmParams).length > 0;
+            const isOrganic = conversionResult.utmParams?.utm_source === 'organic';
+            
+            if (!hasUtms || isOrganic) {
+              console.log('🎯 [Fallback] Enviando conversão direta ao Google Ads (sem UTMs ou tráfego orgânico)');
+              sendGoogleAdsConversion(transactionId, totalWithTip, 'BRL');
+            }
           } else {
             console.warn('⚠️ Conversão enviada mas API do Utmify pode não estar disponível');
+            // Fallback: enviar ao Google Ads de qualquer forma
+            console.log('🎯 [Fallback] Enviando conversão direta ao Google Ads');
+            sendGoogleAdsConversion(transactionId, totalWithTip, 'BRL');
           }
           
           // Limpar carrinho após pagamento confirmado

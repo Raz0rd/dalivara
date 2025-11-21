@@ -125,6 +125,39 @@ export function normalizeUtmsForUtmify(utmParams: Record<string, string>): Recor
 }
 
 /**
+ * Envia conversão para o Google Ads
+ * Usado como fallback quando não há UTMs capturados
+ */
+export function sendGoogleAdsConversion(
+  transactionId: string,
+  value: number,
+  currency: string = 'BRL'
+): void {
+  if (typeof window === 'undefined' || typeof (window as any).gtag !== 'function') {
+    console.warn('⚠️ [Google Ads] gtag não disponível');
+    return;
+  }
+
+  try {
+    console.log('📊 [Google Ads] Enviando conversão...');
+    console.log('🆔 Transaction ID:', transactionId);
+    console.log('💰 Valor:', value);
+    console.log('💵 Moeda:', currency);
+
+    (window as any).gtag('event', 'conversion', {
+      'send_to': 'AW-17719649597/l1AvCJCdmr4bEL3KsYFC',
+      'value': value,
+      'currency': currency,
+      'transaction_id': transactionId
+    });
+
+    console.log('✅ [Google Ads] Conversão enviada com sucesso');
+  } catch (error) {
+    console.error('❌ [Google Ads] Erro ao enviar conversão:', error);
+  }
+}
+
+/**
  * Envia conversão 'paid' para o Utmify com todos os UTMs
  * @param transactionId - ID único da transação
  * @param value - Valor da conversão em reais
