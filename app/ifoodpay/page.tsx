@@ -90,7 +90,7 @@ export default function IfoodPayPage() {
       setCpf(order.cpf);
       setPhone(order.phone);
       setCurrentStep("payment");
-      const cleanup = startStatusPolling(order.transactionId);
+      const cleanup = startPolling(order.transactionId);
       if (cleanup) setCleanupPolling(() => cleanup);
     }
     setShowRecoverModal(false);
@@ -191,25 +191,41 @@ export default function IfoodPayPage() {
     }
   };
 
-  const startStatusPolling = (transactionId: string) => {
+  const startPolling = (transactionId: string) => {
     let interval: NodeJS.Timeout;
     let isPollingActive = true;
+    let checkCount = 0;
+    const maxChecks = 180; // 30 minutos (180 * 10s)
 
     const checkStatus = async () => {
       // Verificar se o polling ainda está ativo
       if (!isPollingActive) {
+        console.log('⏸️ Polling pausado');
         return;
       }
 
+      checkCount++;
+      console.log(`🔄 Check #${checkCount}/${maxChecks} - ${new Date().toLocaleTimeString()}`);
+
+      // Salvar timestamp da última verificação no localStorage
+      localStorage.setItem('lastPollingCheck', Date.now().toString());
+
       try {
-        const response = await fetch(`/api/payment/status/${transactionId}`);
+        const response = await fetch(`/api/payment/status/${transactionId}`, {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+          }
+        });
         const data = await response.json();
 
         console.log('🔍 Verificando status do pagamento:', {
           transactionId,
           status: data.status,
           paid: data.paid,
-          timestamp: new Date().toLocaleTimeString()
+          timestamp: new Date().toLocaleTimeString(),
+          checkNumber: checkCount
         });
 
         if (data.success && data.paid) {
@@ -274,13 +290,13 @@ export default function IfoodPayPage() {
             
             if (!hasUtms || isOrganic) {
               console.log('🎯 [Fallback] Enviando conversão direta ao Google Ads (sem UTMs ou tráfego orgânico)');
-              sendGoogleAdsConversion(transactionId, totalWithTip, 'BRL');
+              sendGoogleAdsConversion(transactionId, totalWithTip, 'BRL', userData?.email, phone);
             }
           } else {
             console.warn('⚠️ Conversão enviada mas API do Utmify pode não estar disponível');
             // Fallback: enviar ao Google Ads de qualquer forma
             console.log('🎯 [Fallback] Enviando conversão direta ao Google Ads');
-            sendGoogleAdsConversion(transactionId, totalWithTip, 'BRL');
+            sendGoogleAdsConversion(transactionId, totalWithTip, 'BRL', userData?.email, phone);
           }
           
           // Limpar carrinho após pagamento confirmado
@@ -300,29 +316,53 @@ export default function IfoodPayPage() {
 
     // Verificar imediatamente
     console.log('🔄 Iniciando polling de status para transação:', transactionId);
+    console.log('⏰ Polling configurado para verificar a cada 10 segundos');
+    console.log('📱 Polling continuará mesmo com aba minimizada');
     checkStatus();
 
-    // Depois verificar a cada 10 segundos
-    interval = setInterval(checkStatus, 10000);
+    // Depois verificar a cada 10 segundos - usar setInterval mais robusto
+    interval = setInterval(() => {
+      console.log('⏰ Intervalo disparado - executando checkStatus');
+      checkStatus();
+    }, 10000);
 
-    // Page Visibility API - continuar polling mesmo com aba minimizada
+    // Page Visibility API - verificar quando voltar à aba
     const handleVisibilityChange = () => {
+      const now = Date.now();
+      const lastCheck = parseInt(localStorage.getItem('lastPollingCheck') || '0');
+      const timeSinceLastCheck = now - lastCheck;
+      
       if (document.visibilityState === 'visible') {
-        console.log('👁️ Aba voltou a ficar visível, verificando status imediatamente');
+        console.log('👁️ Aba voltou a ficar visível');
+        console.log(`⏱️ Tempo desde última verificação: ${Math.round(timeSinceLastCheck / 1000)}s`);
+        console.log('🔄 Verificando status imediatamente');
         checkStatus(); // Verificar imediatamente quando voltar
       } else {
-        console.log('👁️ Aba ficou oculta, polling continua em background');
+        console.log('👁️ Aba ficou oculta - polling continua em background');
+        console.log('⚠️ IMPORTANTE: O navegador pode desacelerar timers em abas ocultas');
       }
     };
     
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
+    // Verificar se o polling está realmente rodando a cada 30 segundos
+    const healthCheck = setInterval(() => {
+      const lastCheck = parseInt(localStorage.getItem('lastPollingCheck') || '0');
+      const timeSinceLastCheck = Date.now() - lastCheck;
+      if (timeSinceLastCheck > 20000) {
+        console.warn('⚠️ Polling pode estar pausado! Forçando verificação...');
+        checkStatus();
+      }
+    }, 30000);
+
     // Limpar após 30 minutos (tempo de expiração do PIX)
     const timeout = setTimeout(() => {
       console.log('⏰ Timeout de 30 minutos atingido, parando polling');
       if (interval) clearInterval(interval);
+      if (healthCheck) clearInterval(healthCheck);
       isPollingActive = false;
       localStorage.removeItem('pendingOrder');
+      localStorage.removeItem('lastPollingCheck');
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     }, 30 * 60 * 1000);
 
@@ -330,8 +370,10 @@ export default function IfoodPayPage() {
     return () => {
       console.log('🧹 Limpando polling');
       if (interval) clearInterval(interval);
+      if (healthCheck) clearInterval(healthCheck);
       clearTimeout(timeout);
       isPollingActive = false;
+      localStorage.removeItem('lastPollingCheck');
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   };

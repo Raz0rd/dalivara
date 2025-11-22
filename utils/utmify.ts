@@ -131,7 +131,9 @@ export function normalizeUtmsForUtmify(utmParams: Record<string, string>): Recor
 export function sendGoogleAdsConversion(
   transactionId: string,
   value: number,
-  currency: string = 'BRL'
+  currency: string = 'BRL',
+  email?: string,
+  phone?: string
 ): void {
   if (typeof window === 'undefined' || typeof (window as any).gtag !== 'function') {
     console.warn('⚠️ [Google Ads] gtag não disponível');
@@ -143,13 +145,33 @@ export function sendGoogleAdsConversion(
     console.log('🆔 Transaction ID:', transactionId);
     console.log('💰 Valor:', value);
     console.log('💵 Moeda:', currency);
+    console.log('📧 Email:', email ? 'fornecido' : 'não fornecido');
+    console.log('📱 Telefone:', phone ? 'fornecido' : 'não fornecido');
 
-    (window as any).gtag('event', 'conversion', {
+    // Preparar user_data para otimização
+    const userData: any = {};
+    if (email) {
+      userData.email = email;
+    }
+    if (phone) {
+      // Remover caracteres não numéricos do telefone
+      userData.phone_number = phone.replace(/\D/g, '');
+    }
+
+    const conversionData: any = {
       'send_to': 'AW-17719649597/l1AvCJCdmr4bEL3KsYFC',
       'value': value,
       'currency': currency,
       'transaction_id': transactionId
-    });
+    };
+
+    // Adicionar user_data se houver dados
+    if (Object.keys(userData).length > 0) {
+      conversionData.user_data = userData;
+      console.log('👤 [Google Ads] User data incluído para otimização');
+    }
+
+    (window as any).gtag('event', 'conversion', conversionData);
 
     console.log('✅ [Google Ads] Conversão enviada com sucesso');
   } catch (error) {
