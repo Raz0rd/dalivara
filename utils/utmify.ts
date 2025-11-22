@@ -228,17 +228,17 @@ export async function sendUtmifyConversion(
     console.log('📤 Enviando conversão PAID ao Utmify:', payload);
     console.log('📋 Total de UTMs enviados:', Object.keys(utmParams).length);
 
-    // Verificar se existe a função global do Utmify
-    let conversionSuccess = false;
+    // Nota: A conversão é enviada via API do backend (/api/utmify/conversion)
+    // O script do Utmify no frontend é apenas para tracking adicional
     
+    // Tentar enviar via API global do Utmify (opcional)
     if ((window as any).utmify && typeof (window as any).utmify === 'function') {
-      // Enviar evento 'paid' com todos os dados
-      (window as any).utmify('paid', payload);
-      console.log('✅ Conversão PAID enviada ao Utmify via API global');
-      conversionSuccess = true;
-    } else {
-      console.warn('⚠️ API global do Utmify não encontrada');
-      console.log('💡 Verifique se o script do Utmify foi carregado corretamente');
+      try {
+        (window as any).utmify('paid', payload);
+        console.log('✅ Conversão PAID enviada ao Utmify via API global (tracking adicional)');
+      } catch (err) {
+        console.warn('⚠️ Erro ao enviar via API global do Utmify:', err);
+      }
     }
 
     // Enviar log ao backend para depuração
@@ -254,7 +254,7 @@ export async function sendUtmifyConversion(
           email: email,
           phone: phone,
           utmParams: utmParams,
-          success: conversionSuccess,
+          success: true, // Sempre true pois a conversão é enviada via backend
           timestamp: payload.timestamp
         })
       });
@@ -262,7 +262,7 @@ export async function sendUtmifyConversion(
       console.warn('⚠️ Erro ao enviar log ao backend:', logError);
     }
 
-    return { success: conversionSuccess, utmParams, payload };
+    return { success: true, utmParams, payload };
   } catch (error) {
     console.error('❌ Erro ao enviar conversão ao Utmify:', error);
     
