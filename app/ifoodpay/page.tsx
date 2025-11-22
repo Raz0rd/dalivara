@@ -6,6 +6,7 @@ import { ChevronDown, ChevronRight, Info, LockKeyhole } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useUser } from "@/contexts/UserContext";
 import { sendUtmifyConversion, saveUtmsToStorage, getUtmParams, sendGoogleAdsConversion } from "@/utils/utmify";
+import { formatCPF, formatPhone, validateCPF, validatePhone } from "@/utils/formatters";
 import DeliveryOptions from "@/components/DeliveryOptions";
 import OrderSummary from "@/components/OrderSummary";
 import PixPayment from "@/components/PixPayment";
@@ -17,14 +18,22 @@ export default function IfoodPayPage() {
   const router = useRouter();
   const { items, getTotalPrice, addItem, removeItem, clearCart } = useCart();
   const { userData } = useUser();
+  
   const [showSummary, setShowSummary] = useState(false);
   const [couponCode, setCouponCode] = useState("");
   const [currentStep, setCurrentStep] = useState<"personal" | "delivery" | "summary" | "payment">("personal");
   const [deliveryData, setDeliveryData] = useState<any>(null);
   const [pixCode, setPixCode] = useState("");
   const [pixQrCode, setPixQrCode] = useState("");
-  const [cpf, setCpf] = useState("");
-  const [phone, setPhone] = useState("");
+  const [cpf, setCpf] = useState(userData?.cpf || "");
+  const [phone, setPhone] = useState(userData?.phone || "");
+  
+  // Carregar telefone e CPF do userData quando disponível
+  useEffect(() => {
+    console.log('👤 [ifoodpay] userData:', userData);
+    if (userData?.cpf) setCpf(userData.cpf);
+    if (userData?.phone) setPhone(userData.phone);
+  }, [userData]);
   const [isConfirming, setIsConfirming] = useState(false);
   const [tip, setTip] = useState(0);
   const [showRecoverModal, setShowRecoverModal] = useState(false);
@@ -602,7 +611,8 @@ export default function IfoodPayPage() {
                         placeholder="000.000.000-00"
                         type="text"
                         value={cpf}
-                        onChange={(e) => setCpf(e.target.value)}
+                        onChange={(e) => setCpf(formatCPF(e.target.value))}
+                        maxLength={14}
                       />
                     </div>
                   </div>
@@ -623,7 +633,8 @@ export default function IfoodPayPage() {
                         placeholder="(00) 00000-0000"
                         type="tel"
                         value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
+                        onChange={(e) => setPhone(formatPhone(e.target.value))}
+                        maxLength={15}
                       />
                     </div>
                   </div>

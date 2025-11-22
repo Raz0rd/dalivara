@@ -3,6 +3,7 @@ import "./globals.css";
 import { CartProvider } from "@/contexts/CartContext";
 import { UserProvider } from "@/contexts/UserContext";
 import { GOOGLE_ADS_CONFIG } from "@/config/googleAds";
+import UtmCapture from "@/components/UtmCapture";
 
 export const metadata: Metadata = {
   title: "Nacional Açaí - O melhor açaí do mundo!",
@@ -77,6 +78,7 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <UtmCapture />
         <UserProvider>
           <CartProvider>{children}</CartProvider>
         </UserProvider>

@@ -16,6 +16,8 @@ interface UserData {
   whatsapp?: string;
   name?: string;
   email?: string;
+  phone?: string;
+  cpf?: string;
   address?: AddressData;
 }
 
