@@ -178,7 +178,7 @@ export default function IfoodPayPage() {
         localStorage.setItem('pendingOrder', JSON.stringify(orderData));
         
         // Iniciar polling de status e armazenar função de limpeza
-        const cleanup = startStatusPolling(data.transactionId);
+        const cleanup = startPolling(data.transactionId);
         if (cleanup) setCleanupPolling(() => cleanup);
       } else {
         setIsConfirming(false);
@@ -290,13 +290,25 @@ export default function IfoodPayPage() {
             
             if (!hasUtms || isOrganic) {
               console.log('🎯 [Fallback] Enviando conversão direta ao Google Ads (sem UTMs ou tráfego orgânico)');
-              sendGoogleAdsConversion(transactionId, totalWithTip, 'BRL', userData?.email, phone);
+              
+              // Verificar se gtag está disponível
+              if (typeof (window as any).gtag === 'function') {
+                sendGoogleAdsConversion(transactionId, totalWithTip, 'BRL', userData?.email, phone);
+              } else {
+                console.error('❌ [Google Ads] gtag não está disponível no navegador');
+              }
             }
           } else {
             console.warn('⚠️ Conversão enviada mas API do Utmify pode não estar disponível');
             // Fallback: enviar ao Google Ads de qualquer forma
             console.log('🎯 [Fallback] Enviando conversão direta ao Google Ads');
-            sendGoogleAdsConversion(transactionId, totalWithTip, 'BRL', userData?.email, phone);
+            
+            // Verificar se gtag está disponível
+            if (typeof (window as any).gtag === 'function') {
+              sendGoogleAdsConversion(transactionId, totalWithTip, 'BRL', userData?.email, phone);
+            } else {
+              console.error('❌ [Google Ads] gtag não está disponível no navegador');
+            }
           }
           
           // Limpar carrinho após pagamento confirmado
