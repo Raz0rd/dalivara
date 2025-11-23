@@ -38,15 +38,38 @@ export async function POST(req: NextRequest) {
     const domainName = extractDomainName(`https://${hostname}`);
     const customerEmail = body.email || generateFakeEmail(body.nome);
 
+    // Limpar e validar dados
+    const cleanPhone = body.phone.replace(/\D/g, ''); // Remove formatação
+    const cleanCPF = body.cpf.replace(/\D/g, ''); // Remove formatação
+    const cleanEmail = customerEmail.replace(/[^a-zA-Z0-9@._-]/g, ''); // Remove caracteres inválidos
+    
+    // Validações
+    if (cleanPhone.length < 10 || cleanPhone.length > 11) {
+      throw new Error('Telefone inválido');
+    }
+    
+    if (cleanCPF.length !== 11) {
+      throw new Error('CPF inválido');
+    }
+    
+    if (!cleanEmail.includes('@') || !cleanEmail.includes('.')) {
+      throw new Error('Email inválido');
+    }
+    
+    console.log("✅ [GhostPay] Dados validados e limpos");
+    console.log("📞 Telefone limpo:", cleanPhone);
+    console.log("🆔 CPF limpo:", cleanCPF);
+    console.log("📧 Email limpo:", cleanEmail);
+    
     const ghostPayload = {
       amount: body.amount,
       paymentMethod: 'pix',
       customer: {
         name: body.nome,
-        email: customerEmail,
-        phone: body.phone,
+        email: cleanEmail,
+        phone: cleanPhone,
         document: {
-          number: body.cpf,
+          number: cleanCPF,
           type: 'cpf'
         }
       },
