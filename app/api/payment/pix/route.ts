@@ -189,13 +189,29 @@ export async function POST(req: NextRequest) {
     });
   } catch (error: any) {
     console.error('PIX Error:', error?.response?.data || error.message);
+    
+    // Retornar mensagem de erro específica
+    let errorMessage = 'Erro ao gerar PIX';
+    
+    if (error.message) {
+      if (error.message.includes('CPF inválido')) {
+        errorMessage = 'CPF inválido';
+      } else if (error.message.includes('Telefone inválido')) {
+        errorMessage = 'Telefone inválido';
+      } else if (error.message.includes('Email inválido')) {
+        errorMessage = 'Email inválido';
+      } else {
+        errorMessage = error.message;
+      }
+    }
+    
     return NextResponse.json(
       {
         success: false,
-        message: 'Erro ao gerar PIX',
+        message: errorMessage,
         details: error?.response?.data || null,
       },
-      { status: 500 }
+      { status: 400 }
     );
   }
 }

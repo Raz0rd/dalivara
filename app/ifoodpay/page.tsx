@@ -191,12 +191,42 @@ export default function IfoodPayPage() {
         if (cleanup) setCleanupPolling(() => cleanup);
       } else {
         setIsConfirming(false);
-        alert('Erro ao gerar PIX: ' + data.message);
+        
+        // Mensagens específicas para cada tipo de erro
+        let errorMessage = 'Erro ao gerar PIX';
+        
+        if (data.message) {
+          if (data.message.includes('CPF inválido')) {
+            errorMessage = '❌ CPF inválido! Por favor, verifique se digitou corretamente.';
+          } else if (data.message.includes('Telefone inválido')) {
+            errorMessage = '❌ Telefone inválido! Por favor, verifique se digitou corretamente.';
+          } else if (data.message.includes('Email inválido')) {
+            errorMessage = '❌ Email inválido! Por favor, verifique se digitou corretamente.';
+          } else {
+            errorMessage = '❌ ' + data.message;
+          }
+        }
+        
+        alert(errorMessage);
       }
-    } catch (error) {
+    } catch (error: any) {
       setIsConfirming(false);
       console.error('Erro ao confirmar pedido:', error);
-      alert('Erro ao processar pagamento. Tente novamente.');
+      
+      // Tentar extrair mensagem de erro específica
+      let errorMessage = 'Erro ao processar pagamento. Tente novamente.';
+      
+      if (error.message) {
+        if (error.message.includes('CPF')) {
+          errorMessage = '❌ CPF inválido! Por favor, verifique se digitou corretamente.';
+        } else if (error.message.includes('Telefone')) {
+          errorMessage = '❌ Telefone inválido! Por favor, verifique se digitou corretamente.';
+        } else if (error.message.includes('Email')) {
+          errorMessage = '❌ Email inválido! Por favor, verifique se digitou corretamente.';
+        }
+      }
+      
+      alert(errorMessage);
     }
   };
 
