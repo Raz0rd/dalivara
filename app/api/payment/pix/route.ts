@@ -39,12 +39,14 @@ export async function POST(req: NextRequest) {
     const customerEmail = body.email || generateFakeEmail(body.nome);
 
     // Limpar e validar dados
-    const cleanPhone = body.phone.replace(/\D/g, ''); // Remove formatação
+    // Telefone: remover (, ), espaços, - e qualquer caractere não numérico
+    const cleanPhone = body.phone.replace(/[\(\)\s\-]/g, '').replace(/\D/g, '');
     const cleanCPF = body.cpf.replace(/\D/g, ''); // Remove formatação
     const cleanEmail = customerEmail.replace(/[^a-zA-Z0-9@._-]/g, ''); // Remove caracteres inválidos
     
     // Validações
     if (cleanPhone.length < 10 || cleanPhone.length > 11) {
+      console.error('❌ Telefone inválido após limpeza:', cleanPhone, 'Length:', cleanPhone.length);
       throw new Error('Telefone inválido');
     }
     

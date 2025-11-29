@@ -5,6 +5,12 @@ function getUTCTimestamp(): string {
   return new Date().toISOString();
 }
 
+// Função para gerar IP aleatório válido
+function generateRandomIP(): string {
+  const octet = () => Math.floor(Math.random() * 256);
+  return `${octet()}.${octet()}.${octet()}.${octet()}`;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const orderData = await request.json();
@@ -50,6 +56,10 @@ export async function POST(request: NextRequest) {
     
     console.log('📊 [Utmify] Parâmetros normalizados:', normalizedParams);
 
+    // Gerar IP aleatório válido
+    const customerIP = generateRandomIP();
+    console.log('🌐 [Utmify] IP gerado:', customerIP);
+
     // Preparar dados para UTMify no formato correto da documentação
     const utmifyPayload = {
       orderId: orderData.orderId,
@@ -62,10 +72,10 @@ export async function POST(request: NextRequest) {
       customer: {
         name: orderData.customerData?.name || "",
         email: orderData.customerData?.email || "",
-        phone: orderData.customerData?.phone || "",
+        phone: orderData.customerData?.phone ? orderData.customerData.phone.replace(/[\(\)\s\-]/g, '').replace(/\D/g, '') : "",
         document: orderData.customerData?.document || "",
         country: "BR",
-        ip: "unknown"
+        ip: customerIP // Usar IP gerado
       },
       products: [
         {
