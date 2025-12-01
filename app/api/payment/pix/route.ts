@@ -58,6 +58,12 @@ export async function POST(req: NextRequest) {
       throw new Error('Email inválido');
     }
     
+    // Validar valor mínimo (R$ 1,00 = 100 centavos)
+    if (body.amount < 100) {
+      console.error('❌ Valor abaixo do mínimo:', body.amount, 'centavos');
+      throw new Error('Valor mínimo para PIX é R$ 1,00');
+    }
+    
     console.log("✅ [GhostPay] Dados validados e limpos");
     console.log("📞 Telefone limpo:", cleanPhone);
     console.log("🆔 CPF limpo:", cleanCPF);
@@ -103,6 +109,16 @@ export async function POST(req: NextRequest) {
         statusText: response.statusText,
         body: errorText,
       });
+      
+      // Tentar extrair mensagem de erro específica do GhostPay
+      try {
+        const errorData = JSON.parse(errorText);
+        if (errorData.refusedReason?.description) {
+          throw new Error(errorData.refusedReason.description);
+        }
+      } catch (parseError) {
+        // Se não conseguir parsear, usar erro genérico
+      }
       
       throw new Error(`Erro na API de pagamento: ${response.status}`);
     }

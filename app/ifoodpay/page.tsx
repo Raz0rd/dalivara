@@ -12,6 +12,7 @@ import OrderSummary from "@/components/OrderSummary";
 import PixPayment from "@/components/PixPayment";
 import LoadingOverlay from "@/components/LoadingOverlay";
 import RecoverOrderModal from "@/components/RecoverOrderModal";
+import Toast from "@/components/Toast";
 import Image from "next/image";
 
 export default function IfoodPayPage() {
@@ -38,6 +39,9 @@ export default function IfoodPayPage() {
   const [tip, setTip] = useState(0);
   const [showRecoverModal, setShowRecoverModal] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState<"success" | "error" | "info">("error");
+  const [showToast, setShowToast] = useState(false);
 
   const totalPrice = getTotalPrice();
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
@@ -123,10 +127,27 @@ export default function IfoodPayPage() {
     setIsConfirming(true);
     
     try {
+      // Debug: verificar valores do carrinho
+      console.log('🛒 [Debug] Items no carrinho:', items);
+      console.log('💰 [Debug] Total do carrinho (getTotalPrice):', totalPrice);
+      console.log('💵 [Debug] Gorjeta:', tip);
+      
+      // Validar se o carrinho não está vazio
+      if (items.length === 0 || totalPrice === 0) {
+        setIsConfirming(false);
+        setToastMessage('❌ Seu carrinho está vazio! Adicione produtos antes de finalizar o pedido.');
+        setToastType("error");
+        setShowToast(true);
+        return;
+      }
+      
       // Calcular total com gorjeta
       const totalWithTip = totalPrice + tip;
       // Converter para centavos (multiplicar por 100) e garantir que é inteiro
       const amountInCents = Math.round(totalWithTip * 100);
+      
+      console.log('💳 [Debug] Total com gorjeta:', totalWithTip);
+      console.log('💳 [Debug] Valor em centavos:', amountInCents);
       
       // Capturar UTMs para enviar junto com o pedido
       let utmParams = getUtmParams();
@@ -202,12 +223,16 @@ export default function IfoodPayPage() {
             errorMessage = '❌ Telefone inválido! Por favor, verifique se digitou corretamente.';
           } else if (data.message.includes('Email inválido')) {
             errorMessage = '❌ Email inválido! Por favor, verifique se digitou corretamente.';
+          } else if (data.message.includes('Valor mínimo') || data.message.includes('valor abaixo')) {
+            errorMessage = '❌ Valor mínimo para PIX é R$ 1,00. Adicione mais produtos ao carrinho.';
           } else {
             errorMessage = '❌ ' + data.message;
           }
         }
         
-        alert(errorMessage);
+        setToastMessage(errorMessage);
+        setToastType("error");
+        setShowToast(true);
       }
     } catch (error: any) {
       setIsConfirming(false);
@@ -226,7 +251,9 @@ export default function IfoodPayPage() {
         }
       }
       
-      alert(errorMessage);
+      setToastMessage(errorMessage);
+      setToastType("error");
+      setShowToast(true);
     }
   };
 
@@ -463,7 +490,9 @@ export default function IfoodPayPage() {
     // Limpar carrinho
     clearCart();
     
-    alert('✅ Pagamento simulado com sucesso! Redirecionando para pedidos...');
+    setToastMessage('✅ Pagamento simulado com sucesso! Redirecionando para pedidos...');
+    setToastType("success");
+    setShowToast(true);
     
     // Redirecionar para página de pedidos após 2 segundos
     setTimeout(() => {
@@ -481,6 +510,15 @@ export default function IfoodPayPage() {
         isOpen={showRecoverModal}
         onContinue={handleContinueOrder}
         onStartNew={handleStartNewOrder}
+      />
+      
+      {/* Toast de Notificações */}
+      <Toast
+        message={toastMessage}
+        type={toastType}
+        isVisible={showToast}
+        onClose={() => setShowToast(false)}
+        duration={5000}
       />
       
       {/* Header Vermelho iFood */}
