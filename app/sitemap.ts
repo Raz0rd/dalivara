@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://nacional-acai.click'
+  const baseUrl = 'http://presentedenatalantecipado.shop'
   
   // URLs estáticas principais
   const routes = [

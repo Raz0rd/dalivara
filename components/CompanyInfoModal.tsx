@@ -17,7 +17,7 @@ export default function CompanyInfoModal({ isOpen, onClose }: CompanyInfoModalPr
         <div className="sticky top-0 bg-primary text-white px-6 py-4 flex items-center justify-between rounded-t-lg">
           <div className="flex items-center gap-3">
             <Building2 size={24} />
-            <h2 className="text-xl font-bold">Sobre a Nacional Açaí</h2>
+            <h2 className="text-xl font-bold">Sobre a Sertão Açaíteria</h2>
           </div>
           <button
             onClick={onClose}
@@ -37,7 +37,7 @@ export default function CompanyInfoModal({ isOpen, onClose }: CompanyInfoModalPr
               <h3 className="font-bold text-lg text-gray-900">Quem Somos</h3>
             </div>
             <p className="text-gray-700 leading-relaxed">
-              A <strong>Nacional Açaí</strong> é uma empresa especializada no fornecimento de açaí de alta qualidade para toda a região. Trabalhamos em parceria com diversas lojinhas de açaí, garantindo que nossos clientes recebam sempre o melhor produto.
+              A <strong>Sertão Açaíteria</strong> é uma empresa especializada no fornecimento de açaí de alta qualidade para toda a região. Trabalhamos em parceria com diversas lojinhas de açaí, garantindo que nossos clientes recebam sempre o melhor produto.
             </p>
           </div>
 
@@ -99,7 +99,7 @@ export default function CompanyInfoModal({ isOpen, onClose }: CompanyInfoModalPr
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Nome Fantasia:</span>
-                <span className="font-semibold text-gray-900">Nacional Açaí</span>
+                <span className="font-semibold text-gray-900">Sertão Açaíteria</span>
               </div>
             </div>
           </div>

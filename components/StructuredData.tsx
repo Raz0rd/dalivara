@@ -3,13 +3,12 @@
 export default function StructuredData() {
   const structuredData = {
     "@context": "https://schema.org",
-    "@type": "FoodEstablishment",
-    "@id": "https://nacional-acai.click",
-    "name": "Nacional Açaí",
-    "description": "Delivery de açaí de qualidade. Combos, milkshakes, delícias e bebidas.",
-    "url": "https://nacional-acai.click",
-    "logo": "https://nacional-acai.click/logo.png",
-    "image": "https://nacional-acai.click/og-image.jpg",
+    "@type": "Restaurant",
+    "name": "Sertão Açaíteria",
+    "description": "Açaí de qualidade com entrega rápida. Combos, milkshakes, delícias e bebidas.",
+    "url": "http://presentedenatalantecipado.shop",
+    "logo": "http://presentedenatalantecipado.shop/logo.png",
+    "image": "http://presentedenatalantecipado.shop/og-image.jpg",
     "telephone": "+55-34-99999-9999",
     "priceRange": "$$",
     "servesCuisine": "Açaí",
@@ -68,7 +67,7 @@ export default function StructuredData() {
       "@type": "OrderAction",
       "target": {
         "@type": "EntryPoint",
-        "urlTemplate": "https://nacional-acai.click",
+        "urlTemplate": "http://presentedenatalantecipado.shop",
         "actionPlatform": [
           "http://schema.org/DesktopWebPlatform",
           "http://schema.org/MobileWebPlatform"
@@ -93,19 +92,19 @@ export default function StructuredData() {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://nacional-acai.click"
+        "item": "http://presentedenatalantecipado.shop"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Produtos",
-        "item": "https://nacional-acai.click/#produtos"
+        "item": "http://presentedenatalantecipado.shop/#produtos"
       },
       {
         "@type": "ListItem",
         "position": 3,
         "name": "Carrinho",
-        "item": "https://nacional-acai.click/carrinho"
+        "item": "http://presentedenatalantecipado.shop/carrinho"
       }
     ]
   };
@@ -113,9 +112,9 @@ export default function StructuredData() {
   const organizationData = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "Nacional Açaí",
-    "url": "https://nacional-acai.click",
-    "logo": "https://nacional-acai.click/logo.png",
+    "name": "Sertão Açaíteria",
+    "url": "http://presentedenatalantecipado.shop",
+    "logo": "http://presentedenatalantecipado.shop/logo.png",
     "description": "Delivery de açaí de qualidade",
     "sameAs": [
       "https://www.instagram.com/nacionalacai",

@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next'
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = 'https://nacional-acai.click'
+  const baseUrl = 'http://presentedenatalantecipado.shop'
   
   return {
     rules: [
