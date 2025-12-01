@@ -157,7 +157,7 @@ export default function ProductPage() {
     { id: "1", name: "Banana", price: 0, image: "/products/frutas/banana.png" },
     { id: "2", name: "Morango", price: 0, image: "/products/frutas/morangos.png" },
     { id: "3", name: "Granola", price: 0, image: "/products/frutas/granola.png" },
-    { id: "4", name: "Leite em Pó", price: 0, image: "/products/frutas/leite em pó.png" },
+    { id: "4", name: "Leite em Pó", price: 0, image: "/products/frutas/leite-em-pó.png" },
     { id: "5", name: "Paçoca", price: 0, image: "/products/frutas/paçoca.png" },
     { id: "6", name: "Amendoim", price: 0, image: "/products/frutas/amedoin.png" },
     { id: "7", name: "Manga", price: 0, image: "/products/frutas/manga.png" },
@@ -166,20 +166,20 @@ export default function ProductPage() {
     { id: "10", name: "Chocoball", price: 0, image: "/products/frutas/chocoball.png" },
     { id: "11", name: "Sucrilhos", price: 0, image: "/products/frutas/sucrilhos.png" },
     { id: "12", name: "Confete", price: 0, image: "/products/frutas/confete.png" },
-    { id: "13", name: "Bala de Goma", price: 0, image: "/products/frutas/bala de goma.png" },
+    { id: "13", name: "Bala de Goma", price: 0, image: "/products/frutas/bala-de-goma.png" },
   ];
 
   const coberturas = [
-    { id: "1", name: "Leite Condensado", price: 0, image: "/products/frutas/leite condensado.png" },
-    { id: "2", name: "Chocolate", price: 0, image: "/products/frutas/chocolate ao leite derretido.png" },
+    { id: "1", name: "Leite Condensado", price: 0, image: "/products/frutas/leite-condensado.png" },
+    { id: "2", name: "Chocolate", price: 0, image: "/products/frutas/chocolate-ao-leite-derretido.png" },
     { id: "3", name: "Mel", price: 0, image: "/products/frutas/mel.png" },
-    { id: "4", name: "Creme de Avelã", price: 0, image: "/products/frutas/creme de avelã.png" },
-    { id: "5", name: "Creme de Ninho", price: 0, image: "/products/frutas/creme de ninho.png" },
-    { id: "6", name: "Creme Kinder", price: 0, image: "/products/frutas/creme kinder.png" },
-    { id: "7", name: "Ovomaltine", price: 0, image: "/products/frutas/ovo maltine.png" },
-    { id: "8", name: "Granulado Chocolate", price: 0, image: "/products/frutas/granulado chocolate.png" },
-    { id: "9", name: "Granulado Colorido", price: 0, image: "/products/frutas/granulado colorido.png" },
-    { id: "10", name: "Xarope Guaraná", price: 0, image: "/products/frutas/xarope guaraná.png" },
+    { id: "4", name: "Creme de Avelã", price: 0, image: "/products/frutas/creme-de-avelã.png" },
+    { id: "5", name: "Creme de Ninho", price: 0, image: "/products/frutas/creme-de-ninho.png" },
+    { id: "6", name: "Creme Kinder", price: 0, image: "/products/frutas/creme-kinder.png" },
+    { id: "7", name: "Ovomaltine", price: 0, image: "/products/frutas/ovo-maltine.png" },
+    { id: "8", name: "Granulado Chocolate", price: 0, image: "/products/frutas/granulado-chocolate.png" },
+    { id: "9", name: "Granulado Colorido", price: 0, image: "/products/frutas/granulado-colorido.png" },
+    { id: "10", name: "Xarope Guaraná", price: 0, image: "/products/frutas/xarope-guaraná.png" },
   ];
 
   const handleAddToCart = () => {
