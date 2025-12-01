@@ -27,7 +27,7 @@ export default function StoreInfo({
   const [showInfoModal, setShowInfoModal] = useState(false);
 
   const tabs = [
-    { id: "combos", label: "Combos", icon: "🍨" },
+    { id: "combos", label: "Combos", icon: "🥡" },
     { id: "delicias", label: "Delícias na Caixa 1L", icon: "🍦" },
     { id: "milkshake", label: "Milk-Shake", icon: "🥤" },
     { id: "bebidas", label: "Bebidas", icon: "💧" },

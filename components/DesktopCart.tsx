@@ -11,7 +11,7 @@ export default function DesktopCart() {
   const hasItems = items.length > 0;
 
   return (
-    <div className="hidden lg:block fixed right-4 top-20 w-96 bg-white rounded-lg shadow-xl border border-gray-200 max-h-[calc(100vh-120px)] overflow-hidden">
+    <div className="hidden lg:block fixed right-8 top-20 w-[380px] xl:w-[420px] xl:right-12 bg-white rounded-lg shadow-xl border border-gray-200 max-h-[calc(100vh-120px)] overflow-hidden z-40">
       {/* Header do Carrinho */}
       <div className="bg-primary text-white px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2">

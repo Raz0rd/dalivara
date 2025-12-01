@@ -21,8 +21,12 @@ export default function ProductListCard({ product }: ProductListCardProps) {
   const router = useRouter();
   const { addItem } = useCart();
 
-  // IDs que têm página de customização (combos e copos)
-  const hasCustomizationPage = ["1", "2", "3", "4", "destaque-1", "destaque-2", "destaque-3"].includes(product.id);
+  // IDs que têm página de customização (combos, copos e marmitas)
+  const hasCustomizationPage = [
+    "destaque-1", "destaque-2", "destaque-3",
+    "combo-marmita-gourmet-p", "combo-marmita-600g", "combo-marmita-350g", 
+    "combo-marmita-p", "combo-marmita-p2"
+  ].includes(product.id);
 
   const handleClick = (e: React.MouseEvent) => {
     // Se não tem página de customização, adiciona direto ao carrinho

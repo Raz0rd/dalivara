@@ -14,48 +14,6 @@ import { useToast } from "@/hooks/useToast";
 
 // Dados dos produtos
 const productsData: Record<string, any> = {
-  "1": {
-    id: "1",
-    name: "Combo 1 Kg",
-    description: "Escolha até 4 opções entre açaí e cremes, até 6 adicionais e até 2 coberturas. Obs.: Todos os cremes, adicionais e coberturas escolhidos no combo serão inclusos no peso.",
-    price: 38.99,
-    originalPrice: 45.99,
-    discount: 15,
-    image: "/products/caixa1L.jpg",
-    maxAcaiCremes: 4,
-    maxAdicionais: 6,
-    maxCoberturas: 2,
-  },
-  "2": {
-    id: "2",
-    name: "Combo 300g",
-    description: "Escolha até 2 opções entre açaí e cremes, até 2 adicionais e até 1 cobertura. Obs.: Todos os cremes, adicionais e coberturas escolhidos no combo serão inclusos no peso.",
-    price: 15.99,
-    image: "/products/combo-300g.jpg",
-    maxAcaiCremes: 2,
-    maxAdicionais: 2,
-    maxCoberturas: 1,
-  },
-  "3": {
-    id: "3",
-    name: "Combo 500g",
-    description: "Escolha até 3 opções entre açaí e cremes, até 3 adicionais e até 2 coberturas. Obs.: Todos os cremes, adicionais e coberturas escolhidos no combo serão inclusos no peso.",
-    price: 23.99,
-    image: "/products/combo-500g.jpg",
-    maxAcaiCremes: 3,
-    maxAdicionais: 3,
-    maxCoberturas: 2,
-  },
-  "4": {
-    id: "4",
-    name: "Combo 750g",
-    description: "Escolha até 4 opções entre açaí e cremes, até 4 adicionais e até 2 coberturas. Obs.: Todos os cremes, adicionais e coberturas escolhidos no combo serão inclusos no peso.",
-    price: 34.99,
-    image: "/products/combo-750g.jpg",
-    maxAcaiCremes: 4,
-    maxAdicionais: 4,
-    maxCoberturas: 2,
-  },
   "destaque-1": {
     id: "destaque-1",
     name: "2 Copos Açaí 500ml ZERO",
@@ -92,6 +50,61 @@ const productsData: Record<string, any> = {
     maxAdicionais: 6,
     maxCoberturas: 2,
   },
+  "combo-marmita-gourmet-p": {
+    id: "combo-marmita-gourmet-p",
+    name: "Marmita Gourmet",
+    description: "Marmita tamanho P. Escolha 1 sabor de açaí/creme, até 6 adicionais e até 2 coberturas. Acompanha Kit Kat, Nutella e Sonho de Valsa.",
+    price: 24.99,
+    image: "/products/marmitaGourmet.jpeg",
+    maxAcaiCremes: 1,
+    maxAdicionais: 6,
+    maxCoberturas: 2,
+    useZeroOptions: true,
+  },
+  "combo-marmita-600g": {
+    id: "combo-marmita-600g",
+    name: "Marmita G - 600g",
+    description: "Marmita 600g. Escolha 1 sabor de açaí/creme, até 6 adicionais e até 2 coberturas. Acompanha copo de 100ml de granola e leite condensado.",
+    price: 32.99,
+    image: "/products/marmitaG.webp",
+    maxAcaiCremes: 1,
+    maxAdicionais: 6,
+    maxCoberturas: 2,
+    useZeroOptions: true,
+  },
+  "combo-marmita-350g": {
+    id: "combo-marmita-350g",
+    name: "Marmita M - 350g",
+    description: "Média de 350g, indicado para 1 pessoa. Escolha 1 sabor de açaí/creme, até 6 adicionais e até 2 coberturas. Já acompanha leite condensado.",
+    price: 19.99,
+    image: "/products/marmitaM.jpeg",
+    maxAcaiCremes: 1,
+    maxAdicionais: 6,
+    maxCoberturas: 2,
+    useZeroOptions: true,
+  },
+  "combo-marmita-p": {
+    id: "combo-marmita-p",
+    name: "Marmita P",
+    description: "Indicado para 1 pessoa. Escolha 1 sabor de açaí/creme, até 6 adicionais e até 2 coberturas. Acompanha leite condensado.",
+    price: 16.99,
+    image: "/products/marmitap.webp",
+    maxAcaiCremes: 1,
+    maxAdicionais: 6,
+    maxCoberturas: 2,
+    useZeroOptions: true,
+  },
+  "combo-marmita-p2": {
+    id: "combo-marmita-p2",
+    name: "Marmita P2",
+    description: "Indicado para 1 pessoa. Escolha 1 sabor de açaí/creme, até 6 adicionais e até 2 coberturas. Acompanha leite condensado.",
+    price: 16.99,
+    image: "/products/marmitap2.jpeg",
+    maxAcaiCremes: 1,
+    maxAdicionais: 6,
+    maxCoberturas: 2,
+    useZeroOptions: true,
+  },
 };
 
 export default function ProductPage() {
@@ -110,31 +123,63 @@ export default function ProductPage() {
   const [observations, setObservations] = useState("");
 
   // Pegar produto baseado no ID da URL
-  const productId = params?.id as string || "1";
-  const product = productsData[productId] || productsData["1"];
+  const productId = params?.id as string || "destaque-1";
+  const product = productsData[productId] || productsData["destaque-1"];
 
-  const acaiCremes = [
-    { id: "1", name: "Açaí", price: 0 },
-    { id: "2", name: "Açaí Zero Açúcar", price: 0 },
-    { id: "3", name: "Creme de Morango", price: 0 },
-    { id: "4", name: "Creme de Cupuaçu", price: 0 },
-    { id: "5", name: "Creme de Maracujá", price: 0 },
+  // Verificar se deve usar opções ZERO (produtos destaque ou produtos com flag useZeroOptions)
+  const isZeroProduct = productId.startsWith("destaque-") || product.useZeroOptions === true;
+
+  // Opções de açaí/cremes para produtos ZERO
+  const acaiCremesZero = [
+    { id: "1", name: "Tradicional", price: 0, image: "/products/tradicional.png" },
+    { id: "2", name: "Cupuaçu", price: 0, image: "/products/cupuaçu.png" },
+    { id: "3", name: "Casadinho", price: 0, image: "/products/casadinho.png", description: "Metade cupuaçu, metade açaí" },
+    { id: "4", name: "Trufado Avelã", price: 0, image: "/products/trufado-avela.png" },
   ];
 
+  // Opções de açaí/cremes para produtos normais
+  const acaiCremesNormal = [
+    { id: "1", name: "Açaí", price: 0, image: "/products/caixa1L.jpg" },
+    { id: "2", name: "Açaí Zero Açúcar", price: 0, image: "/products/acai-fit.jpg" },
+    { id: "3", name: "Creme de Morango", price: 0, image: "/products/creme-morango.jpg" },
+    { id: "4", name: "Creme de Cupuaçu", price: 0, image: "/products/creme-cupuacu.jpg" },
+    { id: "5", name: "Creme de Maracujá", price: 0, image: "/products/creme-maracuja.jpg" },
+    { id: "6", name: "Creme de Ninho", price: 0, image: "/products/creme-ninho.jpg" },
+    { id: "7", name: "Creme de Oreo", price: 0, image: "/products/creme-oreo.jpg" },
+    { id: "8", name: "Creme de Ovomaltine", price: 0, image: "/products/creme-ovomaltine.jpg" },
+    { id: "9", name: "Creme de Paçoquita", price: 0, image: "/products/creme-pacoquita.jpg" },
+  ];
+
+  // Usar as opções corretas baseado no tipo de produto
+  const acaiCremes = isZeroProduct ? acaiCremesZero : acaiCremesNormal;
+
   const adicionais = [
-    { id: "1", name: "Banana", price: 0 },
-    { id: "2", name: "Morango", price: 0 },
-    { id: "3", name: "Granola", price: 0 },
-    { id: "4", name: "Leite em Pó", price: 0 },
-    { id: "5", name: "Paçoca", price: 0 },
-    { id: "6", name: "Amendoim", price: 0 },
+    { id: "1", name: "Banana", price: 0, image: "/products/frutas/banana.png" },
+    { id: "2", name: "Morango", price: 0, image: "/products/frutas/morangos.png" },
+    { id: "3", name: "Granola", price: 0, image: "/products/frutas/granola.png" },
+    { id: "4", name: "Leite em Pó", price: 0, image: "/products/frutas/leite em pó.png" },
+    { id: "5", name: "Paçoca", price: 0, image: "/products/frutas/paçoca.png" },
+    { id: "6", name: "Amendoim", price: 0, image: "/products/frutas/amedoin.png" },
+    { id: "7", name: "Manga", price: 0, image: "/products/frutas/manga.png" },
+    { id: "8", name: "Uvas", price: 0, image: "/products/frutas/uvas.png" },
+    { id: "9", name: "Abacaxi", price: 0, image: "/products/frutas/abacaxi.png" },
+    { id: "10", name: "Chocoball", price: 0, image: "/products/frutas/chocoball.png" },
+    { id: "11", name: "Sucrilhos", price: 0, image: "/products/frutas/sucrilhos.png" },
+    { id: "12", name: "Confete", price: 0, image: "/products/frutas/confete.png" },
+    { id: "13", name: "Bala de Goma", price: 0, image: "/products/frutas/bala de goma.png" },
   ];
 
   const coberturas = [
-    { id: "1", name: "Leite Condensado", price: 0 },
-    { id: "2", name: "Chocolate", price: 0 },
-    { id: "3", name: "Mel", price: 0 },
-    { id: "4", name: "Calda de Morango", price: 0 },
+    { id: "1", name: "Leite Condensado", price: 0, image: "/products/frutas/leite condensado.png" },
+    { id: "2", name: "Chocolate", price: 0, image: "/products/frutas/chocolate ao leite derretido.png" },
+    { id: "3", name: "Mel", price: 0, image: "/products/frutas/mel.png" },
+    { id: "4", name: "Creme de Avelã", price: 0, image: "/products/frutas/creme de avelã.png" },
+    { id: "5", name: "Creme de Ninho", price: 0, image: "/products/frutas/creme de ninho.png" },
+    { id: "6", name: "Creme Kinder", price: 0, image: "/products/frutas/creme kinder.png" },
+    { id: "7", name: "Ovomaltine", price: 0, image: "/products/frutas/ovo maltine.png" },
+    { id: "8", name: "Granulado Chocolate", price: 0, image: "/products/frutas/granulado chocolate.png" },
+    { id: "9", name: "Granulado Colorido", price: 0, image: "/products/frutas/granulado colorido.png" },
+    { id: "10", name: "Xarope Guaraná", price: 0, image: "/products/frutas/xarope guaraná.png" },
   ];
 
   const handleAddToCart = () => {

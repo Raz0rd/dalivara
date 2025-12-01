@@ -1,0 +1,148 @@
+"use client";
+
+export default function StructuredData() {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "FoodEstablishment",
+    "@id": "https://nacional-acai.click",
+    "name": "Nacional Açaí",
+    "description": "Delivery de açaí de qualidade. Combos, milkshakes, delícias e bebidas.",
+    "url": "https://nacional-acai.click",
+    "logo": "https://nacional-acai.click/logo.png",
+    "image": "https://nacional-acai.click/og-image.jpg",
+    "telephone": "+55-34-99999-9999",
+    "priceRange": "$$",
+    "servesCuisine": "Açaí",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "BR",
+      "addressLocality": "Brasil"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": -19.9167,
+      "longitude": -43.9345
+    },
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "opens": "10:00",
+        "closes": "22:00"
+      }
+    ],
+    "hasMenu": {
+      "@type": "Menu",
+      "hasMenuSection": [
+        {
+          "@type": "MenuSection",
+          "name": "Combos",
+          "description": "Combos de açaí com diversos tamanhos e complementos"
+        },
+        {
+          "@type": "MenuSection",
+          "name": "Delícias",
+          "description": "Sobremesas e delícias especiais"
+        },
+        {
+          "@type": "MenuSection",
+          "name": "Milkshakes",
+          "description": "Milkshakes de diversos sabores"
+        },
+        {
+          "@type": "MenuSection",
+          "name": "Bebidas",
+          "description": "Bebidas variadas"
+        }
+      ]
+    },
+    "potentialAction": {
+      "@type": "OrderAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://nacional-acai.click",
+        "actionPlatform": [
+          "http://schema.org/DesktopWebPlatform",
+          "http://schema.org/MobileWebPlatform"
+        ]
+      },
+      "deliveryMethod": "http://purl.org/goodrelations/v1#DeliveryModeDirectDownload"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "reviewCount": "250",
+      "bestRating": "5",
+      "worstRating": "1"
+    }
+  };
+
+  const breadcrumbData = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://nacional-acai.click"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Produtos",
+        "item": "https://nacional-acai.click/#produtos"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Carrinho",
+        "item": "https://nacional-acai.click/carrinho"
+      }
+    ]
+  };
+
+  const organizationData = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Nacional Açaí",
+    "url": "https://nacional-acai.click",
+    "logo": "https://nacional-acai.click/logo.png",
+    "description": "Delivery de açaí de qualidade",
+    "sameAs": [
+      "https://www.instagram.com/nacionalacai",
+      "https://www.facebook.com/nacionalacai"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+55-34-99999-9999",
+      "contactType": "customer service",
+      "availableLanguage": ["Portuguese"]
+    }
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationData) }}
+      />
+    </>
+  );
+}

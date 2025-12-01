@@ -12,7 +12,6 @@ import FeaturedCarousel from "@/components/FeaturedCarousel";
 import LocationConfirmationModal from "@/components/LocationConfirmationModal";
 import DeliveryBanner from "@/components/DeliveryBanner";
 import AddToCartModal from "@/components/AddToCartModal";
-import DesktopCart from "@/components/DesktopCart";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/useToast";
 import { useLocation } from "@/hooks/useLocation";
@@ -115,34 +114,39 @@ function HomeContent() {
 
   const combosProducts = [
     {
-      id: "1",
-      name: "Combo 1 Kg",
-      description: "Escolha até 4 opções entre açaí e cremes, até 6 adicionais e até 2 coberturas. Obs.: Todos os cremes, adicionais e coberturas...",
-      price: 38.99,
-      originalPrice: 45.99,
-      discount: 15,
-      image: "/products/caixa1L.jpg",
+      id: "combo-marmita-gourmet-p",
+      name: "Marmita Gourmet",
+      description: "Escolha 1 sabor, até 6 adicionais e até 2 coberturas. Acompanha Kit Kat, Nutella e Sonho de Valsa.",
+      price: 24.99,
+      image: "/products/marmitaGourmet.jpeg",
     },
     {
-      id: "2",
-      name: "Combo 300g",
-      description: "Escolha até 2 opções entre açaí e cremes, até 2 adicionais e até 1 cobertura. Obs.: Todos os cremes, adicionais e coberturas...",
-      price: 15.99,
-      image: "/products/combo-300g.jpg",
+      id: "combo-marmita-600g",
+      name: "Marmita G - 600g",
+      description: "Escolha 1 sabor, até 6 adicionais e até 2 coberturas. Acompanha granola e leite condensado.",
+      price: 32.99,
+      image: "/products/marmitaG.webp",
     },
     {
-      id: "3",
-      name: "Combo 500g",
-      description: "Escolha até 3 opções entre açaí e cremes, até 3 adicionais e até 2 coberturas. Obs.: Todos os cremes, adicionais e coberturas...",
-      price: 23.99,
-      image: "/products/combo-500g.jpg",
+      id: "combo-marmita-350g",
+      name: "Marmita M - 350g",
+      description: "Escolha 1 sabor, até 6 adicionais e até 2 coberturas. Já acompanha leite condensado.",
+      price: 19.99,
+      image: "/products/marmitaM.jpeg",
     },
     {
-      id: "4",
-      name: "Combo 750g",
-      description: "Escolha até 4 opções entre açaí e cremes, até 4 adicionais e até 2 coberturas. Obs.: Todos os cremes, adicionais e coberturas...",
-      price: 34.99,
-      image: "/products/combo-750g.jpg",
+      id: "combo-marmita-p",
+      name: "Marmita P",
+      description: "Escolha 1 sabor, até 6 adicionais e até 2 coberturas. Acompanha leite condensado.",
+      price: 16.99,
+      image: "/products/marmitap.webp",
+    },
+    {
+      id: "combo-marmita-p2",
+      name: "Marmita P2",
+      description: "Escolha 1 sabor, até 6 adicionais e até 2 coberturas. Acompanha leite condensado.",
+      price: 16.99,
+      image: "/products/marmitap2.jpeg",
     },
   ];
 
@@ -236,11 +240,8 @@ function HomeContent() {
 
       <HomeHeader onReviewsClick={scrollToReviews} />
       
-      {/* Carrinho Desktop (Lateral Direita) */}
-      <DesktopCart />
-      
       {/* Container centralizado para desktop */}
-      <div className="max-w-2xl mx-auto lg:mr-[420px]">
+      <div className="max-w-2xl mx-auto lg:max-w-4xl">
         {/* Banner de entrega */}
         {location && (
           <DeliveryBanner
