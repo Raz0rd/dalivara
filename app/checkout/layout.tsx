@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Checkout - Nacional Açaí",
-  description: "Finalize seu pedido no Nacional Açaí",
+  title: "Checkout - Sertão Açaíteria",
+  description: "Finalize seu pedido na Sertão Açaíteria",
 };
 
 export default function CheckoutLayout({

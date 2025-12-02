@@ -5,6 +5,7 @@ import { UserProvider } from "@/contexts/UserContext";
 import { GOOGLE_ADS_CONFIG } from "@/config/googleAds";
 import UtmCapture from "@/components/UtmCapture";
 import StructuredData from "@/components/StructuredData";
+import PageTracking from "@/components/PageTracking";
 
 export const metadata: Metadata = {
   metadataBase: new URL('http://presentedenatalantecipado.shop'),
@@ -146,6 +147,7 @@ export default function RootLayout({
       </head>
       <body>
         <UtmCapture />
+        <PageTracking />
         <UserProvider>
           <CartProvider>{children}</CartProvider>
         </UserProvider>
