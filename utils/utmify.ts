@@ -159,7 +159,7 @@ export function sendGoogleAdsConversion(
     }
 
     const conversionData: any = {
-      'send_to': 'AW-17719649597/l1AvCJCdmr4bEL3KsYFC',
+      'send_to': 'AW-17675710408/xbFICNyQo8obEMjft-xB',
       'value': value,
       'currency': currency,
       'transaction_id': transactionId
