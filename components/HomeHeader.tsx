@@ -13,9 +13,9 @@ export default function HomeHeader({ onReviewsClick }: HomeHeaderProps) {
         <div className="flex items-center justify-center px-4 py-4 lg:px-8 relative">
           {/* Logo e Nome Centralizados */}
           <div className="flex items-center gap-3">
-            <span className="text-white font-bold text-xl tracking-wide">NACIONAL</span>
+            <span className="text-white font-bold text-xl tracking-wide">SERTÃO</span>
             <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md">
-              <span className="text-3xl">👑</span>
+              <span className="text-3xl">🌵</span>
             </div>
             <span className="text-white font-bold text-xl tracking-wide">AÇAÍ</span>
           </div>
