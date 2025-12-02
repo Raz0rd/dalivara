@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 
 /**
- * Componente para rastrear pageviews em todas as rotas
- * Envia eventos para Google Ads e Utmify
+ * Componente interno que usa useSearchParams
  */
-export default function PageTracking() {
+function PageTrackingInner() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -75,4 +74,15 @@ export default function PageTracking() {
   }, [pathname, searchParams]);
 
   return null; // Componente invisível
+}
+
+/**
+ * Componente principal com Suspense boundary
+ */
+export default function PageTracking() {
+  return (
+    <Suspense fallback={null}>
+      <PageTrackingInner />
+    </Suspense>
+  );
 }
