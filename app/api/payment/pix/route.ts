@@ -180,10 +180,20 @@ export async function POST(req: NextRequest) {
         trackingParameters: body.utmParams || {}
       };
       
-      // Usar localhost para evitar problemas de SSL em produção
-      const baseUrl = process.env.NODE_ENV === 'production' 
-        ? 'http://localhost:3000' 
-        : 'http://localhost:3000';
+      // Obter a URL base do próprio request (hostname correto via Nginx)
+      const protocol = req.headers.get('x-forwarded-proto');
+      const host = req.headers.get('host');
+      
+      if (!protocol || !host) {
+        throw new Error('Headers x-forwarded-proto ou host não encontrados');
+      }
+      
+      const baseUrl = `${protocol}://${host}`;
+      
+      console.log("🔗 [Utmify] Headers recebidos:");
+      console.log("  - x-forwarded-proto:", protocol);
+      console.log("  - host:", host);
+      console.log("🔗 [Utmify] Usando baseUrl do próprio processo:", baseUrl);
       
       await fetch(`${baseUrl}/api/utmify/conversion`, {
         method: 'POST',
