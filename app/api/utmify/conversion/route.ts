@@ -121,8 +121,15 @@ export async function POST(request: NextRequest) {
     // Token hardcoded
     const UTMIFY_API_TOKEN = 'LWfOv5LaL6ey76RTcCNCfgiKN1A2nDIwf57T';
     
-    // URL da whitepage (usar o domínio do site)
-    const whitepageUrl = 'https://nacional-acai.click';
+    // Obter a URL base do próprio request (hostname correto via Nginx)
+    const protocol = request.headers.get('x-forwarded-proto') || 'https';
+    const host = request.headers.get('host') || 'localhost';
+    const whitepageUrl = `${protocol}://${host}`;
+    
+    console.log("🔗 [UTMify API] Headers recebidos:");
+    console.log("  - x-forwarded-proto:", protocol);
+    console.log("  - host:", host);
+    console.log("🔗 [UTMify API] Usando Referer dinâmico:", whitepageUrl);
     
     // Preparar headers com Referer da whitepage
     const headers: Record<string, string> = {
@@ -130,8 +137,6 @@ export async function POST(request: NextRequest) {
       "x-api-token": UTMIFY_API_TOKEN,
       "Referer": whitepageUrl
     };
-    
-    console.log("🔗 [UTMify API] Usando Referer:", whitepageUrl);
 
     // Enviar para UTMify
     const utmifyResponse = await fetch("https://api.utmify.com.br/api-credentials/orders", {
