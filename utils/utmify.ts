@@ -152,7 +152,7 @@ export function normalizeUtmsForUtmify(utmParams: Record<string, string>): Recor
  * @param currency - Moeda (padrão: BRL)
  * @param email - Email do cliente (opcional)
  * @param phone - Telefone do cliente (opcional)
- * @param totalValue - Valor total da compra (para calcular 6% de comissão)
+ * @param totalValue - Valor total da venda (se fornecido, usa este ao invés de value)
  */
 export async function sendGoogleAdsConversion(
   transactionId: string,
@@ -175,9 +175,9 @@ export async function sendGoogleAdsConversion(
     console.log('📧 Email:', email ? 'fornecido' : 'não fornecido');
     console.log('📱 Telefone:', phone ? 'fornecido' : 'não fornecido');
 
-    // Calcular valor de conversão (6% do total se fornecido)
-    const conversionValue = totalValue ? (totalValue * 0.06) : value;
-    console.log('💵 Valor de conversão (6%):', conversionValue);
+    // Usar o valor total da venda (não calcular porcentagem)
+    const conversionValue = totalValue || value;
+    console.log('💵 Valor de conversão:', conversionValue);
 
     // Preparar user_data hasheado para Enhanced Conversions
     const userData: any = {};
