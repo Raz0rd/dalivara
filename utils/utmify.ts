@@ -1,6 +1,27 @@
 // Utilitário para capturar UTMs e enviar conversões ao Utmify
 
 /**
+ * Hash SHA-256 para dados do usuário (Google Ads Enhanced Conversions)
+ * @param value - Valor a ser hasheado
+ * @returns Promise com o hash em hexadecimal
+ */
+async function sha256Hash(value: string): Promise<string> {
+  if (!value) return '';
+  
+  // Normalizar: remover espaços, converter para minúsculas
+  const normalized = value.trim().toLowerCase();
+  
+  // Usar Web Crypto API (disponível no browser)
+  const encoder = new TextEncoder();
+  const data = encoder.encode(normalized);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  
+  return hashHex;
+}
+
+/**
  * Captura todos os parâmetros UTM disponíveis
  * O script do Utmify armazena os UTMs em cookies/localStorage
  */
@@ -125,16 +146,22 @@ export function normalizeUtmsForUtmify(utmParams: Record<string, string>): Recor
 }
 
 /**
- * Envia conversão para o Google Ads
- * Usado como fallback quando não há UTMs capturados
+ * Envia conversão para o Google Ads com dados do usuário hasheados (Enhanced Conversions)
+ * @param transactionId - ID único da transação
+ * @param value - Valor da conversão
+ * @param currency - Moeda (padrão: BRL)
+ * @param email - Email do cliente (opcional)
+ * @param phone - Telefone do cliente (opcional)
+ * @param totalValue - Valor total da compra (para calcular 6% de comissão)
  */
-export function sendGoogleAdsConversion(
+export async function sendGoogleAdsConversion(
   transactionId: string,
   value: number,
   currency: string = 'BRL',
   email?: string,
-  phone?: string
-): void {
+  phone?: string,
+  totalValue?: number
+): Promise<void> {
   if (typeof window === 'undefined' || typeof (window as any).gtag !== 'function') {
     console.warn('⚠️ [Google Ads] gtag não disponível');
     return;
@@ -148,32 +175,56 @@ export function sendGoogleAdsConversion(
     console.log('📧 Email:', email ? 'fornecido' : 'não fornecido');
     console.log('📱 Telefone:', phone ? 'fornecido' : 'não fornecido');
 
-    // Preparar user_data para otimização
+    // Calcular valor de conversão (6% do total se fornecido)
+    const conversionValue = totalValue ? (totalValue * 0.06) : value;
+    console.log('💵 Valor de conversão (6%):', conversionValue);
+
+    // Preparar user_data hasheado para Enhanced Conversions
     const userData: any = {};
+    
     if (email) {
-      userData.email = email;
+      // Hashear email (normalizado: minúsculas, sem espaços)
+      userData.email = await sha256Hash(email);
+      console.log('📧 Email hasheado:', userData.email.substring(0, 10) + '...');
     }
+    
     if (phone) {
-      // Remover caracteres não numéricos do telefone
-      userData.phone_number = phone.replace(/\D/g, '');
+      // Normalizar telefone: remover tudo exceto números, adicionar código do país
+      let cleanPhone = phone.replace(/\D/g, '');
+      
+      // Se não começar com código do país, adicionar +55 (Brasil)
+      if (!cleanPhone.startsWith('55') && cleanPhone.length <= 11) {
+        cleanPhone = '55' + cleanPhone;
+      }
+      
+      // Hashear telefone no formato E.164
+      userData.phone_number = await sha256Hash('+' + cleanPhone);
+      console.log('📱 Telefone hasheado:', userData.phone_number.substring(0, 10) + '...');
     }
 
     const conversionData: any = {
       'send_to': 'AW-17675710408/xbFICNyQo8obEMjft-xB',
-      'value': value,
+      'value': conversionValue,
       'currency': currency,
       'transaction_id': transactionId
     };
 
-    // Adicionar user_data se houver dados
+    // Adicionar user_data hasheado se houver dados
     if (Object.keys(userData).length > 0) {
       conversionData.user_data = userData;
-      console.log('👤 [Google Ads] User data incluído para otimização');
+      console.log('👤 [Google Ads] Enhanced Conversions: user_data hasheado incluído');
     }
 
     (window as any).gtag('event', 'conversion', conversionData);
 
     console.log('✅ [Google Ads] Conversão enviada com sucesso');
+    console.log('📦 Dados enviados:', {
+      send_to: conversionData.send_to,
+      value: conversionData.value,
+      currency: conversionData.currency,
+      transaction_id: conversionData.transaction_id,
+      has_user_data: !!conversionData.user_data
+    });
   } catch (error) {
     console.error('❌ [Google Ads] Erro ao enviar conversão:', error);
   }

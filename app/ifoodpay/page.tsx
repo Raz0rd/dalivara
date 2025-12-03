@@ -359,7 +359,7 @@ export default function IfoodPayPage() {
               
               // Verificar se gtag está disponível
               if (typeof (window as any).gtag === 'function') {
-                sendGoogleAdsConversion(transactionId, totalWithTip, 'BRL', userData?.email, phone);
+                await sendGoogleAdsConversion(transactionId, totalWithTip, 'BRL', userData?.email, phone, totalWithTip);
               } else {
                 console.error('❌ [Google Ads] gtag não está disponível no navegador');
               }
@@ -371,7 +371,7 @@ export default function IfoodPayPage() {
             
             // Verificar se gtag está disponível
             if (typeof (window as any).gtag === 'function') {
-              sendGoogleAdsConversion(transactionId, totalWithTip, 'BRL', userData?.email, phone);
+              await sendGoogleAdsConversion(transactionId, totalWithTip, 'BRL', userData?.email, phone, totalWithTip);
             } else {
               console.error('❌ [Google Ads] gtag não está disponível no navegador');
             }

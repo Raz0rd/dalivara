@@ -69,42 +69,6 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <head>
-        {/* Google Ads Global Tag */}
-        {GOOGLE_ADS_CONFIG.enabled && (
-          <>
-            <script
-              async
-              src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_CONFIG.accountId}`}
-            ></script>
-            <script
-              dangerouslySetInnerHTML={{
-                __html: `
-                  window.dataLayer = window.dataLayer || [];
-                  function gtag(){dataLayer.push(arguments);}
-                  gtag('js', new Date());
-                  gtag('config', '${GOOGLE_ADS_CONFIG.accountId}');
-                `,
-              }}
-            />
-          </>
-        )}
-
-        {/* Google tag (gtag.js) - AW-17719649597 */}
-        <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=AW-17719649597"
-        ></script>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'AW-17719649597');
-            `,
-          }}
-        />
-
         {/* Google tag (gtag.js) - AW-17675710408 */}
         <script
           async
@@ -114,7 +78,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
+              function gtag(){dataLayer.push(arguments);};
               gtag('js', new Date());
               gtag('config', 'AW-17675710408');
             `,
