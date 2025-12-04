@@ -10,24 +10,24 @@ import PageTracking from "@/components/PageTracking";
 export const metadata: Metadata = {
   metadataBase: new URL('http://presentedenatalantecipado.shop'),
   title: {
-    default: "Sertão Açaíteria - O melhor açaí do mundo! | Delivery",
-    template: "%s | Sertão Açaíteria"
+    default: "Nacional Açaí - O melhor açaí do mundo! | Delivery",
+    template: "%s | Nacional Açaí"
   },
-  description: "Faça seu pedido online agora mesmo na Sertão Açaíteria! Açaí de qualidade, entrega rápida. Combos, milkshakes, delícias e bebidas. Peça já!",
-  keywords: ["açaí", "açai", "delivery", "sertão açaíteria", "açaí delivery", "açai delivery", "milkshake", "açaí online", "pedido açaí", "açaí zero", "açaí tradicional"],
-  authors: [{ name: "Sertão Açaíteria" }],
-  creator: "Sertão Açaíteria",
-  publisher: "Sertão Açaíteria",
+  description: "Faça seu pedido online agora mesmo na Nacional Açaí! Açaí de qualidade, entrega rápida. Combos, milkshakes, delícias e bebidas. Peça já!",
+  keywords: ["açaí", "açai", "delivery", "nacional açaí", "açaí delivery", "açai delivery", "milkshake", "açaí online", "pedido açaí", "açaí zero", "açaí tradicional"],
+  authors: [{ name: "Nacional Açaí" }],
+  creator: "Nacional Açaí",
+  publisher: "Nacional Açaí",
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
   openGraph: {
-    title: "Sertão Açaíteria - O melhor açaí do mundo!",
-    description: "Faça seu pedido online agora mesmo na Sertão Açaíteria! Açaí de qualidade, entrega rápida.",
+    title: "Nacional Açaí - O melhor açaí do mundo!",
+    description: "Faça seu pedido online agora mesmo na Nacional Açaí! Açaí de qualidade, entrega rápida.",
     url: "http://presentedenatalantecipado.shop",
-    siteName: "Sertão Açaíteria",
+    siteName: "Nacional Açaí",
     locale: "pt_BR",
     type: "website",
     images: [
@@ -41,8 +41,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sertão Açaíteria - O melhor açaí do mundo!",
-    description: "Faça seu pedido online agora mesmo na Sertão Açaíteria!",
+    title: "Nacional Açaí - O melhor açaí do mundo!",
+    description: "Faça seu pedido online agora mesmo na Nacional Açaí!",
     images: ["/og-image.jpg"],
   },
   robots: {

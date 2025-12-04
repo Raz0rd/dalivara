@@ -4,7 +4,7 @@ export default function StructuredData() {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Restaurant",
-    "name": "Sertão Açaíteria",
+    "name": "Nacional Açaí",
     "description": "Açaí de qualidade com entrega rápida. Combos, milkshakes, delícias e bebidas.",
     "url": "http://presentedenatalantecipado.shop",
     "logo": "http://presentedenatalantecipado.shop/logo.png",
@@ -112,7 +112,7 @@ export default function StructuredData() {
   const organizationData = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "Sertão Açaíteria",
+    "name": "Nacional Açaí",
     "url": "http://presentedenatalantecipado.shop",
     "logo": "http://presentedenatalantecipado.shop/logo.png",
     "description": "Delivery de açaí de qualidade",
