@@ -29,15 +29,15 @@ export default function HomeHeader({ onReviewsClick }: HomeHeaderProps) {
             <div className="flex items-center gap-3 flex-shrink-0">
               <div className="relative w-16 h-16 sm:w-20 sm:h-20">
                 <Image
-                  src="/logoAcai.png"
-                  alt="Sertão Açaí Logo"
+                  src="/nacional.png"
+                  alt="Nacional Açaí Logo"
                   fill
                   className="object-contain drop-shadow-lg"
                   priority
                 />
               </div>
               <div className="flex flex-col">
-                <span className="text-white font-bold text-xl sm:text-2xl tracking-wide drop-shadow-lg">SERTÃO</span>
+                <span className="text-white font-bold text-xl sm:text-2xl tracking-wide drop-shadow-lg">NACIONAL</span>
                 <span className="text-white font-bold text-xl sm:text-2xl tracking-wide drop-shadow-lg">AÇAÍ</span>
               </div>
             </div>

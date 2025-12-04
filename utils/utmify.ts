@@ -214,7 +214,7 @@ export async function sendGoogleAdsConversion(
 
     // Enviar evento de conversão
     const conversionData: any = {
-      'send_to': 'AW-17675710408/xbFICNyQo8obEMjft-xB',
+      'send_to': 'AW-17719649597/l1AvCJCdmr4bEL3KsYFC',
       'value': conversionValue,
       'currency': currency,
       'transaction_id': transactionId
