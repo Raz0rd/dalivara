@@ -349,32 +349,18 @@ export default function IfoodPayPage() {
           if (conversionResult?.success) {
             console.log('✅ Conversão PAID enviada com sucesso!');
             console.log('📊 UTMs enviados:', conversionResult.utmParams);
-            
-            // Se não houver UTMs capturados, enviar conversão direta ao Google Ads
-            const hasUtms = conversionResult.utmParams && Object.keys(conversionResult.utmParams).length > 0;
-            const isOrganic = conversionResult.utmParams?.utm_source === 'organic';
-            
-            if (!hasUtms || isOrganic) {
-              console.log('🎯 [Fallback] Enviando conversão direta ao Google Ads (sem UTMs ou tráfego orgânico)');
-              
-              // Verificar se gtag está disponível
-              if (typeof (window as any).gtag === 'function') {
-                await sendGoogleAdsConversion(transactionId, totalWithTip, 'BRL', userData?.email, phone, totalWithTip);
-              } else {
-                console.error('❌ [Google Ads] gtag não está disponível no navegador');
-              }
-            }
           } else {
             console.warn('⚠️ Conversão enviada mas API do Utmify pode não estar disponível');
-            // Fallback: enviar ao Google Ads de qualquer forma
-            console.log('🎯 [Fallback] Enviando conversão direta ao Google Ads');
-            
-            // Verificar se gtag está disponível
-            if (typeof (window as any).gtag === 'function') {
-              await sendGoogleAdsConversion(transactionId, totalWithTip, 'BRL', userData?.email, phone, totalWithTip);
-            } else {
-              console.error('❌ [Google Ads] gtag não está disponível no navegador');
-            }
+          }
+          
+          // SEMPRE enviar conversão para Google Ads (com ou sem GCLID)
+          console.log('🎯 [Google Ads] Enviando conversão com Enhanced Conversions');
+          
+          // Verificar se gtag está disponível
+          if (typeof (window as any).gtag === 'function') {
+            await sendGoogleAdsConversion(transactionId, totalWithTip, 'BRL', userData?.email, phone, totalWithTip);
+          } else {
+            console.error('❌ [Google Ads] gtag não está disponível no navegador');
           }
           
           // Limpar carrinho após pagamento confirmado

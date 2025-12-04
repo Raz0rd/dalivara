@@ -7,27 +7,29 @@ import UtmCapture from "@/components/UtmCapture";
 import StructuredData from "@/components/StructuredData";
 import PageTracking from "@/components/PageTracking";
 
+const storeName = process.env.NEXT_PUBLIC_STORE_NAME || 'Nacional Açaí';
+
 export const metadata: Metadata = {
   metadataBase: new URL('http://presentedenatalantecipado.shop'),
   title: {
-    default: "Nacional Açaí - O melhor açaí do mundo! | Delivery",
-    template: "%s | Nacional Açaí"
+    default: `${storeName} - O melhor açaí do mundo! | Delivery`,
+    template: `%s | ${storeName}`
   },
-  description: "Faça seu pedido online agora mesmo na Nacional Açaí! Açaí de qualidade, entrega rápida. Combos, milkshakes, delícias e bebidas. Peça já!",
-  keywords: ["açaí", "açai", "delivery", "nacional açaí", "açaí delivery", "açai delivery", "milkshake", "açaí online", "pedido açaí", "açaí zero", "açaí tradicional"],
-  authors: [{ name: "Nacional Açaí" }],
-  creator: "Nacional Açaí",
-  publisher: "Nacional Açaí",
+  description: `Faça seu pedido online agora mesmo na ${storeName}! Açaí de qualidade, entrega rápida. Combos, milkshakes, delícias e bebidas. Peça já!`,
+  keywords: ["açaí", "açai", "delivery", storeName.toLowerCase(), "açaí delivery", "açai delivery", "milkshake", "açaí online", "pedido açaí", "açaí zero", "açaí tradicional"],
+  authors: [{ name: storeName }],
+  creator: storeName,
+  publisher: storeName,
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
   openGraph: {
-    title: "Nacional Açaí - O melhor açaí do mundo!",
-    description: "Faça seu pedido online agora mesmo na Nacional Açaí! Açaí de qualidade, entrega rápida.",
+    title: `${storeName} - O melhor açaí do mundo!`,
+    description: `Faça seu pedido online agora mesmo na ${storeName}! Açaí de qualidade, entrega rápida.`,
     url: "http://presentedenatalantecipado.shop",
-    siteName: "Nacional Açaí",
+    siteName: storeName,
     locale: "pt_BR",
     type: "website",
     images: [
@@ -35,14 +37,14 @@ export const metadata: Metadata = {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Nacional Açaí - Delivery",
+        alt: `${storeName} - Delivery`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Nacional Açaí - O melhor açaí do mundo!",
-    description: "Faça seu pedido online agora mesmo na Nacional Açaí!",
+    title: `${storeName} - O melhor açaí do mundo!`,
+    description: `Faça seu pedido online agora mesmo na ${storeName}!`,
     images: ["/og-image.jpg"],
   },
   robots: {

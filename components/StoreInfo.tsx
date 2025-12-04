@@ -70,7 +70,7 @@ export default function StoreInfo({
       <div className="px-4 py-4 text-center">
         {/* Nome e Ícones */}
         <div className="flex items-center justify-center gap-3 mb-3 relative">
-          <h1 className="text-xl font-bold text-gray-900">Nacional Açaí</h1>
+          <h1 className="text-xl font-bold text-gray-900">{process.env.NEXT_PUBLIC_STORE_NAME || 'Nacional Açaí'}</h1>
           <div className="absolute right-0 flex items-center gap-3">
             <a
               href="https://www.instagram.com/"

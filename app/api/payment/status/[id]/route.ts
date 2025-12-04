@@ -120,6 +120,67 @@ export async function GET(
         });
         
         console.log("✅ [Utmify] Evento paid enviado");
+        
+        // Enviar para Google Sheets (backend)
+        try {
+          const googleSheetsUrl = process.env.GOOGLE_SHEETS_WEBHOOK_URL;
+          
+          if (!googleSheetsUrl) {
+            console.warn("⚠️ [GOOGLE SHEETS] URL não configurada no .env (GOOGLE_SHEETS_WEBHOOK_URL)");
+          } else if (orderData) {
+            console.log("📊 [GOOGLE SHEETS] Enviando dados para planilha...");
+            
+            // Extrair nome do domínio para usar como projeto
+            const domain = process.env.NEXT_PUBLIC_DOMAIN || host;
+            const projectName = domain.replace(/^www\./, '').split('.')[0];
+            
+            const sheetsPayload = {
+              projeto: projectName,
+              transactionId: tx.id || id,
+              email: orderData?.customer?.email || tx.customer?.email || '',
+              phone: orderData?.customer?.phone || tx.customer?.phone || '',
+              valorConvertido: (tx.amount / 100),
+              gclid: utmParams.gclid || '',
+              ip: req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || '',
+              pais: 'BR',
+              cidade: '',
+              createdAt: orderData?.createdAt || new Date().toISOString(),
+              paidAt: new Date().toISOString(),
+              productName: orderData?.productTitle || tx.items?.[0]?.title || 'Delivara',
+              gateway: 'PIX',
+              utm_source: utmParams.utm_source || '',
+              utm_campaign: utmParams.utm_campaign || '',
+              utm_medium: utmParams.utm_medium || '',
+              fbclid: utmParams.fbclid || '',
+              nomeCliente: orderData?.customer?.name || tx.customer?.name || ''
+            };
+            
+            console.log("   - Projeto:", projectName);
+            console.log("   - Email:", sheetsPayload.email);
+            console.log("   - Valor: R$", sheetsPayload.valorConvertido);
+            
+            const sheetsResponse = await fetch(googleSheetsUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(sheetsPayload)
+            });
+            
+            if (sheetsResponse.ok) {
+              const sheetsResult = await sheetsResponse.json();
+              console.log(`✅ [GOOGLE SHEETS] Cliente salvo na planilha: ${sheetsPayload.email}`);
+              console.log("   - Response:", sheetsResult);
+            } else {
+              const errorText = await sheetsResponse.text();
+              console.error(`❌ [GOOGLE SHEETS] Erro ao salvar: ${sheetsResponse.status}`);
+              console.error("   - Resposta:", errorText);
+            }
+          }
+        } catch (sheetsError) {
+          console.error("❌ [GOOGLE SHEETS] Erro ao enviar:", sheetsError);
+          // Não falhar a requisição se Google Sheets falhar
+        }
       } catch (utmifyError) {
         console.error("⚠️ [Utmify] Erro ao enviar paid:", utmifyError);
         // Não falhar a requisição se Utmify falhar

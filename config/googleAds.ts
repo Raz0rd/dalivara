@@ -1,10 +1,10 @@
 // Configuração do Google Ads
 export const GOOGLE_ADS_CONFIG = {
   // ID da conta do Google Ads (formato: AW-XXXXXXXXXX)
-  accountId: 'AW-17719649597',
+  accountId: process.env.NEXT_PUBLIC_GOOGLE_ADS_ACCOUNT_ID || 'AW-17719649597',
   
   // Label de conversão para compras (formato: l1AvCJCdmr4bEL3KsYFC)
-  conversionLabel: 'l1AvCJCdmr4bEL3KsYFC',
+  conversionLabel: process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL || 'l1AvCJCdmr4bEL3KsYFC',
   
   // Ativar/desativar tracking
   enabled: true,

@@ -8,6 +8,15 @@ interface HomeHeaderProps {
 }
 
 export default function HomeHeader({ onReviewsClick }: HomeHeaderProps) {
+  // Obter configurações do .env
+  const storeName = process.env.NEXT_PUBLIC_STORE_NAME || 'NACIONAL AÇAÍ';
+  const storeLogo = process.env.NEXT_PUBLIC_STORE_LOGO || 'nacional.png';
+  
+  // Dividir o nome da loja em duas linhas
+  const storeNameParts = storeName.split(' ');
+  const firstLine = storeNameParts.slice(0, -1).join(' ');
+  const secondLine = storeNameParts[storeNameParts.length - 1];
+  
   return (
     <header className="sticky top-0 z-50 shadow-md">
       <div className="max-w-md mx-auto relative">
@@ -29,16 +38,16 @@ export default function HomeHeader({ onReviewsClick }: HomeHeaderProps) {
             <div className="flex items-center gap-3 flex-shrink-0">
               <div className="relative w-16 h-16 sm:w-20 sm:h-20">
                 <Image
-                  src="/nacional.png"
-                  alt="Nacional Açaí Logo"
+                  src={`/${storeLogo}`}
+                  alt={`${storeName} Logo`}
                   fill
                   className="object-contain drop-shadow-lg"
                   priority
                 />
               </div>
               <div className="flex flex-col">
-                <span className="text-white font-bold text-xl sm:text-2xl tracking-wide drop-shadow-lg">NACIONAL</span>
-                <span className="text-white font-bold text-xl sm:text-2xl tracking-wide drop-shadow-lg">AÇAÍ</span>
+                <span className="text-white font-bold text-xl sm:text-2xl tracking-wide drop-shadow-lg">{firstLine}</span>
+                <span className="text-white font-bold text-xl sm:text-2xl tracking-wide drop-shadow-lg">{secondLine}</span>
               </div>
             </div>
 

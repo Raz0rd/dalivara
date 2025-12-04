@@ -1,10 +1,12 @@
 "use client";
 
 export default function StructuredData() {
+  const storeName = process.env.NEXT_PUBLIC_STORE_NAME || 'Nacional Açaí';
+  
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Restaurant",
-    "name": "Nacional Açaí",
+    "name": storeName,
     "description": "Açaí de qualidade com entrega rápida. Combos, milkshakes, delícias e bebidas.",
     "url": "http://presentedenatalantecipado.shop",
     "logo": "http://presentedenatalantecipado.shop/logo.png",
@@ -112,7 +114,7 @@ export default function StructuredData() {
   const organizationData = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "Nacional Açaí",
+    "name": storeName,
     "url": "http://presentedenatalantecipado.shop",
     "logo": "http://presentedenatalantecipado.shop/logo.png",
     "description": "Delivery de açaí de qualidade",

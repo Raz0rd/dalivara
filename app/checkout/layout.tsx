@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 
+const storeName = process.env.NEXT_PUBLIC_STORE_NAME || 'Nacional Açaí';
+
 export const metadata: Metadata = {
-  title: "Checkout - Nacional Açaí",
-  description: "Finalize seu pedido na Nacional Açaí",
+  title: `Checkout - ${storeName}`,
+  description: `Finalize seu pedido na ${storeName}`,
 };
 
 export default function CheckoutLayout({
