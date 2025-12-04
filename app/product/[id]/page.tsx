@@ -218,7 +218,7 @@ export default function ProductPage() {
   const canAddToCart = selectedItems.acaiCremes.length >= 1 && selectedItems.acaiCremes.length <= maxAcaiCremes;
 
   return (
-    <main className="min-h-screen bg-white pb-24">
+    <main className="min-h-screen bg-gray-100 pb-24">
       <Toast
         message={toast.message}
         type={toast.type}
@@ -228,7 +228,7 @@ export default function ProductPage() {
       <Header title="Detalhes do produto" onBack={() => router.push("/")} />
       
       {/* Container centralizado para desktop */}
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-md mx-auto bg-white shadow-lg min-h-screen">
         <ProductInfo product={product} />
 
         <div className="px-4 space-y-4">

@@ -70,7 +70,7 @@ export default function CarrinhoPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-gray-100">
       <Toast
         message={toast.message}
         type={toast.type}
@@ -79,7 +79,7 @@ export default function CarrinhoPage() {
       />
       {/* Header */}
       <header className="sticky top-0 bg-white z-50 shadow-sm">
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-md mx-auto">
           <div className="flex items-center gap-4 px-4 py-4">
             <button
               onClick={() => router.push("/")}
@@ -94,7 +94,7 @@ export default function CarrinhoPage() {
       </header>
 
       {/* Container centralizado para desktop */}
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-md mx-auto bg-white shadow-lg min-h-screen">
 
       {/* Aviso de Carrinho Bloqueado */}
       {hasBlockedCart && (

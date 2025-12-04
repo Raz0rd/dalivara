@@ -68,10 +68,10 @@ export default function PedidosPage() {
   const totalOrders = paidOrders.length + (hasSavedCart ? 1 : 0) + (hasPendingOrder ? 1 : 0);
 
   return (
-    <main className="min-h-screen bg-gray-50 flex flex-col pb-20">
+    <main className="min-h-screen bg-gray-100 flex flex-col pb-20">
       {/* Header */}
       <header className="sticky top-0 bg-white z-50 shadow-sm">
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-md mx-auto">
           <div className="flex items-center gap-4 px-4 py-4">
             <button
               onClick={() => router.push("/")}
@@ -86,7 +86,7 @@ export default function PedidosPage() {
       </header>
 
       {/* Container centralizado para desktop */}
-      <div className="max-w-2xl mx-auto w-full">
+      <div className="max-w-md mx-auto w-full bg-white shadow-lg min-h-screen">
       {/* Conteúdo */}
       {totalOrders === 0 ? (
         /* Estado Vazio */

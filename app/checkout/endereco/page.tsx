@@ -155,12 +155,13 @@ export default function EnderecoPage() {
     address.state.trim().length > 0;
 
   return (
-    <main className="min-h-screen bg-gray-50 flex flex-col pb-32">
+    <main className="min-h-screen bg-gray-100 flex flex-col pb-32">
       {/* Loading Overlay */}
       {isSubmitting && <LoadingOverlay />}
       
       {/* Header */}
       <header className="sticky top-0 bg-white z-50 shadow-sm">
+        <div className="max-w-md mx-auto">
         <div className="flex items-center gap-4 px-4 py-4">
           <button
             onClick={() => router.back()}
@@ -171,9 +172,11 @@ export default function EnderecoPage() {
           </button>
           <h1 className="text-lg font-semibold text-gray-900">Dados de Entrega</h1>
         </div>
+        </div>
       </header>
 
       {/* Conteúdo */}
+      <div className="max-w-md mx-auto bg-white shadow-lg min-h-screen w-full">
       <div className="flex-1 px-4 py-6 space-y-4">
         {/* Nome Completo */}
         <div>
@@ -345,6 +348,7 @@ export default function EnderecoPage() {
         >
           Continuar
         </button>
+      </div>
       </div>
 
       <BottomNav />

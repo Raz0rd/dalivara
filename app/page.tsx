@@ -209,7 +209,7 @@ function HomeContent() {
 
 
   return (
-    <main className="min-h-screen bg-gray-50 pb-20">
+    <main className="min-h-screen bg-gray-100 pb-20">
       <Toast
         message={toast.message}
         type={toast.type}
@@ -241,7 +241,7 @@ function HomeContent() {
       <HomeHeader onReviewsClick={scrollToReviews} />
       
       {/* Container centralizado para desktop */}
-      <div className="max-w-2xl mx-auto lg:max-w-4xl">
+      <div className="max-w-md mx-auto bg-white shadow-lg min-h-screen">
         {/* Banner de entrega */}
         {location && (
           <DeliveryBanner

@@ -65,9 +65,10 @@ export default function ResumoPage() {
   });
 
   return (
-    <main className="min-h-screen bg-gray-50 flex flex-col pb-24">
+    <main className="min-h-screen bg-gray-100 flex flex-col pb-24">
       {/* Header */}
       <header className="sticky top-0 bg-white z-50 shadow-sm">
+        <div className="max-w-md mx-auto">
         <div className="flex items-center gap-4 px-4 py-4">
           <button
             onClick={() => router.back()}
@@ -78,9 +79,11 @@ export default function ResumoPage() {
           </button>
           <h1 className="text-lg font-semibold text-gray-900">Resumo do Pedido</h1>
         </div>
+        </div>
       </header>
 
       {/* Conteúdo */}
+      <div className="max-w-md mx-auto bg-white shadow-lg min-h-screen w-full">
       <div className="flex-1 px-4 py-6">
         {/* Nota Fiscal */}
         <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-lg shadow-lg border-2 border-amber-200 overflow-hidden">
@@ -232,6 +235,7 @@ export default function ResumoPage() {
         <p className="text-xs text-gray-500 text-center mt-4">
           Ao confirmar, você concorda com nossos termos de serviço
         </p>
+      </div>
       </div>
 
       <BottomNav />

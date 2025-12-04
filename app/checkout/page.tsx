@@ -58,9 +58,10 @@ export default function CheckoutPage() {
   const isValid = whatsapp.replace(/\D/g, "").length >= 10 && name.trim().length > 0;
 
   return (
-    <main className="min-h-screen bg-gray-50 flex flex-col">
+    <main className="min-h-screen bg-gray-100 flex flex-col">
       {/* Header */}
       <header className="sticky top-0 bg-white z-50 shadow-sm">
+        <div className="max-w-md mx-auto">
         <div className="flex items-center gap-4 px-4 py-4">
           <button
             onClick={() => router.back()}
@@ -71,9 +72,11 @@ export default function CheckoutPage() {
           </button>
           <h1 className="text-lg font-semibold text-gray-900">Identifique-se</h1>
         </div>
+        </div>
       </header>
 
       {/* Conteúdo */}
+      <div className="max-w-md mx-auto bg-white shadow-lg min-h-screen w-full">
       <div className="flex-1 px-4 py-6">
         {/* WhatsApp */}
         <div className="mb-6">
@@ -121,6 +124,7 @@ export default function CheckoutPage() {
         <p className="text-xs text-gray-500 text-center mt-4 leading-relaxed">
           Para realizar seu pedido vamos precisar de suas informações, este é um ambiente protegido.
         </p>
+      </div>
       </div>
 
       {/* Footer fixo */}

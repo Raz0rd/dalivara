@@ -13,6 +13,7 @@ export default function Header({ title, onBack, onSearch, onShare }: HeaderProps
   return (
     <>
       <header className="fixed top-0 left-0 right-0 bg-white z-50 shadow-sm">
+        <div className="max-w-md mx-auto">
         <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-3">
             <button
@@ -41,6 +42,7 @@ export default function Header({ title, onBack, onSearch, onShare }: HeaderProps
               <Share2 size={16} color="#333" strokeWidth={2} />
             </button>
           </div>
+        </div>
         </div>
       </header>
       <div className="h-14"></div>

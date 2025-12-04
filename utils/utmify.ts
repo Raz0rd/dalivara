@@ -202,18 +202,23 @@ export async function sendGoogleAdsConversion(
       console.log('📱 Telefone hasheado:', userData.phone_number.substring(0, 10) + '...');
     }
 
+    // Enviar user_data via 'set' antes da conversão (Enhanced Conversions)
+    if (Object.keys(userData).length > 0) {
+      (window as any).gtag('set', 'user_data', userData);
+      console.log('👤 [Google Ads] Enhanced Conversions: user_data enviado via set');
+      console.log('📦 User data:', {
+        has_email: !!userData.email,
+        has_phone: !!userData.phone_number
+      });
+    }
+
+    // Enviar evento de conversão
     const conversionData: any = {
       'send_to': 'AW-17675710408/xbFICNyQo8obEMjft-xB',
       'value': conversionValue,
       'currency': currency,
       'transaction_id': transactionId
     };
-
-    // Adicionar user_data hasheado se houver dados
-    if (Object.keys(userData).length > 0) {
-      conversionData.user_data = userData;
-      console.log('👤 [Google Ads] Enhanced Conversions: user_data hasheado incluído');
-    }
 
     (window as any).gtag('event', 'conversion', conversionData);
 
