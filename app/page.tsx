@@ -24,15 +24,7 @@ const Modelo2HomePage = dynamic(() => import("@/app/templates/modelo2/Modelo2Hom
 });
 
 function HomeContent() {
-  // Detectar qual template usar
-  const template = process.env.NEXT_PUBLIC_TEMPLATE || 'modelo1';
-  
-  // Se for modelo2, renderizar componente específico
-  if (template === 'modelo2') {
-    return <Modelo2HomePage />;
-  }
-  
-  // Modelo1 (padrão) - código atual
+  // Hooks devem ser chamados antes de qualquer return condicional
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("combos");
   const [showAddToCartModal, setShowAddToCartModal] = useState(false);
@@ -46,6 +38,14 @@ function HomeContent() {
   const { addItem } = useCart();
   const { toast, showToast, hideToast } = useToast();
   const { location, loading, showConfirmation, tempLocation, confirmLocation } = useLocation();
+  
+  // Detectar qual template usar
+  const template = process.env.NEXT_PUBLIC_TEMPLATE || 'modelo1';
+
+  // Se for modelo2, renderizar componente específico
+  if (template === 'modelo2') {
+    return <Modelo2HomePage />;
+  }
 
   const scrollToReviews = () => {
     reviewsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });

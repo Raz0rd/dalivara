@@ -16,20 +16,15 @@ const Modelo2CartPage = dynamic(() => import("@/app/templates/modelo2/Modelo2Car
 });
 
 export default function CarrinhoPage() {
-  // Detectar qual template usar
-  const template = process.env.NEXT_PUBLIC_TEMPLATE || 'modelo1';
-  
-  // Se for modelo2, renderizar componente específico
-  if (template === 'modelo2') {
-    return <Modelo2CartPage />;
-  }
-  
-  // Modelo1 (padrão) - código atual
+  // Hooks devem ser chamados antes de qualquer return condicional
   const router = useRouter();
   const { items, updateQuantity, removeItem, getTotalPrice, addItem } = useCart();
   const { toast, showToast, hideToast } = useToast();
-  const hasItems = items.length > 0;
   const [hasBlockedCart, setHasBlockedCart] = useState(false);
+  
+  // Detectar qual template usar
+  const template = process.env.NEXT_PUBLIC_TEMPLATE || 'modelo1';
+  const hasItems = items.length > 0;
 
   // Verificar se há pedido pendente (bloqueia edição)
   useEffect(() => {
@@ -43,6 +38,11 @@ export default function CarrinhoPage() {
       }
     }
   }, []);
+  
+  // Se for modelo2, renderizar componente específico
+  if (template === 'modelo2') {
+    return <Modelo2CartPage />;
+  }
 
   const handleUpdateQuantity = (id: string, quantity: number) => {
     if (quantity === 0) {
