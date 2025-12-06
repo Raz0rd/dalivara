@@ -32,6 +32,10 @@ export async function POST(req: NextRequest) {
         const domain = host || process.env.NEXT_PUBLIC_DOMAIN || 'acai.shop';
         const projectName = domain.replace(/^www\./, '').split('.')[0];
         
+        console.log(`🏷️ [SHEETS] Host recebido: ${host}`);
+        console.log(`🏷️ [SHEETS] Domain extraído: ${domain}`);
+        console.log(`🏷️ [SHEETS] Nome do projeto: ${projectName}`);
+        
         // Calcular valor em reais
         const valorEmReais = (() => {
           if (transactionData?.amount) {
@@ -83,6 +87,7 @@ export async function POST(req: NextRequest) {
         console.log(`   - Email: ${sheetsPayload.email}`);
         console.log(`   - Telefone: ${sheetsPayload.phone}`);
         console.log(`   - Valor: R$ ${sheetsPayload.valorConvertido}`);
+        console.log(`   - IP: ${sheetsPayload.ip}`);
         console.log(`   - GCLID: ${sheetsPayload.gclid}`);
         console.log(`   - GBRAID: ${sheetsPayload.gbraid}`);
         

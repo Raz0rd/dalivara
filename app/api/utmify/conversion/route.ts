@@ -5,10 +5,29 @@ function getUTCTimestamp(): string {
   return new Date().toISOString();
 }
 
-// Função para gerar IP aleatório válido
-function generateRandomIP(): string {
-  const octet = () => Math.floor(Math.random() * 256);
-  return `${octet()}.${octet()}.${octet()}.${octet()}`;
+// Função para obter o IP real do usuário
+function getClientIP(request: NextRequest): string {
+  // Tentar obter IP de vários headers (ordem de prioridade)
+  const forwarded = request.headers.get('x-forwarded-for');
+  const realIP = request.headers.get('x-real-ip');
+  const cfConnectingIP = request.headers.get('cf-connecting-ip'); // Cloudflare
+  
+  if (forwarded) {
+    // x-forwarded-for pode conter múltiplos IPs, pegar o primeiro
+    const ips = forwarded.split(',').map(ip => ip.trim());
+    return ips[0];
+  }
+  
+  if (realIP) {
+    return realIP;
+  }
+  
+  if (cfConnectingIP) {
+    return cfConnectingIP;
+  }
+  
+  // Fallback: IP genérico (não ideal, mas melhor que aleatório)
+  return '0.0.0.0';
 }
 
 export async function POST(request: NextRequest) {
@@ -56,9 +75,9 @@ export async function POST(request: NextRequest) {
     
     console.log('📊 [Utmify] Parâmetros normalizados:', normalizedParams);
 
-    // Gerar IP aleatório válido
-    const customerIP = generateRandomIP();
-    console.log('🌐 [Utmify] IP gerado:', customerIP);
+    // Capturar IP real do usuário
+    const customerIP = getClientIP(request);
+    console.log('🌐 [Utmify] IP do cliente:', customerIP);
 
     // Preparar dados para UTMify no formato correto da documentação
     const utmifyPayload = {
