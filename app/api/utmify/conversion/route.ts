@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
       },
       commission: {
         totalPriceInCents: amountInCents,
-        gatewayFeeInCents: amountInCents,
+        gatewayFeeInCents: 0, // Taxa do gateway sempre 0
         userCommissionInCents: amountInCents
       },
       isTest: false

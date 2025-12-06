@@ -628,7 +628,7 @@ export default function IfoodPayPage() {
                 </div>
 
                 {/* E-mail */}
-                <div>
+                <div style={{ display: 'block', visibility: 'visible', opacity: 1 }}>
                   <label className="text-[13px] font-medium" htmlFor="email">
                     E-mail
                   </label>
@@ -639,6 +639,7 @@ export default function IfoodPayPage() {
                       type="email"
                       value={userData?.email || ""}
                       readOnly
+                      style={{ display: 'block', visibility: 'visible', opacity: 1 }}
                     />
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
