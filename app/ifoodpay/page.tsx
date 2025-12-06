@@ -66,17 +66,23 @@ export default function IfoodPayPage() {
 
   // Verificar pedido salvo no localStorage
   useEffect(() => {
-    // Verificar se há um pedido pago em andamento
+    // Verificar se há um pedido pago em andamento (SOMENTE se tiver transactionId válido)
     const trackingState = localStorage.getItem('orderTrackingState');
     if (trackingState) {
       const state = JSON.parse(trackingState);
-      // Se há tracking ativo, ir direto para tela de pagamento confirmado
-      setIsPaid(true);
-      setCurrentStep("payment");
-      return;
+      // Verificar se realmente tem um transactionId e se o pedido foi pago
+      if (state.transactionId && state.status === 'paid') {
+        // Se há tracking ativo E pago, ir direto para tela de pagamento confirmado
+        setIsPaid(true);
+        setCurrentStep("payment");
+        return;
+      } else {
+        // Se não está pago, limpar o tracking state e começar do zero
+        localStorage.removeItem('orderTrackingState');
+      }
     }
     
-    // Verificar pedido pendente
+    // Verificar pedido pendente (PIX gerado mas não pago)
     const savedOrder = localStorage.getItem('pendingOrder');
     if (savedOrder) {
       const order = JSON.parse(savedOrder);

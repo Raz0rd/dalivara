@@ -8,8 +8,23 @@ import Link from "next/link";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/useToast";
 import Toast from "@/components/Toast";
+import dynamic from "next/dynamic";
+
+// Importar modelo2 dinamicamente
+const Modelo2CartPage = dynamic(() => import("@/app/templates/modelo2/Modelo2CartPage"), {
+  ssr: false,
+});
 
 export default function CarrinhoPage() {
+  // Detectar qual template usar
+  const template = process.env.NEXT_PUBLIC_TEMPLATE || 'modelo1';
+  
+  // Se for modelo2, renderizar componente específico
+  if (template === 'modelo2') {
+    return <Modelo2CartPage />;
+  }
+  
+  // Modelo1 (padrão) - código atual
   const router = useRouter();
   const { items, updateQuantity, removeItem, getTotalPrice, addItem } = useCart();
   const { toast, showToast, hideToast } = useToast();

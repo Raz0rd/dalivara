@@ -16,8 +16,23 @@ import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/useToast";
 import { useLocation } from "@/hooks/useLocation";
 import Toast from "@/components/Toast";
+import dynamic from "next/dynamic";
+
+// Importar modelo2 dinamicamente
+const Modelo2HomePage = dynamic(() => import("@/app/templates/modelo2/Modelo2HomePage"), {
+  ssr: false,
+});
 
 function HomeContent() {
+  // Detectar qual template usar
+  const template = process.env.NEXT_PUBLIC_TEMPLATE || 'modelo1';
+  
+  // Se for modelo2, renderizar componente específico
+  if (template === 'modelo2') {
+    return <Modelo2HomePage />;
+  }
+  
+  // Modelo1 (padrão) - código atual
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("combos");
   const [showAddToCartModal, setShowAddToCartModal] = useState(false);

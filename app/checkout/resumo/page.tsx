@@ -1,44 +1,24 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronLeft, CheckCircle2, Shield, Clock } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useUser } from "@/contexts/UserContext";
 import { useLocation } from "@/hooks/useLocation";
 import BottomNav from "@/components/BottomNav";
-import OrderBump from "@/components/OrderBump";
 
 export default function ResumoPage() {
   const router = useRouter();
-  const { items, getTotalPrice, addItem } = useCart();
+  const { items, getTotalPrice } = useCart();
   const { userData } = useUser();
   const { location } = useLocation();
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
-  const handleAddWater = (product: { id: string; name: string; price: number; image: string }) => {
-    addItem({
-      id: Date.now().toString(),
-      productId: product.id,
-      name: product.name,
-      price: product.price,
-      quantity: 1,
-      image: product.image,
-    });
-  };
-
-  // Função para obter DDD baseado no estado
-  const getDDD = (state: string) => {
-    const dddMap: { [key: string]: string } = {
-      AC: "68", AL: "82", AP: "96", AM: "92", BA: "71", CE: "85",
-      DF: "61", ES: "27", GO: "62", MA: "98", MT: "65", MS: "67",
-      MG: "31", PA: "91", PB: "83", PR: "41", PE: "81", PI: "86",
-      RJ: "21", RN: "84", RS: "51", RO: "69", RR: "95", SC: "48",
-      SP: "11", SE: "79", TO: "63"
-    };
-    return dddMap[state] || "85";
-  };
-
-  const phoneNumber = `(${getDDD(userData?.address?.state || "CE")}) 91111-1111`;
+  // Dados da loja do .env
+  const storeName = process.env.NEXT_PUBLIC_STORE_NAME || 'Nacional Açaí';
+  const storeCNPJ = process.env.NEXT_PUBLIC_CNPJ || '64.744.999/0001-04';
+  const storePhone = process.env.NEXT_PUBLIC_PHONE || '(85) 91111-1111';
 
   useEffect(() => {
     // Redirecionar se não tiver dados
@@ -47,10 +27,14 @@ export default function ResumoPage() {
     }
   }, [userData, router]);
 
-  const handleConfirm = () => {
-    // Aqui você implementa a lógica de pagamento
-    alert("Processando pagamento...");
-    // TODO: Integrar com gateway de pagamento
+  const handleConfirm = async () => {
+    setIsRedirecting(true);
+    
+    // Aguardar um pouco para mostrar o loading
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    // Redirecionar para a página de pagamento
+    router.push("/ifoodpay");
   };
 
   const now = new Date();
@@ -65,7 +49,63 @@ export default function ResumoPage() {
   });
 
   return (
-    <main className="min-h-screen bg-gray-100 flex flex-col pb-24">
+    <>
+      <style jsx>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
+      
+      <main className="min-h-screen bg-gray-100 flex flex-col pb-24">
+        {/* Loading Overlay */}
+        {isRedirecting && (
+          <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.9)',
+          zIndex: 9999,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '20px'
+        }}>
+          <div style={{
+            width: '60px',
+            height: '60px',
+            border: '4px solid rgba(255, 255, 255, 0.3)',
+            borderTop: '4px solid white',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite'
+          }}></div>
+          <div style={{
+            textAlign: 'center',
+            color: 'white',
+            maxWidth: '300px',
+            padding: '0 20px'
+          }}>
+            <h3 style={{
+              fontSize: '20px',
+              fontWeight: 'bold',
+              marginBottom: '10px'
+            }}>
+              🔒 Processando...
+            </h3>
+            <p style={{
+              fontSize: '14px',
+              lineHeight: '1.5',
+              opacity: 0.9
+            }}>
+              Estamos direcionando você para nosso parceiro que processa pagamentos seguros
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <header className="sticky top-0 bg-white z-50 shadow-sm">
         <div className="max-w-md mx-auto">
@@ -94,11 +134,11 @@ export default function ResumoPage() {
                 <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
                   <span className="text-xl">👑</span>
                 </div>
-                <h2 className="font-bold text-gray-900 text-xl">NACIONAL AÇAÍ</h2>
+                <h2 className="font-bold text-gray-900 text-xl">{storeName.toUpperCase()}</h2>
               </div>
               <p className="text-sm font-semibold text-gray-700">Distribuidor Nacional de Açaí</p>
-              <p className="text-xs text-gray-600">CNPJ: 64.744.999/0001-04</p>
-              <p className="text-xs text-gray-600">Fone: {phoneNumber}</p>
+              <p className="text-xs text-gray-600">CNPJ: {storeCNPJ}</p>
+              <p className="text-xs text-gray-600">Fone: {storePhone}</p>
             </div>
           </div>
 
@@ -219,11 +259,6 @@ export default function ResumoPage() {
           </div>
         </div>
 
-        {/* Order Bump - Água */}
-        <div className="mt-6">
-          <OrderBump onAddToCart={handleAddWater} />
-        </div>
-
         {/* Botão Confirmar */}
         <button
           onClick={handleConfirm}
@@ -240,5 +275,6 @@ export default function ResumoPage() {
 
       <BottomNav />
     </main>
+    </>
   );
 }

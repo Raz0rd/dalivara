@@ -15,7 +15,7 @@ interface StoreInfoProps {
 export default function StoreInfo({ 
   city = "Sua cidade", 
   state = "",
-  deliveryTime = "30-50",
+  deliveryTime = "10-20",
   activeTab = "combos",
   onTabChange 
 }: StoreInfoProps) {

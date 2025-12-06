@@ -7,6 +7,12 @@ import ReviewsCarousel from "@/components/ReviewsCarousel";
 import BottomNav from "@/components/BottomNav";
 import LoadingOverlay from "@/components/LoadingOverlay";
 import { useUser } from "@/contexts/UserContext";
+import dynamic from "next/dynamic";
+
+// Importar modelo2 dinamicamente
+const Modelo2EnderecoPage = dynamic(() => import("@/app/templates/modelo2/Modelo2EnderecoPage"), {
+  ssr: false,
+});
 
 interface AddressData {
   cep: string;
@@ -19,6 +25,15 @@ interface AddressData {
 }
 
 export default function EnderecoPage() {
+  // Detectar qual template usar
+  const template = process.env.NEXT_PUBLIC_TEMPLATE || 'modelo1';
+  
+  // Se for modelo2, renderizar componente específico
+  if (template === 'modelo2') {
+    return <Modelo2EnderecoPage />;
+  }
+  
+  // Modelo1 (padrão) - código atual
   const router = useRouter();
   const { userData, setUserData } = useUser();
   const [fullName, setFullName] = useState("");
@@ -140,8 +155,8 @@ export default function EnderecoPage() {
       address,
     });
 
-    // Ir para resumo do pedido
-    router.push("/ifoodpay");
+    // Ir para resumo do pedido (onde escolhe entrega e gera PIX)
+    router.push("/checkout/resumo");
   };
 
   const isValid =
