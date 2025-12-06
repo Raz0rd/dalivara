@@ -54,6 +54,24 @@ function HomeContent() {
   // Função de teste removida - conversões agora são gerenciadas pelo Utmify Google Pixel
 
   const handleAddToCart = (product: any) => {
+    // Verificar se há pedido pendente
+    const pendingOrder = localStorage.getItem('pendingOrder');
+    if (pendingOrder) {
+      const order = JSON.parse(pendingOrder);
+      const now = Date.now();
+      
+      if (now < order.expiresAt) {
+        // Tem pedido pendente, redirecionar para pagamento
+        console.log('🔒 [Home] Pedido pendente encontrado, redirecionando para pagamento...');
+        showToast('Você tem um pedido pendente! Redirecionando para pagamento...', 'info');
+        setTimeout(() => router.push('/ifoodpay'), 1500);
+        return;
+      } else {
+        // Pedido expirou, limpar
+        localStorage.removeItem('pendingOrder');
+      }
+    }
+    
     setCurrentProduct(product);
     setModalQuantity(1);
     addItem({

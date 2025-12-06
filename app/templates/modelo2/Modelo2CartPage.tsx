@@ -19,7 +19,7 @@ export default function Modelo2CartPage() {
     console.log('🛒 Itens:', items);
   }, [items]);
 
-  // Verificar se há pedido pendente (bloqueia edição)
+  // Verificar se há pedido pendente (redireciona para pagamento)
   useEffect(() => {
     const pendingOrder = localStorage.getItem('pendingOrder');
     if (pendingOrder) {
@@ -27,10 +27,16 @@ export default function Modelo2CartPage() {
       const now = Date.now();
       
       if (now < order.expiresAt) {
-        setHasBlockedCart(true);
+        // Tem pedido pendente válido, redirecionar para pagamento
+        console.log('🔒 [Carrinho Modelo2] Pedido pendente encontrado, redirecionando para pagamento...');
+        router.push('/ifoodpay');
+        return;
+      } else {
+        // Pedido expirou, limpar
+        localStorage.removeItem('pendingOrder');
       }
     }
-  }, []);
+  }, [router]);
 
   const handleUpdateQuantity = (id: string, delta: number) => {
     const item = items.find(i => i.id === id);
