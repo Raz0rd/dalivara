@@ -68,13 +68,39 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Coletar todas as tags do Google Ads do .env
+  const googleAdsTags: string[] = [];
+  let index = 1;
+  
+  // Verificar NEXT_PUBLIC_GOOGLE_ADS_ACCOUNT_ID (sem número - tag principal)
+  const mainTag = process.env.NEXT_PUBLIC_GOOGLE_ADS_ACCOUNT_ID;
+  if (mainTag) {
+    googleAdsTags.push(mainTag);
+  }
+  
+  // Verificar NEXT_PUBLIC_GOOGLE_ADS_ACCOUNT_ID1, ID2, ID3, etc
+  while (true) {
+    const tagKey = `NEXT_PUBLIC_GOOGLE_ADS_ACCOUNT_ID${index}`;
+    const tag = process.env[tagKey as keyof typeof process.env];
+    if (!tag) break;
+    googleAdsTags.push(tag);
+    index++;
+  }
+  
+  // Se não encontrou nenhuma tag, usar a padrão
+  if (googleAdsTags.length === 0) {
+    googleAdsTags.push('AW-17719649597');
+  }
+  
+  const firstTag = googleAdsTags[0];
+  
   return (
     <html lang="pt-BR">
       <head>
-        {/* Google tag (gtag.js) - AW-17719649597 */}
+        {/* Google tag (gtag.js) - Múltiplas tags do Google Ads */}
         <script
           async
-          src="https://www.googletagmanager.com/gtag/js?id=AW-17719649597"
+          src={`https://www.googletagmanager.com/gtag/js?id=${firstTag}`}
         ></script>
         <script
           dangerouslySetInnerHTML={{
@@ -82,7 +108,9 @@ export default function RootLayout({
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);};
               gtag('js', new Date());
-              gtag('config', 'AW-17719649597');
+              
+              // Configurar todas as tags do Google Ads do .env
+              ${googleAdsTags.map(tag => `gtag('config', '${tag}');`).join('\n              ')}
             `,
           }}
         />
