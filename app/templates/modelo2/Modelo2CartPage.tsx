@@ -6,10 +6,14 @@ import { useCart } from "@/contexts/CartContext";
 import Image from "next/image";
 import Link from "next/link";
 import Modelo2Layout from "./Modelo2Layout";
+import Modelo2BottomNav from "./Modelo2BottomNav";
+import Toast from "@/components/Toast";
+import { useToast } from "@/hooks/useToast";
 
 export default function Modelo2CartPage() {
   const router = useRouter();
   const { items, updateQuantity, removeItem, getTotalPrice } = useCart();
+  const { toast, showToast, hideToast } = useToast();
   const hasItems = items.length > 0;
   const [hasBlockedCart, setHasBlockedCart] = useState(false);
 
@@ -50,6 +54,7 @@ export default function Modelo2CartPage() {
 
   const handleRemoveItem = (id: string) => {
     removeItem(id);
+    showToast("Item removido do carrinho", "success");
   };
 
   const handleCheckout = () => {
@@ -63,6 +68,14 @@ export default function Modelo2CartPage() {
 
   return (
     <Modelo2Layout>
+      {/* Toast de Notificações */}
+      <Toast
+        message={toast.message}
+        type={toast.type}
+        isVisible={toast.isVisible}
+        onClose={hideToast}
+      />
+
       {/* Header fixo */}
       <header style={{
         position: 'sticky',
@@ -467,6 +480,9 @@ export default function Modelo2CartPage() {
           </div>
         </footer>
       )}
+
+      {/* Bottom Navigation quando carrinho vazio */}
+      {!hasItems && <Modelo2BottomNav />}
     </Modelo2Layout>
   );
 }

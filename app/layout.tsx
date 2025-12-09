@@ -1,22 +1,28 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./social-proof.css";
 import { CartProvider } from "@/contexts/CartContext";
 import { UserProvider } from "@/contexts/UserContext";
 import { GOOGLE_ADS_CONFIG } from "@/config/googleAds";
 import UtmCapture from "@/components/UtmCapture";
 import StructuredData from "@/components/StructuredData";
 import PageTracking from "@/components/PageTracking";
+import SocialProofNotifications from "@/components/SocialProofNotifications";
 
 const storeName = process.env.NEXT_PUBLIC_STORE_NAME || 'Nacional Açaí';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+const siteDescription = process.env.NEXT_PUBLIC_SITE_DESCRIPTION || `Faça seu pedido de açaí online agora mesmo na ${storeName}! Açaí de qualidade, entrega rápida e grátis. Combos e delícias. Peça já!`;
+const ogImage = process.env.NEXT_PUBLIC_OG_IMAGE || '/og-image.jpg';
+const googleVerification = process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION || '';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('http://presentedenatalantecipado.shop'),
+  metadataBase: new URL(siteUrl),
   title: {
     default: `${storeName} - O melhor açaí do mundo! | Delivery`,
     template: `%s | ${storeName}`
   },
-  description: `Faça seu pedido online agora mesmo na ${storeName}! Açaí de qualidade, entrega rápida. Combos, milkshakes, delícias e bebidas. Peça já!`,
-  keywords: ["açaí", "açai", "delivery", storeName.toLowerCase(), "açaí delivery", "açai delivery", "milkshake", "açaí online", "pedido açaí", "açaí zero", "açaí tradicional"],
+  description: siteDescription,
+  keywords: ["açaí", "açai", "delivery açaí", "delivery açai", storeName.toLowerCase(), "açaí delivery", "açai delivery", "açaí online", "pedido açaí", "açaí zero", "açaí tradicional", "açaí perto de mim", "delivery de açaí"],
   authors: [{ name: storeName }],
   creator: storeName,
   publisher: storeName,
@@ -27,14 +33,14 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: `${storeName} - O melhor açaí do mundo!`,
-    description: `Faça seu pedido online agora mesmo na ${storeName}! Açaí de qualidade, entrega rápida.`,
-    url: "http://presentedenatalantecipado.shop",
+    description: siteDescription,
+    url: siteUrl,
     siteName: storeName,
     locale: "pt_BR",
     type: "website",
     images: [
       {
-        url: "/og-image.jpg",
+        url: ogImage,
         width: 1200,
         height: 630,
         alt: `${storeName} - Delivery`,
@@ -44,8 +50,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: `${storeName} - O melhor açaí do mundo!`,
-    description: `Faça seu pedido online agora mesmo na ${storeName}!`,
-    images: ["/og-image.jpg"],
+    description: siteDescription,
+    images: [ogImage],
   },
   robots: {
     index: true,
@@ -58,9 +64,11 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  verification: {
-    google: "google-site-verification-code", // Adicione seu código de verificação do Google Search Console
-  },
+  ...(googleVerification && {
+    verification: {
+      google: googleVerification,
+    },
+  }),
 };
 
 export default function RootLayout({
@@ -142,6 +150,7 @@ export default function RootLayout({
       <body>
         <UtmCapture />
         <PageTracking />
+        <SocialProofNotifications />
         <UserProvider>
           <CartProvider>{children}</CartProvider>
         </UserProvider>

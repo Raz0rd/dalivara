@@ -6,6 +6,9 @@ import { useCart } from "@/contexts/CartContext";
 import Image from "next/image";
 import Link from "next/link";
 import Modelo2Layout from "@/app/templates/modelo2/Modelo2Layout";
+import Modelo2ProductFooter from "@/app/templates/modelo2/Modelo2ProductFooter";
+import Toast from "@/components/Toast";
+import { useToast } from "@/hooks/useToast";
 
 interface Topping {
   id: string;
@@ -182,6 +185,7 @@ export default function ProductDetailPage() {
   const router = useRouter();
   const params = useParams();
   const { addItem } = useCart();
+  const { toast, showToast, hideToast } = useToast();
   const slug = params.slug as string;
 
   const product = allProducts[slug];
@@ -271,12 +275,25 @@ export default function ProductDetailPage() {
       observations: toppings.length > 0 ? `Acompanhamentos: ${toppings.join(', ')}` : undefined,
     });
 
-    // Ir para o carrinho
-    router.push('/carrinho');
+    // Mostrar notificação
+    showToast(`${product.name} adicionado ao carrinho!`, "success");
+
+    // Ir para o carrinho após 1 segundo
+    setTimeout(() => {
+      router.push('/carrinho');
+    }, 1000);
   };
 
   return (
     <Modelo2Layout>
+      {/* Toast de Notificações */}
+      <Toast
+        message={toast.message}
+        type={toast.type}
+        isVisible={toast.isVisible}
+        onClose={hideToast}
+      />
+
       <div className="container containerFinalizar">
         <Link href="/" className="voltar">
           <i className="fa-solid fa-chevron-left"></i> VOLTAR
@@ -488,24 +505,10 @@ export default function ProductDetailPage() {
       </div>
 
       {/* Footer com botão adicionar */}
-      <footer id="carrinho">
-        <div className="container">
-          <button 
-            className="btn"
-            onClick={handleAddToCart}
-            style={{
-              width: '100%',
-              padding: '15px',
-              fontSize: '16px',
-              fontWeight: 'bold',
-              border: 'none',
-              cursor: 'pointer'
-            }}
-          >
-            <i className="fa-solid fa-cart-plus"></i> ADICIONAR AO CARRINHO - R$ {(product.price * quantity).toFixed(2)}
-          </button>
-        </div>
-      </footer>
+      <Modelo2ProductFooter 
+        onAddToCart={handleAddToCart}
+        totalPrice={product.price * quantity}
+      />
     </Modelo2Layout>
   );
 }

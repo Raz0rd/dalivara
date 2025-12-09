@@ -6,6 +6,11 @@ import { useCart } from "@/contexts/CartContext";
 import Link from "next/link";
 import Image from "next/image";
 import Modelo2Layout from "./Modelo2Layout";
+import ReviewsSection from "@/components/ReviewsSection";
+import ReviewsCarousel from "@/components/ReviewsCarousel";
+import Modelo2BottomNav from "./Modelo2BottomNav";
+import Toast from "@/components/Toast";
+import { useToast } from "@/hooks/useToast";
 
 interface Product {
   id: string;
@@ -23,8 +28,25 @@ interface Product {
 export default function Modelo2HomePage() {
   const router = useRouter();
   const { addItem } = useCart();
+  const { toast, showToast, hideToast } = useToast();
   const storeName = process.env.NEXT_PUBLIC_STORE_NAME || 'Nacional Açaí';
   const [countdown, setCountdown] = useState({ minutes: 15, seconds: 0 });
+
+  // Reviews
+  const reviews = [
+    "/products/reviews/1.webp",
+    "/products/reviews/2.webp",
+    "/products/reviews/3.webp",
+    "/products/reviews/4.webp",
+    "/products/reviews/5.webp",
+    "/products/reviews/6.webp",
+    "/products/reviews/7.webp",
+    "/products/reviews/8.webp",
+    "/products/reviews/9.webp",
+    "/products/reviews/10.webp",
+    "/products/reviews/11.webp",
+    "/products/reviews/12.webp",
+  ];
 
   useEffect(() => {
     // Countdown timer
@@ -193,6 +215,14 @@ export default function Modelo2HomePage() {
 
   return (
     <Modelo2Layout>
+      {/* Toast de Notificações */}
+      <Toast
+        message={toast.message}
+        type={toast.type}
+        isVisible={toast.isVisible}
+        onClose={hideToast}
+      />
+
       {/* Header */}
       <header id="topo">
         {/* Banner com Background */}
@@ -547,20 +577,17 @@ export default function Modelo2HomePage() {
               ))}
             </div>
           </div>
+
+          {/* Reviews Section */}
+          <div style={{ marginTop: '2rem' }}>
+            <ReviewsSection />
+            <ReviewsCarousel reviews={reviews} />
+          </div>
         </div>
       </main>
 
-      {/* Footer Ver Carrinho */}
-      <footer id="carrinho">
-        <div className="container">
-          <Link href="/carrinho" style={{display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'center'}}>
-            <i className="fa-solid fa-shopping-cart" style={{fontSize: '24px'}}></i>
-            <span style={{position: 'static', background: 'transparent', color: 'white', fontSize: '16px', padding: 0}}>
-              Ver Carrinho
-            </span>
-          </Link>
-        </div>
-      </footer>
+      {/* Bottom Navigation */}
+      <Modelo2BottomNav />
     </Modelo2Layout>
   );
 }

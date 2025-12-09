@@ -68,6 +68,64 @@ export default function Modelo2Layout({ children }: Modelo2LayoutProps) {
         0% { transform: translateX(0); }
         100% { transform: translateX(-50%); }
       }
+      
+      /* Bottom Navigation Bar */
+      .bottomBar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: #5b0e5c;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        z-index: 1000;
+      }
+      
+      .bottomBar .contentBar {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 8px 0;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      
+      .bottomBar .contentBar a {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        padding: 8px 16px;
+        border-radius: 12px;
+        min-width: 70px;
+      }
+      
+      .bottomBar .contentBar a:hover {
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.1);
+      }
+      
+      .bottomBar .contentBar a.active {
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.15);
+      }
+      
+      .bottomBar .contentBar a .icon {
+        font-size: 22px;
+        margin-bottom: 4px;
+      }
+      
+      .bottomBar .contentBar a span {
+        font-size: 11px;
+        font-weight: 500;
+      }
+      
+      /* Adicionar padding no body para não sobrepor o bottomBar */
+      body {
+        padding-bottom: 70px;
+      }
     `;
     document.head.appendChild(style);
 
