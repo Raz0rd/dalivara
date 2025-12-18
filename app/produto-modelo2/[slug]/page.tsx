@@ -92,7 +92,7 @@ const allProducts: Record<string, Product> = {
   },
   "pague-1-leve-2-300ml-zero": {
     id: "pague-1-leve-2-300ml-zero",
-    name: "2 Copos Açaí 300ml ZERO",
+    name: "2 Copos Açaí 300ml Zero açúcar",
     description: "9 Complementos Grátis",
     price: 22.90,
     originalPrice: 45.80,
@@ -100,7 +100,7 @@ const allProducts: Record<string, Product> = {
   },
   "pague-1-leve-2-500ml-zero": {
     id: "pague-1-leve-2-500ml-zero",
-    name: "2 Copos Açaí 500ml ZERO",
+    name: "2 Copos Açaí 500ml Zero açúcar",
     description: "9 Complementos Grátis",
     price: 25.90,
     originalPrice: 49.80,
@@ -108,7 +108,7 @@ const allProducts: Record<string, Product> = {
   },
   "pague-1-leve-2-700ml-zero": {
     id: "pague-1-leve-2-700ml-zero",
-    name: "2 Copos Açaí 700ml ZERO",
+    name: "2 Copos Açaí 700ml Zero açúcar",
     description: "9 Complementos Grátis",
     price: 29.90,
     originalPrice: 59.80,
@@ -117,7 +117,7 @@ const allProducts: Record<string, Product> = {
   },
   "pague-1-leve-2-1l-zero": {
     id: "pague-1-leve-2-1l-zero",
-    name: "2 Copos Açaí 1L ZERO",
+    name: "2 Copos Açaí 1L Zero açúcar",
     description: "9 Complementos Grátis",
     price: 40.90,
     originalPrice: 81.80,
@@ -153,28 +153,28 @@ const allProducts: Record<string, Product> = {
   },
   "acai-300ml-zero": {
     id: "acai-300ml-zero",
-    name: "1 Copo Açaí 300ml ZERO",
+    name: "1 Copo Açaí 300ml Zero açúcar",
     description: "9 Complementos Grátis",
     price: 22.90,
     image: "/images/modelo2/zero1.webp",
   },
   "acai-500ml-zero": {
     id: "acai-500ml-zero",
-    name: "1 Copo Açaí 500ml ZERO",
+    name: "1 Copo Açaí 500ml Zero açúcar",
     description: "9 Complementos Grátis",
     price: 25.90,
     image: "/images/modelo2/zero1.webp",
   },
   "acai-700ml-zero": {
     id: "acai-700ml-zero",
-    name: "1 Copo Açaí 700ml ZERO",
+    name: "1 Copo Açaí 700ml Zero açúcar",
     description: "9 Complementos Grátis",
     price: 29.90,
     image: "/images/modelo2/zero1.webp",
   },
   "acai-1l-zero": {
     id: "acai-1l-zero",
-    name: "1 Copo Açaí 1L ZERO",
+    name: "1 Copo Açaí 1L Zero açúcar",
     description: "9 Complementos Grátis",
     price: 40.90,
     image: "/images/modelo2/zero1.webp",
@@ -191,9 +191,19 @@ export default function ProductDetailPage() {
   const product = allProducts[slug];
 
   const [quantity, setQuantity] = useState(1);
-  const [selectedCoberturas, setSelectedCoberturas] = useState<Record<string, number>>({});
-  const [selectedFrutas, setSelectedFrutas] = useState<Record<string, number>>({});
-  const [selectedComplementos, setSelectedComplementos] = useState<Record<string, number>>({});
+  // Pré-selecionar opções populares para reduzir fricção de decisão
+  const [selectedCoberturas, setSelectedCoberturas] = useState<Record<string, number>>({
+    'cobertura-leite-condensado': 1,
+    'cobertura-amora': 1,
+  });
+  const [selectedFrutas, setSelectedFrutas] = useState<Record<string, number>>({
+    'morango': 1,
+    'kiwi': 1,
+  });
+  const [selectedComplementos, setSelectedComplementos] = useState<Record<string, number>>({
+    'leite-em-po': 1,
+    'granola': 1,
+  });
 
   if (!product) {
     return (
@@ -340,7 +350,13 @@ export default function ProductDetailPage() {
               <div className="topo">
                 <div>
                   <h3>Coberturas:</h3>
-                  <span className="detalhe">Escolha até 2 opções</span>
+                  <span className="detalhe" style={{color: '#666', fontSize: '13px', fontStyle: 'italic', marginBottom: '4px', display: 'block'}}>
+                    ✨ Selecionamos as mais pedidas pra você (pode trocar se quiser)
+                  </span>
+                  <span className="detalhe">💜 Escolha suas coberturas favoritas (até 2)</span>
+                  <span className="detalhe" style={{color: '#077c22', fontWeight: 'bold', marginTop: '4px', display: 'block'}}>
+                    🎁 Todas as coberturas são grátis
+                  </span>
                 </div>
                 <div className="col2">
                   <span className="escolhidos">
@@ -390,7 +406,13 @@ export default function ProductDetailPage() {
               <div className="topo">
                 <div>
                   <h3>Frutas:</h3>
-                  <span className="detalhe">Escolha até 2 opções</span>
+                  <span className="detalhe" style={{color: '#666', fontSize: '13px', fontStyle: 'italic', marginBottom: '4px', display: 'block'}}>
+                    ✨ Selecionamos as mais pedidas pra você (pode trocar se quiser)
+                  </span>
+                  <span className="detalhe">💜 Escolha suas frutas favoritas (até 2)</span>
+                  <span className="detalhe" style={{color: '#077c22', fontWeight: 'bold', marginTop: '4px', display: 'block'}}>
+                    🎁 Todas as frutas são grátis
+                  </span>
                 </div>
                 <div className="col2">
                   <span className="escolhidos">
@@ -440,7 +462,13 @@ export default function ProductDetailPage() {
               <div className="topo">
                 <div>
                   <h3>Complementos:</h3>
-                  <span className="detalhe">Escolha até 2 opções</span>
+                  <span className="detalhe" style={{color: '#666', fontSize: '13px', fontStyle: 'italic', marginBottom: '4px', display: 'block'}}>
+                    ✨ Selecionamos as mais pedidas pra você (pode trocar se quiser)
+                  </span>
+                  <span className="detalhe">💜 Escolha seus complementos favoritos (até 2)</span>
+                  <span className="detalhe" style={{color: '#077c22', fontWeight: 'bold', marginTop: '4px', display: 'block'}}>
+                    🎁 Todos os complementos são grátis
+                  </span>
                 </div>
                 <div className="col2">
                   <span className="escolhidos">

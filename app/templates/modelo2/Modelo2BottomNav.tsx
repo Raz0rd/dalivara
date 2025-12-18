@@ -2,9 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useCart } from "@/contexts/CartContext";
 
 export default function Modelo2BottomNav() {
   const pathname = usePathname();
+  const { items } = useCart();
+  const hasItems = items.length > 0;
 
   return (
     <div className="bottomBar">
@@ -21,12 +24,14 @@ export default function Modelo2BottomNav() {
           </div>
           <span>Carrinho</span>
         </Link>
-        <Link href="#">
-          <div className="icon">
-            <i className="fa-solid fa-right-to-bracket"></i>
-          </div>
-          <span>Entrar</span>
-        </Link>
+        {hasItems && (
+          <Link href="/endereco" className={pathname === "/endereco" ? "active" : ""}>
+            <div className="icon">
+              <i className="fa-solid fa-check-circle"></i>
+            </div>
+            <span>Finalizar pedido</span>
+          </Link>
+        )}
       </div>
     </div>
   );

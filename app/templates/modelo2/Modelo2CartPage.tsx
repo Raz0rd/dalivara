@@ -115,7 +115,7 @@ export default function Modelo2CartPage() {
         maxWidth: '600px',
         margin: '0 auto',
         minHeight: 'calc(100vh - 140px)',
-        paddingBottom: '100px',
+        paddingBottom: '180px',
         backgroundColor: '#f5f5f5',
         padding: '20px'
       }}>
@@ -427,37 +427,28 @@ export default function Modelo2CartPage() {
             margin: '0 auto',
             display: 'flex',
             flexDirection: 'column',
-            gap: '10px'
+            gap: '12px'
           }}>
-            {/* Botão Continuar Comprando */}
-            <Link href="/" style={{
-              width: '100%',
-              padding: '12px',
-              fontSize: '16px',
-              fontWeight: 'bold',
-              border: '2px solid #5b0e5c',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              backgroundColor: 'white',
-              color: '#5b0e5c',
-              borderRadius: '8px',
-              textDecoration: 'none',
-              transition: 'all 0.3s ease'
+            {/* Micro-copy de segurança */}
+            <div style={{
+              textAlign: 'center',
+              padding: '8px',
+              fontSize: '13px',
+              color: '#666',
+              backgroundColor: '#f0f9ff',
+              borderRadius: '6px',
+              border: '1px solid #e0f2fe'
             }}>
-              <i className="fa-solid fa-plus"></i>
-              Adicionar mais produtos
-            </Link>
+              🔒 <b>Pagamento e entrega feitos pelo iFood</b>
+            </div>
 
-            {/* Botão Finalizar Pedido */}
+            {/* Botão Finalizar Pedido - DOMINANTE */}
             <button 
               onClick={handleCheckout}
               disabled={hasBlockedCart}
               style={{
                 width: '100%',
-                padding: '15px',
+                padding: '18px',
                 fontSize: '18px',
                 fontWeight: 'bold',
                 border: 'none',
@@ -471,12 +462,27 @@ export default function Modelo2CartPage() {
                 backgroundColor: '#5b0e5c',
                 color: 'white',
                 borderRadius: '8px',
-                transition: 'all 0.3s ease'
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 12px rgba(91, 14, 92, 0.3)'
               }}
             >
               <span>Finalizar Pedido</span>
               <span style={{fontWeight: 'bold'}}>R$ {getTotalPrice().toFixed(2)}</span>
             </button>
+
+            {/* Link simples - Despriorizado */}
+            <Link href="/" style={{
+              textAlign: 'center',
+              padding: '8px',
+              fontSize: '14px',
+              color: '#666',
+              textDecoration: 'underline',
+              cursor: 'pointer',
+              backgroundColor: 'transparent',
+              border: 'none'
+            }}>
+              Adicionar mais produtos
+            </Link>
           </div>
         </footer>
       )}

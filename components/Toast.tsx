@@ -33,7 +33,7 @@ export default function Toast({
   const Icon = type === "success" ? CheckCircle : AlertCircle;
 
   return (
-    <div className="fixed top-4 left-4 right-4 z-[100] flex justify-center animate-slide-down">
+    <div className="fixed top-4 left-4 right-4 z-[9999] flex justify-center animate-slide-down">
       <div className={`${bgColor} text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 max-w-md w-full`}>
         <div className="flex-shrink-0">
           <Icon size={20} color="white" strokeWidth={2} />

@@ -30,6 +30,7 @@ export default function Modelo2HomePage() {
   const { addItem } = useCart();
   const { toast, showToast, hideToast } = useToast();
   const storeName = process.env.NEXT_PUBLIC_STORE_NAME || 'Nacional Açaí';
+  const storeLogo = process.env.NEXT_PUBLIC_STORE_LOGO || 'ponto.webp';
   const [countdown, setCountdown] = useState({ minutes: 15, seconds: 0 });
 
   // Reviews
@@ -110,7 +111,7 @@ export default function Modelo2HomePage() {
   const pague1Leve2Zero: Product[] = [
     {
       id: "pague-1-leve-2-300ml-zero",
-      name: "2 Copos Açaí 300ml ZERO",
+      name: "2 Copos Açaí 300ml Zero açúcar",
       description: "9 Complementos Grátis",
       price: 22.90,
       originalPrice: 45.80,
@@ -118,7 +119,7 @@ export default function Modelo2HomePage() {
     },
     {
       id: "pague-1-leve-2-500ml-zero",
-      name: "2 Copos Açaí 500ml ZERO",
+      name: "2 Copos Açaí 500ml Zero açúcar",
       description: "9 Complementos Grátis",
       price: 25.90,
       originalPrice: 49.80,
@@ -126,7 +127,7 @@ export default function Modelo2HomePage() {
     },
     {
       id: "pague-1-leve-2-700ml-zero",
-      name: "2 Copos Açaí 700ml ZERO",
+      name: "2 Copos Açaí 700ml Zero açúcar",
       description: "9 Complementos Grátis",
       price: 29.90,
       originalPrice: 59.80,
@@ -138,7 +139,7 @@ export default function Modelo2HomePage() {
     },
     {
       id: "pague-1-leve-2-1l-zero",
-      name: "2 Copos Açaí 1L ZERO",
+      name: "2 Copos Açaí 1L Zero açúcar",
       description: "9 Complementos Grátis",
       price: 40.90,
       originalPrice: 81.80,
@@ -180,28 +181,28 @@ export default function Modelo2HomePage() {
   const acaiZero: Product[] = [
     {
       id: "acai-300ml-zero",
-      name: "1 Copo Açaí 300ml ZERO",
+      name: "1 Copo Açaí 300ml Zero açúcar",
       description: "9 Complementos Grátis",
       price: 22.90,
       image: "/images/modelo2/zero1.webp",
     },
     {
       id: "acai-500ml-zero",
-      name: "1 Copo Açaí 500ml ZERO",
+      name: "1 Copo Açaí 500ml Zero açúcar",
       description: "9 Complementos Grátis",
       price: 25.90,
       image: "/images/modelo2/zero1.webp",
     },
     {
       id: "acai-700ml-zero",
-      name: "1 Copo Açaí 700ml ZERO",
+      name: "1 Copo Açaí 700ml Zero açúcar",
       description: "9 Complementos Grátis",
       price: 29.90,
       image: "/images/modelo2/zero1.webp",
     },
     {
       id: "acai-1l-zero",
-      name: "1 Copo Açaí 1L ZERO",
+      name: "1 Copo Açaí 1L Zero açúcar",
       description: "9 Complementos Grátis",
       price: 40.90,
       image: "/images/modelo2/zero1.webp",
@@ -232,7 +233,7 @@ export default function Modelo2HomePage() {
           <div className="logo">
             <figure>
               <Image 
-                src="/images/modelo2/ponto.webp"
+                src={`/images/${storeLogo}`}
                 alt={storeName}
                 width={120}
                 height={120}
@@ -302,6 +303,56 @@ export default function Modelo2HomePage() {
             Aproveite nossa <b>promoção com preços irresistíveis</b> igual Açaí 💜
           </div>
 
+          {/* Produto Âncora - Primeira Vez */}
+          <div className="categoria" style={{marginTop: '20px', marginBottom: '20px'}}>
+            <h2 style={{fontSize: '20px', marginBottom: '15px'}}>🍧 Primeira vez? Comece por aqui</h2>
+            <div className="produtos">
+              <div className="item">
+                <a 
+                  className="disponivel pulsar"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleProductClick(acai[0]);
+                  }}
+                  style={{border: '2px solid #ff6b35', cursor: 'pointer', background: '#fff9f5'}}
+                >
+                  <div className="texto">
+                    <span style={{
+                      color: '#ff6b35',
+                      background: '#ffe5d9',
+                      padding: '4px 8px',
+                      marginBottom: '8px',
+                      borderRadius: '8px',
+                      textAlign: 'center',
+                      display: 'block',
+                      fontWeight: 'bold'
+                    }}>
+                      🔥 PERFEITO PARA COMEÇAR
+                    </span>
+                    <h3>1 Copo Açaí 300ml</h3>
+                    <span>9 Complementos Grátis</span>
+                    <span className="preco" style={{fontSize: '20px'}}>
+                      <b style={{background: '#ff6b35', color: 'white', borderRadius: '8px', padding: '0px 4px'}}>
+                        R$ 19,90
+                      </b>
+                    </span>
+                  </div>
+                  <div className="fotoProduto">
+                    <figure>
+                      <Image 
+                        src="/images/modelo2/copo1.webp"
+                        width={110}
+                        height={110}
+                        loading="lazy"
+                        alt="1 Copo Açaí 300ml"
+                      />
+                    </figure>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+
           {/* Pague 1, Leve 2 */}
           <div id="pague-1-leve-2" className="categoria">
             <h2>Pague 1, Leve 2</h2>
@@ -332,20 +383,6 @@ export default function Modelo2HomePage() {
                       )}
                       <h3>{product.name}</h3>
                       <span>{product.description}</span>
-                      {product.highlight && (
-                        <span style={{
-                          color: '#474747',
-                          background: '#e8e8e8',
-                          padding: '10px 10px',
-                          marginBottom: '2px',
-                          marginTop: '2px',
-                          borderRadius: '8px',
-                          textAlign: 'left',
-                          display: 'block'
-                        }}>
-                          {product.highlight}
-                        </span>
-                      )}
                       {product.originalPrice && (
                         <>
                           de <span className="precoPromocao">R$ {product.originalPrice.toFixed(2)}</span> por
@@ -360,16 +397,6 @@ export default function Modelo2HomePage() {
                           ` R$ ${product.price.toFixed(2)} `
                         )}
                       </span>
-                      {product.isBestSeller && (
-                        <span><i>A maioria dos clientes escolhe esse porque é o melhor custo-benefício!</i></span>
-                      )}
-                      {product.stock && (
-                        <span className="estoque" style={{marginTop: '4px'}}>
-                          🔥 Apenas <b style={{background: 'red', color: 'white', borderRadius: '8px', padding: '0px 4px'}}>
-                            {product.stock} combo(s)
-                          </b> com esse preço especial
-                        </span>
-                      )}
                     </div>
                     <div className="fotoProduto">
                       <figure>
@@ -390,7 +417,7 @@ export default function Modelo2HomePage() {
 
           {/* Countdown Timer */}
           <div className="alert alert-success" style={{color: 'red', outline: '2px solid red', backgroundColor: 'rgb(255, 217, 217)'}}>
-            <b>A promoção vai acabar em:</b>
+            <b>⏰ Promoção válida apenas hoje</b>
             <div className="countdown">
               <div className="box">
                 <span id="minutes">{String(countdown.minutes).padStart(2, '0')}</span>
@@ -405,7 +432,7 @@ export default function Modelo2HomePage() {
 
           {/* Pague 1, Leve 2 - Zero Açúcar */}
           <div id="pague-1-leve-2-zero" className="categoria">
-            <h2>Pague 1, Leve 2 - Zero Açúcar</h2>
+            <h2>Pague 1, Leve 2 - Zero açúcar</h2>
             <div className="produtos">
               {pague1Leve2Zero.map((product) => (
                 <div key={product.id} className="item">
@@ -433,20 +460,6 @@ export default function Modelo2HomePage() {
                       )}
                       <h3>{product.name}</h3>
                       <span>{product.description}</span>
-                      {product.highlight && (
-                        <span style={{
-                          color: '#474747',
-                          background: '#e8e8e8',
-                          padding: '10px 10px',
-                          marginBottom: '2px',
-                          marginTop: '2px',
-                          borderRadius: '8px',
-                          textAlign: 'left',
-                          display: 'block'
-                        }}>
-                          {product.highlight}
-                        </span>
-                      )}
                       {product.originalPrice && (
                         <>
                           de <span className="precoPromocao">R$ {product.originalPrice.toFixed(2)}</span> por
@@ -461,16 +474,6 @@ export default function Modelo2HomePage() {
                           ` R$ ${product.price.toFixed(2)} `
                         )}
                       </span>
-                      {product.isBestSeller && (
-                        <span><i>A maioria dos clientes escolhe esse porque é o melhor custo-benefício!</i></span>
-                      )}
-                      {product.stock && (
-                        <span className="estoque" style={{marginTop: '4px'}}>
-                          🔥 Apenas <b style={{background: 'red', color: 'white', borderRadius: '8px', padding: '0px 4px'}}>
-                            {product.stock} combo(s)
-                          </b> com esse preço especial
-                        </span>
-                      )}
                     </div>
                     <div className="fotoProduto">
                       <figure>
@@ -486,21 +489,6 @@ export default function Modelo2HomePage() {
                   </a>
                 </div>
               ))}
-            </div>
-          </div>
-
-          {/* Countdown Timer */}
-          <div className="alert alert-success" style={{color: 'red', outline: '2px solid red', backgroundColor: 'rgb(255, 217, 217)'}}>
-            <b>A promoção vai acabar em:</b>
-            <div className="countdown">
-              <div className="box">
-                <span id="minutes">{String(countdown.minutes).padStart(2, '0')}</span>
-                <p>Minutos</p>
-              </div>
-              <div className="box">
-                <span id="seconds">{String(countdown.seconds).padStart(2, '0')}</span>
-                <p>Segundos</p>
-              </div>
             </div>
           </div>
 
@@ -543,7 +531,7 @@ export default function Modelo2HomePage() {
 
           {/* Açaí Zero */}
           <div id="acai-zero" className="categoria">
-            <h2>Açaí Zero Açúcar</h2>
+            <h2>Açaí Zero açúcar</h2>
             <div className="produtos">
               {acaiZero.map((product) => (
                 <div key={product.id} className="item">

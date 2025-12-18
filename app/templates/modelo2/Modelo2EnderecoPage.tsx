@@ -131,11 +131,7 @@ export default function Modelo2EnderecoPage() {
     fullName.trim().length > 0 &&
     email.trim().length > 0 &&
     cep.replace(/\D/g, "").length === 8 &&
-    address.street.trim().length > 0 &&
-    address.number.trim().length > 0 &&
-    address.neighborhood.trim().length > 0 &&
-    address.city.trim().length > 0 &&
-    address.state.trim().length > 0;
+    address.number.trim().length > 0;
 
   return (
     <Modelo2Layout>
@@ -195,10 +191,21 @@ export default function Modelo2EnderecoPage() {
               fontSize: '18px',
               fontWeight: 'bold',
               color: '#5b0e5c',
-              marginBottom: '15px'
+              marginBottom: '10px'
             }}>
               📝 Dados Pessoais
             </h2>
+            <p style={{
+              fontSize: '13px',
+              color: '#666',
+              marginBottom: '15px',
+              padding: '10px',
+              backgroundColor: '#f0f9ff',
+              borderRadius: '6px',
+              border: '1px solid #e0f2fe'
+            }}>
+              ℹ️ Os demais dados você confirma no iFood
+            </p>
 
             <div style={{marginBottom: '15px'}}>
               <label style={{
@@ -253,7 +260,7 @@ export default function Modelo2EnderecoPage() {
             </div>
           </div>
 
-          {/* Endereço */}
+          {/* CEP e Endereço */}
           <div style={{
             backgroundColor: 'white',
             borderRadius: '8px',
@@ -267,7 +274,7 @@ export default function Modelo2EnderecoPage() {
               color: '#5b0e5c',
               marginBottom: '15px'
             }}>
-              📍 Endereço de Entrega
+              📍 Endereço para Entrega
             </h2>
 
             <div style={{marginBottom: '15px'}}>
@@ -296,182 +303,86 @@ export default function Modelo2EnderecoPage() {
                 required
               />
               {loadingCep && (
-                <span style={{fontSize: '12px', color: '#666'}}>Buscando CEP...</span>
+                <span style={{fontSize: '12px', color: '#666', display: 'block', marginTop: '5px'}}>Buscando CEP...</span>
               )}
               {cepError && (
-                <span style={{fontSize: '12px', color: '#dc3545'}}>{cepError}</span>
+                <span style={{fontSize: '12px', color: '#dc3545', display: 'block', marginTop: '5px'}}>{cepError}</span>
               )}
             </div>
 
-            <div style={{marginBottom: '15px'}}>
-              <label style={{
-                display: 'block',
-                fontSize: '14px',
-                fontWeight: 'bold',
-                color: '#333',
-                marginBottom: '5px'
-              }}>
-                Rua *
-              </label>
-              <input
-                type="text"
-                value={address.street}
-                onChange={(e) => setAddress({...address, street: e.target.value})}
-                placeholder="Nome da rua"
-                style={{
-                  width: '100%',
+            {/* Mostrar endereço encontrado */}
+            {address.street && address.city && address.state && (
+              <>
+                <div style={{
+                  marginBottom: '15px',
                   padding: '12px',
-                  border: '2px solid #ddd',
-                  borderRadius: '8px',
-                  fontSize: '16px'
-                }}
-                required
-              />
-            </div>
-
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: '10px',
-              marginBottom: '15px'
-            }}>
-              <div>
-                <label style={{
-                  display: 'block',
-                  fontSize: '14px',
-                  fontWeight: 'bold',
-                  color: '#333',
-                  marginBottom: '5px'
+                  backgroundColor: '#f0f9ff',
+                  borderRadius: '6px',
+                  border: '1px solid #e0f2fe'
                 }}>
-                  Número *
-                </label>
-                <input
-                  type="text"
-                  value={address.number}
-                  onChange={(e) => setAddress({...address, number: e.target.value})}
-                  placeholder="123"
-                  style={{
-                    width: '100%',
-                    padding: '12px',
-                    border: '2px solid #ddd',
-                    borderRadius: '8px',
-                    fontSize: '16px'
-                  }}
-                  required
-                />
-              </div>
+                  <p style={{fontSize: '14px', color: '#666', marginBottom: '5px'}}>
+                    <strong>Endereço encontrado:</strong>
+                  </p>
+                  <p style={{fontSize: '14px', color: '#333'}}>
+                    {address.street}, {address.neighborhood}<br/>
+                    {address.city} - {address.state}
+                  </p>
+                </div>
 
-              <div>
-                <label style={{
-                  display: 'block',
-                  fontSize: '14px',
-                  fontWeight: 'bold',
-                  color: '#333',
-                  marginBottom: '5px'
-                }}>
-                  Complemento
-                </label>
-                <input
-                  type="text"
-                  value={address.complement}
-                  onChange={(e) => setAddress({...address, complement: e.target.value})}
-                  placeholder="Apto, Bloco..."
-                  style={{
-                    width: '100%',
-                    padding: '12px',
-                    border: '2px solid #ddd',
-                    borderRadius: '8px',
-                    fontSize: '16px'
-                  }}
-                />
-              </div>
-            </div>
+                {/* Número */}
+                <div style={{marginBottom: '15px'}}>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '14px',
+                    fontWeight: 'bold',
+                    color: '#333',
+                    marginBottom: '5px'
+                  }}>
+                    Número *
+                  </label>
+                  <input
+                    type="text"
+                    value={address.number}
+                    onChange={(e) => setAddress({...address, number: e.target.value})}
+                    placeholder="Ex: 123"
+                    style={{
+                      width: '100%',
+                      padding: '12px',
+                      border: '2px solid #ddd',
+                      borderRadius: '8px',
+                      fontSize: '16px'
+                    }}
+                    required
+                  />
+                </div>
 
-            <div style={{marginBottom: '15px'}}>
-              <label style={{
-                display: 'block',
-                fontSize: '14px',
-                fontWeight: 'bold',
-                color: '#333',
-                marginBottom: '5px'
-              }}>
-                Bairro *
-              </label>
-              <input
-                type="text"
-                value={address.neighborhood}
-                onChange={(e) => setAddress({...address, neighborhood: e.target.value})}
-                placeholder="Nome do bairro"
-                style={{
-                  width: '100%',
-                  padding: '12px',
-                  border: '2px solid #ddd',
-                  borderRadius: '8px',
-                  fontSize: '16px'
-                }}
-                required
-              />
-            </div>
-
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: '2fr 1fr',
-              gap: '10px'
-            }}>
-              <div>
-                <label style={{
-                  display: 'block',
-                  fontSize: '14px',
-                  fontWeight: 'bold',
-                  color: '#333',
-                  marginBottom: '5px'
-                }}>
-                  Cidade *
-                </label>
-                <input
-                  type="text"
-                  value={address.city}
-                  onChange={(e) => setAddress({...address, city: e.target.value})}
-                  placeholder="Cidade"
-                  style={{
-                    width: '100%',
-                    padding: '12px',
-                    border: '2px solid #ddd',
-                    borderRadius: '8px',
-                    fontSize: '16px'
-                  }}
-                  required
-                />
-              </div>
-
-              <div>
-                <label style={{
-                  display: 'block',
-                  fontSize: '14px',
-                  fontWeight: 'bold',
-                  color: '#333',
-                  marginBottom: '5px'
-                }}>
-                  UF *
-                </label>
-                <input
-                  type="text"
-                  value={address.state}
-                  onChange={(e) => setAddress({...address, state: e.target.value.toUpperCase()})}
-                  placeholder="UF"
-                  maxLength={2}
-                  style={{
-                    width: '100%',
-                    padding: '12px',
-                    border: '2px solid #ddd',
-                    borderRadius: '8px',
-                    fontSize: '16px',
-                    textTransform: 'uppercase'
-                  }}
-                  required
-                />
-              </div>
-            </div>
+                {/* Complemento */}
+                <div>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '14px',
+                    fontWeight: 'bold',
+                    color: '#333',
+                    marginBottom: '5px'
+                  }}>
+                    Complemento (opcional)
+                  </label>
+                  <input
+                    type="text"
+                    value={address.complement}
+                    onChange={(e) => setAddress({...address, complement: e.target.value})}
+                    placeholder="Ex: Apto 101, Bloco A"
+                    style={{
+                      width: '100%',
+                      padding: '12px',
+                      border: '2px solid #ddd',
+                      borderRadius: '8px',
+                      fontSize: '16px'
+                    }}
+                  />
+                </div>
+              </>
+            )}
           </div>
         </form>
       </div>
@@ -521,10 +432,19 @@ export default function Modelo2EnderecoPage() {
             ) : (
               <>
                 <i className="fa-solid fa-arrow-right"></i>
-                Continuar
+                Continuar para o iFood
               </>
             )}
           </button>
+          <p style={{
+            textAlign: 'center',
+            fontSize: '13px',
+            color: '#666',
+            marginTop: '10px',
+            padding: '0 10px'
+          }}>
+            Você finalizará o pagamento no iFood com total segurança
+          </p>
         </div>
       </footer>
     </Modelo2Layout>

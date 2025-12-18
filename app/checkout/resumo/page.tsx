@@ -125,6 +125,13 @@ export default function ResumoPage() {
       {/* Conteúdo */}
       <div className="max-w-md mx-auto bg-white shadow-lg min-h-screen w-full">
       <div className="flex-1 px-4 py-6">
+        {/* Aviso de Finalização */}
+        <div className="bg-green-50 border-2 border-green-500 rounded-lg p-4 mb-4 text-center">
+          <p className="text-green-800 font-bold text-base">
+            ✅ Tudo certo! Agora é só finalizar no iFood
+          </p>
+        </div>
+
         {/* Nota Fiscal */}
         <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-lg shadow-lg border-2 border-amber-200 overflow-hidden">
           {/* Header da Nota */}

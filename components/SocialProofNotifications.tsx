@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 // Importação dinâmica do SweetAlert2
 let Swal: any;
@@ -11,7 +12,14 @@ interface Notification {
 }
 
 export default function SocialProofNotifications() {
+  const pathname = usePathname();
+
   useEffect(() => {
+    // Não mostrar notificações nas páginas de detalhes do produto
+    if (pathname?.includes('/produto-modelo2/') || pathname?.includes('/produto/')) {
+      return;
+    }
+
     // Importar SweetAlert2 dinamicamente (apenas no cliente)
     import("sweetalert2").then((module) => {
       Swal = module.default;
