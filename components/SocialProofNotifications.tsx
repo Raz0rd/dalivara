@@ -81,7 +81,7 @@ export default function SocialProofNotifications() {
     return () => {
       if (timeoutId) clearTimeout(timeoutId);
     };
-  }, []);
+  }, [pathname]);
 
   return null; // Componente não renderiza nada visualmente
 }
