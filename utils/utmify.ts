@@ -202,9 +202,24 @@ export async function sendGoogleAdsConversion(
       console.log('📱 Telefone hasheado:', userData.phone_number.substring(0, 10) + '...');
     }
 
+    // Obter configurações do Google Ads do .env.local
+    // Next.js substitui process.env.NEXT_PUBLIC_* em tempo de build
+    const accountId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ACCOUNT_ID || '';
+    const conversionLabel = process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL || '';
+    
+    if (!accountId || !conversionLabel) {
+      console.error('❌ [Google Ads] NEXT_PUBLIC_GOOGLE_ADS_ACCOUNT_ID ou NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL não configurados no .env.local');
+      console.error('   Account ID:', accountId || 'não definido');
+      console.error('   Conversion Label:', conversionLabel || 'não definido');
+      return;
+    }
+    
+    const sendTo = `${accountId}/${conversionLabel}`;
+    console.log('🎯 [Google Ads] Send To:', sendTo);
+    
     // Preparar dados de conversão
     const conversionData: any = {
-      'send_to': 'AW-17719649597/l1AvCJCdmr4bEL3KsYFC',
+      'send_to': sendTo,
       'value': conversionValue,
       'currency': currency,
       'transaction_id': transactionId

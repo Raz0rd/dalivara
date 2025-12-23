@@ -95,9 +95,9 @@ export default function RootLayout({
     index++;
   }
   
-  // Se não encontrou nenhuma tag, usar a padrão
+  // Se não encontrou nenhuma tag, não adicionar nenhuma (deve estar configurado no .env.local)
   if (googleAdsTags.length === 0) {
-    googleAdsTags.push('AW-17719649597');
+    console.warn('⚠️ [Google Ads] Nenhuma tag configurada no .env.local');
   }
   
   const firstTag = googleAdsTags[0];
