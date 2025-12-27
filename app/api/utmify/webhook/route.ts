@@ -17,20 +17,47 @@ export async function POST(req: NextRequest) {
     console.log('📦 Payload completo:', JSON.stringify(body, null, 2));
     console.log('========================================\n');
 
-    // Se o status for PAID, salvar no Google Sheets
+    // Se o status for PAID, salvar no Google Sheets e enviar para API
     if (status === 'PAID' || status === 'paid') {
+      // Extrair dados do webhook
+      const transactionData = body?.transaction || body;
+      const orderData = body?.order || {};
+      const trackingParameters = body?.trackingParameters || orderData?.trackingParameters || {};
+      
+      // Extrair nome do domínio para usar como projeto
+      const host = req.headers.get('host') || '';
+      const domain = host || process.env.NEXT_PUBLIC_DOMAIN || 'acai.shop';
+      const projectName = domain.replace(/^www\./, '').split('.')[0];
+      
+      // 1. Enviar para API de Açaí
+      try {
+        const { sendToAcaiAPI, buildAcaiPayload } = await import('@/lib/acai-api');
+        
+        const acaiPayload = buildAcaiPayload(
+          (transactionData?.id || transactionData?.transactionId || body?.transactionId || '').toString(),
+          'paid',
+          orderData,
+          transactionData,
+          domain,
+          transactionData?.pixCode || orderData?.pixCode,
+          'ghost'
+        );
+        
+        console.log(`📤 [ACAI API] Enviando para API centralizada...`);
+        const apiSuccess = await sendToAcaiAPI(acaiPayload);
+        
+        if (apiSuccess) {
+          console.log(`✅ [ACAI API] Pedido enviado com sucesso`);
+        } else {
+          console.log(`⚠️ [ACAI API] Falha ao enviar pedido (continuando...)`);
+        }
+      } catch (apiError) {
+        console.error(`❌ [ACAI API] Erro ao enviar:`, apiError);
+      }
+      
+      // 2. Salvar no Google Sheets
       try {
         const { saveToGoogleSheets } = await import('@/lib/google-sheets');
-        
-        // Extrair dados do webhook
-        const transactionData = body?.transaction || body;
-        const orderData = body?.order || {};
-        const trackingParameters = body?.trackingParameters || orderData?.trackingParameters || {};
-        
-        // Extrair nome do domínio para usar como projeto
-        const host = req.headers.get('host') || '';
-        const domain = host || process.env.NEXT_PUBLIC_DOMAIN || 'acai.shop';
-        const projectName = domain.replace(/^www\./, '').split('.')[0];
         
         console.log(`🏷️ [SHEETS] Host recebido: ${host}`);
         console.log(`🏷️ [SHEETS] Domain extraído: ${domain}`);
