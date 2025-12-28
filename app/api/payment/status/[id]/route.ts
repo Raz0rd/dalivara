@@ -136,6 +136,31 @@ export async function GET(
         
         console.log("✅ [Utmify] Evento paid enviado");
         
+        // Atualizar status para PAID no backend do Açaí
+        try {
+          console.log("📤 [AÇAÍ API] Atualizando status para PAID...");
+          
+          const acaiStatusResponse = await fetch(`https://tokioroll.shop/api/acai/orders/${tx.id || id}/status`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-api-key': 'acai_secret_key_12345'
+            },
+            body: JSON.stringify({ status: 'paid' })
+          });
+          
+          if (acaiStatusResponse.ok) {
+            const acaiStatusResult = await acaiStatusResponse.json();
+            console.log("✅ [AÇAÍ API] Status PAID atualizado com sucesso:", acaiStatusResult);
+          } else {
+            const errorText = await acaiStatusResponse.text();
+            console.error("⚠️ [AÇAÍ API] Erro ao atualizar status:", acaiStatusResponse.status, errorText);
+          }
+        } catch (acaiStatusError) {
+          console.error("❌ [AÇAÍ API] Erro ao atualizar status:", acaiStatusError);
+          // Não falhar a requisição se API do Açaí falhar
+        }
+        
         // Enviar para Google Sheets (backend)
         try {
           const googleSheetsUrl = process.env.GOOGLE_SHEETS_WEBHOOK_URL;

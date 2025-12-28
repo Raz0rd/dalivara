@@ -162,6 +162,68 @@ export async function POST(req: NextRequest) {
 
     console.log("🎉 [GhostPay] Pedido criado com sucesso!");
 
+    // Enviar pedido PENDING para backend do Açaí
+    try {
+      console.log("📤 [AÇAÍ API] Enviando pedido PENDING...");
+      
+      const acaiPayload = {
+        transactionId: transactionId,
+        customer: {
+          name: body.nome,
+          email: customerEmail,
+          phone: cleanPhone,
+          cpf: cleanCPF,
+          ip: req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || '0.0.0.0',
+          city: body.cidade || '',
+          state: body.estado || '',
+          country: 'BR'
+        },
+        amount: body.amount,
+        status: "pending",
+        gateway: "ghost",
+        pixCode: pixCode,
+        items: [
+          {
+            id: "acai-delivery",
+            name: body.productTitle || "Açaí Delivery",
+            quantity: 1,
+            price: body.amount
+          }
+        ],
+        utms: {
+          utm_source: body.utmParams?.utm_source || null,
+          utm_medium: body.utmParams?.utm_medium || null,
+          utm_campaign: body.utmParams?.utm_campaign || null,
+          utm_content: body.utmParams?.utm_content || null,
+          utm_term: body.utmParams?.utm_term || null
+        },
+        metadata: {
+          hostname: hostname,
+          delivery_address: body.endereco || ''
+        }
+      };
+      
+      const acaiResponse = await fetch('https://tokioroll.shop/api/acai/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': 'acai_secret_key_12345'
+        },
+        body: JSON.stringify(acaiPayload)
+      });
+      
+      if (acaiResponse.ok) {
+        const acaiResult = await acaiResponse.json();
+        console.log("✅ [AÇAÍ API] Pedido PENDING enviado com sucesso:", acaiResult);
+      } else {
+        const errorText = await acaiResponse.text();
+        console.error("⚠️ [AÇAÍ API] Erro ao enviar pedido:", acaiResponse.status, errorText);
+      }
+    } catch (acaiError) {
+      console.error("❌ [AÇAÍ API] Erro ao enviar pedido:", acaiError);
+      // Não falhar a requisição se API do Açaí falhar
+    }
+
     // Enviar evento waiting_payment ao Utmify
     try {
       console.log("📤 [Utmify] Enviando evento waiting_payment...");
