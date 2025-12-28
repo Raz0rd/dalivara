@@ -39,15 +39,26 @@ export async function POST(req: NextRequest) {
     const customerEmail = body.email || generateFakeEmail(body.nome);
 
     // Limpar e validar dados
+    // Verificar se telefone foi enviado
+    if (!body.phone || body.phone.trim() === '') {
+      console.error('❌ Telefone não foi enviado no body:', body.phone);
+      throw new Error('Telefone é obrigatório');
+    }
+    
     // Telefone: remover (, ), espaços, - e qualquer caractere não numérico
     const cleanPhone = body.phone.replace(/[\(\)\s\-]/g, '').replace(/\D/g, '');
     const cleanCPF = body.cpf.replace(/\D/g, ''); // Remove formatação
     const cleanEmail = customerEmail.replace(/[^a-zA-Z0-9@._-]/g, ''); // Remove caracteres inválidos
     
+    console.log('📞 [Validação] Telefone recebido:', body.phone);
+    console.log('📞 [Validação] Telefone após limpeza:', cleanPhone);
+    console.log('📞 [Validação] Tamanho:', cleanPhone.length);
+    
     // Validações
     if (cleanPhone.length < 10 || cleanPhone.length > 11) {
       console.error('❌ Telefone inválido após limpeza:', cleanPhone, 'Length:', cleanPhone.length);
-      throw new Error('Telefone inválido');
+      console.error('❌ Telefone original recebido:', body.phone);
+      throw new Error('Telefone inválido - deve ter 10 ou 11 dígitos (formato: 11999999999)');
     }
     
     if (cleanCPF.length !== 11) {
