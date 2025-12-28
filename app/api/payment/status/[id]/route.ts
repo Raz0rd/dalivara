@@ -84,6 +84,21 @@ export async function GET(
         
         console.log("📊 [Utmify] UTMs recuperados do pedido:", utmParams);
         
+        // Extrair CPF corretamente (pode vir como objeto do GhostPay)
+        let customerDocument = "";
+        if (orderData?.customer?.document) {
+          customerDocument = typeof orderData.customer.document === 'string' 
+            ? orderData.customer.document 
+            : orderData.customer.document?.number || "";
+        } else if (tx.customer?.document) {
+          customerDocument = typeof tx.customer.document === 'string'
+            ? tx.customer.document
+            : tx.customer.document?.number || "";
+        }
+        
+        // Remover aspas extras se houver
+        customerDocument = customerDocument.replace(/['"]/g, '');
+        
         const utmifyPayload = {
           orderId: tx.id || id,
           status: "paid",
@@ -92,7 +107,7 @@ export async function GET(
             name: orderData?.customer?.name || tx.customer?.name || "",
             email: orderData?.customer?.email || tx.customer?.email || "",
             phone: orderData?.customer?.phone || tx.customer?.phone || "",
-            document: orderData?.customer?.document || tx.customer?.document || ""
+            document: customerDocument
           },
           productName: orderData?.productTitle || tx.items?.[0]?.title || 'Delivara',
           trackingParameters: utmParams
