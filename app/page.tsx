@@ -15,6 +15,7 @@ import AddToCartModal from "@/components/AddToCartModal";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/useToast";
 import { useLocation } from "@/hooks/useLocation";
+import { useTenant } from "@/contexts/TenantContext";
 import Toast from "@/components/Toast";
 import dynamic from "next/dynamic";
 
@@ -26,6 +27,7 @@ const Modelo2HomePage = dynamic(() => import("@/app/templates/modelo2/Modelo2Hom
 function HomeContent() {
   // Hooks devem ser chamados antes de qualquer return condicional
   const router = useRouter();
+  const tenant = useTenant();
   const [activeTab, setActiveTab] = useState("combos");
   const [showAddToCartModal, setShowAddToCartModal] = useState(false);
   const [currentProduct, setCurrentProduct] = useState<any>(null);
@@ -38,12 +40,9 @@ function HomeContent() {
   const { addItem } = useCart();
   const { toast, showToast, hideToast } = useToast();
   const { location, loading, showConfirmation, tempLocation, confirmLocation } = useLocation();
-  
-  // Detectar qual template usar
-  const template = process.env.NEXT_PUBLIC_TEMPLATE || 'modelo1';
 
   // Se for modelo2, renderizar componente específico
-  if (template === 'modelo2') {
+  if (tenant.template === 'modelo2') {
     return <Modelo2HomePage />;
   }
 

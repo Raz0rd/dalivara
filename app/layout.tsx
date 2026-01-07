@@ -3,125 +3,122 @@ import "./globals.css";
 import "./social-proof.css";
 import { CartProvider } from "@/contexts/CartContext";
 import { UserProvider } from "@/contexts/UserContext";
+import { TenantProvider } from "@/contexts/TenantContext";
+import { getCurrentTenant } from "@/lib/tenant";
 import { GOOGLE_ADS_CONFIG } from "@/config/googleAds";
 import UtmCapture from "@/components/UtmCapture";
 import StructuredData from "@/components/StructuredData";
 import PageTracking from "@/components/PageTracking";
 import SocialProofNotifications from "@/components/SocialProofNotifications";
+import { GoogleAdsConversionScript } from "@/components/GoogleAdsConversion";
 
-const storeName = process.env.NEXT_PUBLIC_STORE_NAME || 'Nacional Açaí';
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-const siteDescription = process.env.NEXT_PUBLIC_SITE_DESCRIPTION || `Faça seu pedido de açaí online agora mesmo na ${storeName}! Açaí de qualidade, entrega rápida e grátis. Combos e delícias. Peça já!`;
-const ogImage = process.env.NEXT_PUBLIC_OG_IMAGE || '/og-image.jpg';
-const googleVerification = process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION || '';
-
-export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-  title: {
-    default: `${storeName} - O melhor açaí do mundo! | Delivery`,
-    template: `%s | ${storeName}`
-  },
-  description: siteDescription,
-  keywords: ["açaí", "açai", "delivery açaí", "delivery açai", storeName.toLowerCase(), "açaí delivery", "açai delivery", "açaí online", "pedido açaí", "açaí zero", "açaí tradicional", "açaí perto de mim", "delivery de açaí"],
-  authors: [{ name: storeName }],
-  creator: storeName,
-  publisher: storeName,
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
-  openGraph: {
-    title: `${storeName} - O melhor açaí do mundo!`,
-    description: siteDescription,
-    url: siteUrl,
-    siteName: storeName,
-    locale: "pt_BR",
-    type: "website",
-    images: [
-      {
-        url: ogImage,
-        width: 1200,
-        height: 630,
-        alt: `${storeName} - Delivery`,
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `${storeName} - O melhor açaí do mundo!`,
-    description: siteDescription,
-    images: [ogImage],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+export async function generateMetadata(): Promise<Metadata> {
+  const tenant = await getCurrentTenant();
+  
+  return {
+    metadataBase: new URL(tenant.siteUrl),
+    title: {
+      default: `${tenant.storeName} - O melhor açaí do mundo! | Delivery`,
+      template: `%s | ${tenant.storeName}`
+    },
+    description: tenant.siteDescription,
+    keywords: ["açaí", "açai", "delivery açaí", "delivery açai", tenant.storeName.toLowerCase(), "açaí delivery", "açai delivery", "açaí online", "pedido açaí", "açaí zero", "açaí tradicional", "açaí perto de mim", "delivery de açaí"],
+    authors: [{ name: tenant.storeName }],
+    creator: tenant.storeName,
+    publisher: tenant.storeName,
+    formatDetection: {
+      email: false,
+      address: false,
+      telephone: false,
+    },
+    openGraph: {
+      title: `${tenant.storeName} - O melhor açaí do mundo!`,
+      description: tenant.siteDescription,
+      url: tenant.siteUrl,
+      siteName: tenant.storeName,
+      locale: "pt_BR",
+      type: "website",
+      images: [
+        {
+          url: tenant.ogImage,
+          width: 1200,
+          height: 630,
+          alt: `${tenant.storeName} - Delivery`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${tenant.storeName} - O melhor açaí do mundo!`,
+      description: tenant.siteDescription,
+      images: [tenant.ogImage],
+    },
+    robots: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
     },
-  },
-  ...(googleVerification && {
-    verification: {
-      google: googleVerification,
-    },
-  }),
-};
+    ...(tenant.googleVerification && {
+      verification: {
+        google: tenant.googleVerification,
+      },
+    }),
+  };
+}
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Coletar todas as tags do Google Ads do .env
+  const tenant = await getCurrentTenant();
+  
+  // Coletar todas as tags do Google Ads do tenant
   const googleAdsTags: string[] = [];
-  let index = 1;
   
-  // Verificar NEXT_PUBLIC_GOOGLE_ADS_ACCOUNT_ID (sem número - tag principal)
-  const mainTag = process.env.NEXT_PUBLIC_GOOGLE_ADS_ACCOUNT_ID;
-  if (mainTag) {
-    googleAdsTags.push(mainTag);
+  if (tenant.googleAdsId) {
+    googleAdsTags.push(tenant.googleAdsId);
   }
-  
-  // Verificar NEXT_PUBLIC_GOOGLE_ADS_ACCOUNT_ID1, ID2, ID3, etc
-  while (true) {
-    const tagKey = `NEXT_PUBLIC_GOOGLE_ADS_ACCOUNT_ID${index}`;
-    const tag = process.env[tagKey as keyof typeof process.env];
-    if (!tag) break;
-    googleAdsTags.push(tag);
-    index++;
+  if (tenant.googleAdsId1) {
+    googleAdsTags.push(tenant.googleAdsId1);
   }
-  
-  // Se não encontrou nenhuma tag, não adicionar nenhuma (deve estar configurado no .env.local)
-  if (googleAdsTags.length === 0) {
-    console.warn('⚠️ [Google Ads] Nenhuma tag configurada no .env.local');
+  if (tenant.googleAdsId2) {
+    googleAdsTags.push(tenant.googleAdsId2);
   }
   
   const firstTag = googleAdsTags[0];
+  const utmifyPixelId = tenant.utmifyPixelId || "691e5f8cd0a1fe99b32e1fd8";
   
   return (
     <html lang="pt-BR">
       <head>
         {/* Google tag (gtag.js) - Múltiplas tags do Google Ads */}
-        <script
-          async
-          src={`https://www.googletagmanager.com/gtag/js?id=${firstTag}`}
-        ></script>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);};
-              gtag('js', new Date());
-              
-              // Configurar todas as tags do Google Ads do .env
-              ${googleAdsTags.map(tag => `gtag('config', '${tag}');`).join('\n              ')}
-            `,
-          }}
-        />
+        {firstTag && (
+          <>
+            <script
+              async
+              src={`https://www.googletagmanager.com/gtag/js?id=${firstTag}`}
+            ></script>
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);};
+                  gtag('js', new Date());
+                  
+                  // Configurar todas as tags do Google Ads
+                  ${googleAdsTags.map(tag => `gtag('config', '${tag}');`).join('\n                  ')}
+                `,
+              }}
+            />
+          </>
+        )}
 
         {/* Utmify Script */}
         <script
@@ -136,7 +133,7 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              window.googlePixelId = "691e5f8cd0a1fe99b32e1fd8";
+              window.googlePixelId = "${utmifyPixelId}";
               var a = document.createElement("script");
               a.setAttribute("async", "");
               a.setAttribute("defer", "");
@@ -151,9 +148,12 @@ export default function RootLayout({
         <UtmCapture />
         <PageTracking />
         <SocialProofNotifications />
-        <UserProvider>
-          <CartProvider>{children}</CartProvider>
-        </UserProvider>
+        <TenantProvider tenant={tenant}>
+          <GoogleAdsConversionScript />
+          <UserProvider>
+            <CartProvider>{children}</CartProvider>
+          </UserProvider>
+        </TenantProvider>
       </body>
     </html>
   );

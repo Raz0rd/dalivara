@@ -7,6 +7,7 @@ import ReviewsCarousel from "@/components/ReviewsCarousel";
 import BottomNav from "@/components/BottomNav";
 import LoadingOverlay from "@/components/LoadingOverlay";
 import { useUser } from "@/contexts/UserContext";
+import { useTenant } from "@/contexts/TenantContext";
 import dynamic from "next/dynamic";
 
 // Importar modelo2 dinamicamente
@@ -27,6 +28,7 @@ interface AddressData {
 export default function EnderecoPage() {
   // Hooks devem ser chamados antes de qualquer return condicional
   const router = useRouter();
+  const tenant = useTenant();
   const { userData, setUserData } = useUser();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -43,9 +45,6 @@ export default function EnderecoPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loadingCep, setLoadingCep] = useState(false);
   const [cepError, setCepError] = useState("");
-  
-  // Detectar qual template usar
-  const template = process.env.NEXT_PUBLIC_TEMPLATE || 'modelo1';
 
   // Reviews
   const reviews = [
@@ -77,7 +76,7 @@ export default function EnderecoPage() {
   }, [userData]);
   
   // Se for modelo2, renderizar componente específico
-  if (template === 'modelo2') {
+  if (tenant.template === 'modelo2') {
     return <Modelo2EnderecoPage />;
   }
 

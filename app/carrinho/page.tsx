@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/useToast";
+import { useTenant } from "@/contexts/TenantContext";
 import Toast from "@/components/Toast";
 import dynamic from "next/dynamic";
 
@@ -18,12 +19,10 @@ const Modelo2CartPage = dynamic(() => import("@/app/templates/modelo2/Modelo2Car
 export default function CarrinhoPage() {
   // Hooks devem ser chamados antes de qualquer return condicional
   const router = useRouter();
+  const tenant = useTenant();
   const { items, updateQuantity, removeItem, getTotalPrice, addItem } = useCart();
   const { toast, showToast, hideToast } = useToast();
   const [hasBlockedCart, setHasBlockedCart] = useState(false);
-  
-  // Detectar qual template usar
-  const template = process.env.NEXT_PUBLIC_TEMPLATE || 'modelo1';
   const hasItems = items.length > 0;
 
   // Verificar se há pedido pendente (redireciona para pagamento)
@@ -46,7 +45,7 @@ export default function CarrinhoPage() {
   }, [router]);
   
   // Se for modelo2, renderizar componente específico
-  if (template === 'modelo2') {
+  if (tenant.template === 'modelo2') {
     return <Modelo2CartPage />;
   }
 

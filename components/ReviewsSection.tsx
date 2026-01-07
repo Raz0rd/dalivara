@@ -120,31 +120,6 @@ export default function ReviewsSection() {
           </div>
         ))}
       </div>
-
-      {/* Contador de Promoção */}
-      <div className="bg-red-50 border-2 border-red-500 rounded-lg mx-4 my-4 p-4 text-center">
-        <p className="text-red-700 font-bold mb-3">A promoção vai acabar em:</p>
-        <div className="flex justify-center gap-3 mb-3">
-          <div className="bg-white rounded-lg px-3 py-2 min-w-[60px]">
-            <div className="text-2xl font-bold text-red-600">
-              {String(timeLeft.minutes).padStart(2, '0')}
-            </div>
-            <div className="text-xs text-gray-600">Minutos</div>
-          </div>
-          <div className="bg-white rounded-lg px-3 py-2 min-w-[60px]">
-            <div className="text-2xl font-bold text-red-600">
-              {String(timeLeft.seconds).padStart(2, '0')}
-            </div>
-            <div className="text-xs text-gray-600">Segundos</div>
-          </div>
-        </div>
-        <a
-          href="#destaque"
-          className="inline-block bg-white text-purple-700 font-semibold px-4 py-2 rounded-lg border-2 border-purple-500 hover:bg-purple-50 transition-colors"
-        >
-          Clique Para Ver Açaís em Promoção 💜
-        </a>
-      </div>
     </div>
   );
 }
