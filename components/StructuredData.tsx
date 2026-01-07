@@ -1,7 +1,10 @@
 "use client";
 
+import { useTenant } from "@/contexts/TenantContext";
+
 export default function StructuredData() {
-  const storeName = process.env.NEXT_PUBLIC_STORE_NAME || 'Nacional Açaí';
+  const tenant = useTenant();
+  const storeName = tenant.storeName;
   
   const structuredData = {
     "@context": "https://schema.org",

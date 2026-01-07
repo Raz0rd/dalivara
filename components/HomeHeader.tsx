@@ -2,15 +2,16 @@
 
 import Image from "next/image";
 import ReviewsButton from "./ReviewsButton";
+import { useTenant } from "@/contexts/TenantContext";
 
 interface HomeHeaderProps {
   onReviewsClick?: () => void;
 }
 
 export default function HomeHeader({ onReviewsClick }: HomeHeaderProps) {
-  // Obter configurações do .env
-  const storeName = process.env.NEXT_PUBLIC_STORE_NAME || 'NACIONAL AÇAÍ';
-  const storeLogo = process.env.NEXT_PUBLIC_STORE_LOGO || 'nacional.png';
+  const tenant = useTenant();
+  const storeName = tenant.storeName;
+  const storeLogo = tenant.logo;
   
   // Dividir o nome da loja em duas linhas
   const storeNameParts = storeName.split(' ');

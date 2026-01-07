@@ -1,13 +1,15 @@
 "use client";
 
 import { ReactNode } from "react";
+import { useTenant } from "@/contexts/TenantContext";
 
 interface TemplateWrapperProps {
   children: ReactNode;
 }
 
 export default function TemplateWrapper({ children }: TemplateWrapperProps) {
-  const template = process.env.NEXT_PUBLIC_TEMPLATE || 'modelo1';
+  const tenant = useTenant();
+  const template = tenant.template;
   
   // Modelo 1: Layout atual (mobile-first, centralizado)
   if (template === 'modelo1') {

@@ -1,6 +1,7 @@
 "use client";
 
-import { X, Building2, FileText, Users, Award } from "lucide-react";
+import { X, Building2, MapPin, Phone, Mail, FileText, Users, Award } from "lucide-react";
+import { useTenant } from "@/contexts/TenantContext";
 
 interface CompanyInfoModalProps {
   isOpen: boolean;
@@ -8,6 +9,7 @@ interface CompanyInfoModalProps {
 }
 
 export default function CompanyInfoModal({ isOpen, onClose }: CompanyInfoModalProps) {
+  const tenant = useTenant();
   if (!isOpen) return null;
 
   return (
@@ -17,7 +19,7 @@ export default function CompanyInfoModal({ isOpen, onClose }: CompanyInfoModalPr
         <div className="sticky top-0 bg-primary text-white px-6 py-4 flex items-center justify-between rounded-t-lg">
           <div className="flex items-center gap-3">
             <Building2 size={24} />
-            <h2 className="text-xl font-bold">Sobre a {process.env.NEXT_PUBLIC_STORE_NAME || 'Nacional Açaí'}</h2>
+            <h2 className="text-xl font-bold">Sobre a {tenant.storeName}</h2>
           </div>
           <button
             onClick={onClose}
@@ -37,7 +39,7 @@ export default function CompanyInfoModal({ isOpen, onClose }: CompanyInfoModalPr
               <h3 className="font-bold text-lg text-gray-900">Quem Somos</h3>
             </div>
             <p className="text-gray-700 leading-relaxed">
-              A <strong>{process.env.NEXT_PUBLIC_STORE_NAME || 'Nacional Açaí'}</strong> é uma empresa especializada no fornecimento de açaí de alta qualidade para toda a região. Trabalhamos em parceria com diversas lojinhas de açaí, garantindo que nossos clientes recebam sempre o melhor produto.
+              A <strong>{tenant.storeName}</strong> é uma empresa especializada no fornecimento de açaí de alta qualidade para toda a região. Trabalhamos em parceria com diversas lojinhas de açaí, garantindo que nossos clientes recebam sempre o melhor produto.
             </p>
           </div>
 
@@ -99,7 +101,7 @@ export default function CompanyInfoModal({ isOpen, onClose }: CompanyInfoModalPr
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Nome Fantasia:</span>
-                <span className="font-semibold text-gray-900">{process.env.NEXT_PUBLIC_STORE_NAME || 'Nacional Açaí'}</span>
+                <span className="font-semibold text-gray-900">{tenant.storeName}</span>
               </div>
             </div>
           </div>

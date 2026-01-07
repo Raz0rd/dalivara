@@ -31,8 +31,8 @@ export default function Modelo2HomePage() {
   const tenant = useTenant();
   const { addItem } = useCart();
   const { toast, showToast, hideToast } = useToast();
-  const storeName = process.env.NEXT_PUBLIC_STORE_NAME || 'Nacional Açaí';
-  const storeLogo = process.env.NEXT_PUBLIC_STORE_LOGO || 'ponto.webp';
+  const storeName = tenant.storeName;
+  const storeLogo = tenant.logo;
   const [countdown, setCountdown] = useState({ minutes: 15, seconds: 0 });
 
   // Reviews

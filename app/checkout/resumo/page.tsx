@@ -6,19 +6,21 @@ import { ChevronLeft, CheckCircle2, Shield, Clock } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useUser } from "@/contexts/UserContext";
 import { useLocation } from "@/hooks/useLocation";
+import { useTenant } from "@/contexts/TenantContext";
 import BottomNav from "@/components/BottomNav";
 
 export default function ResumoPage() {
   const router = useRouter();
+  const tenant = useTenant();
   const { items, getTotalPrice } = useCart();
   const { userData } = useUser();
   const { location } = useLocation();
   const [isRedirecting, setIsRedirecting] = useState(false);
 
-  // Dados da loja do .env
-  const storeName = process.env.NEXT_PUBLIC_STORE_NAME || 'Nacional Açaí';
-  const storeCNPJ = process.env.NEXT_PUBLIC_CNPJ || '64.744.999/0001-04';
-  const storePhone = process.env.NEXT_PUBLIC_PHONE || '(85) 91111-1111';
+  // Dados da loja do tenant
+  const storeName = tenant.storeName;
+  const storeCNPJ = '64.744.999/0001-04'; // TODO: Adicionar ao tenant se necessário
+  const storePhone = tenant.whatsappNumber || '(85) 91111-1111';
 
   useEffect(() => {
     // Redirecionar se não tiver dados
