@@ -11,6 +11,7 @@ import ReviewsCarousel from "@/components/ReviewsCarousel";
 import Modelo2BottomNav from "./Modelo2BottomNav";
 import Toast from "@/components/Toast";
 import { useToast } from "@/hooks/useToast";
+import { useTenant } from "@/contexts/TenantContext";
 
 interface Product {
   id: string;
@@ -27,6 +28,7 @@ interface Product {
 
 export default function Modelo2HomePage() {
   const router = useRouter();
+  const tenant = useTenant();
   const { addItem } = useCart();
   const { toast, showToast, hideToast } = useToast();
   const storeName = process.env.NEXT_PUBLIC_STORE_NAME || 'Nacional Açaí';
@@ -370,8 +372,8 @@ export default function Modelo2HomePage() {
                     <div className="texto">
                       {product.badge && (
                         <span style={{
-                          color: '#5b0e5c',
-                          background: '#f1cdf2',
+                          color: tenant.primaryColor,
+                          background: `${tenant.primaryColor}20`,
                           padding: '2px 2px',
                           marginBottom: '2px',
                           borderRadius: '8px',
@@ -447,8 +449,8 @@ export default function Modelo2HomePage() {
                     <div className="texto">
                       {product.badge && (
                         <span style={{
-                          color: '#5b0e5c',
-                          background: '#f1cdf2',
+                          color: tenant.primaryColor,
+                          background: `${tenant.primaryColor}20`,
                           padding: '2px 2px',
                           marginBottom: '2px',
                           borderRadius: '8px',

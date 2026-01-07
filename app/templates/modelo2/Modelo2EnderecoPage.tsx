@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/contexts/UserContext";
+import { useTenant } from "@/contexts/TenantContext";
 import Link from "next/link";
 import Modelo2Layout from "./Modelo2Layout";
 
@@ -18,6 +19,7 @@ interface AddressData {
 
 export default function Modelo2EnderecoPage() {
   const router = useRouter();
+  const tenant = useTenant();
   const { userData, setUserData } = useUser();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -139,7 +141,7 @@ export default function Modelo2EnderecoPage() {
       <header style={{
         position: 'sticky',
         top: 0,
-        backgroundColor: '#5b0e5c',
+        backgroundColor: tenant.primaryColor,
         color: 'white',
         padding: '15px 20px',
         zIndex: 100,
@@ -190,7 +192,7 @@ export default function Modelo2EnderecoPage() {
             <h2 style={{
               fontSize: '18px',
               fontWeight: 'bold',
-              color: '#5b0e5c',
+              color: tenant.primaryColor,
               marginBottom: '10px'
             }}>
               📝 Dados Pessoais
@@ -271,7 +273,7 @@ export default function Modelo2EnderecoPage() {
             <h2 style={{
               fontSize: '18px',
               fontWeight: 'bold',
-              color: '#5b0e5c',
+              color: tenant.primaryColor,
               marginBottom: '15px'
             }}>
               📍 Endereço para Entrega
@@ -418,7 +420,7 @@ export default function Modelo2EnderecoPage() {
               alignItems: 'center',
               justifyContent: 'center',
               gap: '10px',
-              backgroundColor: '#5b0e5c',
+              backgroundColor: tenant.primaryColor,
               color: 'white',
               borderRadius: '8px',
               transition: 'all 0.3s ease'

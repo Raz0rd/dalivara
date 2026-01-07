@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Instagram, Info, Coins, Bike, MapPin, Star, Circle, Clock } from "lucide-react";
 import CompanyInfoModal from "./CompanyInfoModal";
+import { useTenant } from "@/contexts/TenantContext";
 
 interface StoreInfoProps {
   city?: string;
@@ -19,6 +20,7 @@ export default function StoreInfo({
   activeTab = "combos",
   onTabChange 
 }: StoreInfoProps) {
+  const tenant = useTenant();
   const [storeStatus, setStoreStatus] = useState({
     isOpen: true,
     closingTime: "",
@@ -161,8 +163,11 @@ export default function StoreInfo({
         </div>
 
         {/* Banner Promoção */}
-        <div className="bg-purple-50 border-2 border-purple-500 rounded-lg px-4 py-3 text-center">
-          <p className="text-sm text-purple-700">
+        <div className="rounded-lg px-4 py-3 text-center" style={{
+          backgroundColor: `${tenant.primaryColor}10`,
+          border: `2px solid ${tenant.primaryColor}`
+        }}>
+          <p className="text-sm" style={{ color: tenant.primaryColor }}>
             Aproveite nossa <strong>promoção com preços irresistíveis</strong> igual Açaí 💜
           </p>
         </div>
@@ -175,11 +180,16 @@ export default function StoreInfo({
             <button
               key={tab.id}
               onClick={() => onTabChange?.(tab.id)}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-full whitespace-nowrap text-sm font-semibold transition-all duration-300 transform ${
-                activeTab === tab.id
-                  ? "bg-gradient-to-r from-primary to-purple-600 text-white shadow-lg scale-105 ring-2 ring-primary/30"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200 hover:scale-105 hover:shadow-md"
-              }`}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-full whitespace-nowrap text-sm font-semibold transition-all duration-300 transform"
+              style={activeTab === tab.id ? {
+                background: `linear-gradient(to right, ${tenant.primaryColor}, ${tenant.primaryColor}dd)`,
+                color: 'white',
+                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+                transform: 'scale(1.05)'
+              } : {
+                backgroundColor: '#f3f4f6',
+                color: '#374151'
+              }}
             >
               <span className={`text-lg ${activeTab === tab.id ? "animate-bounce" : ""}`}>
                 {tab.icon}

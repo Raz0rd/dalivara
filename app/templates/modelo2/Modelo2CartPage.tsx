@@ -9,9 +9,11 @@ import Modelo2Layout from "./Modelo2Layout";
 import Modelo2BottomNav from "./Modelo2BottomNav";
 import Toast from "@/components/Toast";
 import { useToast } from "@/hooks/useToast";
+import { useTenant } from "@/contexts/TenantContext";
 
 export default function Modelo2CartPage() {
   const router = useRouter();
+  const tenant = useTenant();
   const { items, updateQuantity, removeItem, getTotalPrice } = useCart();
   const { toast, showToast, hideToast } = useToast();
   const hasItems = items.length > 0;
@@ -80,7 +82,7 @@ export default function Modelo2CartPage() {
       <header style={{
         position: 'sticky',
         top: 0,
-        backgroundColor: '#5b0e5c',
+        backgroundColor: tenant.primaryColor,
         color: 'white',
         padding: '15px 20px',
         zIndex: 100,
@@ -164,7 +166,7 @@ export default function Modelo2CartPage() {
               padding: '15px 40px',
               textDecoration: 'none',
               borderRadius: '8px',
-              backgroundColor: '#5b0e5c',
+              backgroundColor: tenant.primaryColor,
               color: 'white',
               fontWeight: 'bold'
             }}>
@@ -179,7 +181,7 @@ export default function Modelo2CartPage() {
             }}>
               <h2 style={{
                 marginBottom: '15px', 
-                color: '#5b0e5c', 
+                color: tenant.primaryColor, 
                 fontSize: '20px',
                 fontWeight: 'bold'
               }}>
@@ -226,7 +228,7 @@ export default function Modelo2CartPage() {
                         display: 'block',
                         fontWeight: 'bold',
                         fontSize: '16px',
-                        color: '#5b0e5c',
+                        color: tenant.primaryColor,
                         marginBottom: '5px'
                       }}>
                         {item.name}
@@ -267,7 +269,7 @@ export default function Modelo2CartPage() {
                           display: 'flex',
                           alignItems: 'center',
                           gap: '12px',
-                          border: '2px solid #5b0e5c',
+                          border: '2px solid ' + tenant.primaryColor,
                           borderRadius: '8px',
                           padding: '8px 15px',
                           backgroundColor: 'white'
@@ -286,7 +288,7 @@ export default function Modelo2CartPage() {
                               justifyContent: 'center'
                             }}
                           >
-                            <i className="fa-solid fa-minus" style={{color: '#5b0e5c', fontSize: '14px'}}></i>
+                            <i className="fa-solid fa-minus" style={{color: tenant.primaryColor, fontSize: '14px'}}></i>
                           </button>
                           <span style={{
                             minWidth: '30px',
@@ -311,7 +313,7 @@ export default function Modelo2CartPage() {
                               justifyContent: 'center'
                             }}
                           >
-                            <i className="fa-solid fa-plus" style={{color: '#5b0e5c', fontSize: '14px'}}></i>
+                            <i className="fa-solid fa-plus" style={{color: tenant.primaryColor, fontSize: '14px'}}></i>
                           </button>
                         </div>
 
@@ -346,12 +348,12 @@ export default function Modelo2CartPage() {
                 padding: '20px',
                 backgroundColor: '#f0f0f0',
                 borderRadius: '8px',
-                border: '2px solid #5b0e5c'
+                border: '2px solid ' + tenant.primaryColor
               }}>
                 <h3 style={{
                   fontSize: '18px',
                   fontWeight: 'bold',
-                  color: '#5b0e5c',
+                  color: tenant.primaryColor,
                   marginBottom: '15px'
                 }}>
                   📋 Resumo do Pedido
@@ -382,10 +384,10 @@ export default function Modelo2CartPage() {
                   display: 'flex',
                   justifyContent: 'space-between',
                   paddingTop: '15px',
-                  borderTop: '2px solid #5b0e5c',
+                  borderTop: '2px solid ' + tenant.primaryColor,
                   fontSize: '22px',
                   fontWeight: 'bold',
-                  color: '#5b0e5c'
+                  color: tenant.primaryColor
                 }}>
                   <span>Total:</span>
                   <span>R$ {getTotalPrice().toFixed(2)}</span>
@@ -400,7 +402,7 @@ export default function Modelo2CartPage() {
                   color: '#666',
                   textAlign: 'center'
                 }}>
-                  <i className="fa-solid fa-motorcycle" style={{color: '#5b0e5c', marginRight: '5px'}}></i>
+                  <i className="fa-solid fa-motorcycle" style={{color: tenant.primaryColor, marginRight: '5px'}}></i>
                   Entrega em <b>10-20 minutos</b>
                 </div>
               </div>
@@ -459,7 +461,7 @@ export default function Modelo2CartPage() {
                 justifyContent: 'space-between',
                 paddingLeft: '20px',
                 paddingRight: '20px',
-                backgroundColor: '#5b0e5c',
+                backgroundColor: tenant.primaryColor,
                 color: 'white',
                 borderRadius: '8px',
                 transition: 'all 0.3s ease',

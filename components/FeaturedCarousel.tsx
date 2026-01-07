@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useTenant } from "@/contexts/TenantContext";
 import { Plus } from "lucide-react";
 
 interface Product {
@@ -22,6 +23,8 @@ interface FeaturedCarouselProps {
 }
 
 export default function FeaturedCarousel({ products }: FeaturedCarouselProps) {
+  const tenant = useTenant();
+
   return (
     <div className="bg-white mb-2">
       <div className="px-4 py-3">
@@ -54,7 +57,10 @@ export default function FeaturedCarousel({ products }: FeaturedCarouselProps) {
               {/* Badge */}
               {product.badge && (
                 <div className="mb-2">
-                  <span className="inline-block bg-purple-100 text-purple-800 text-xs font-bold px-2 py-1 rounded">
+                  <span className="inline-block text-xs font-bold px-2 py-1 rounded" style={{
+                    backgroundColor: `${tenant.primaryColor}20`,
+                    color: tenant.primaryColor
+                  }}>
                     {product.badge}
                   </span>
                 </div>
