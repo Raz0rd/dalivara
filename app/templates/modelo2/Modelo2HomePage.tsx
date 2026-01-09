@@ -314,7 +314,7 @@ export default function Modelo2HomePage() {
                   className="disponivel pulsar"
                   onClick={(e) => {
                     e.preventDefault();
-                    handleProductClick(acai[0]);
+                    handleProductClick(pague1Leve2[0]);
                   }}
                   style={{border: '2px solid #ff6b35', cursor: 'pointer', background: '#fff9f5'}}
                 >
@@ -331,7 +331,7 @@ export default function Modelo2HomePage() {
                     }}>
                       🔥 PERFEITO PARA COMEÇAR
                     </span>
-                    <h3>1 Copo Açaí 300ml</h3>
+                    <h3>2 Copos Açaí 300ml</h3>
                     <span>9 Complementos Grátis</span>
                     <span className="preco" style={{fontSize: '20px'}}>
                       <b style={{background: '#ff6b35', color: 'white', borderRadius: '8px', padding: '0px 4px'}}>
@@ -342,11 +342,11 @@ export default function Modelo2HomePage() {
                   <div className="fotoProduto">
                     <figure>
                       <Image 
-                        src="/images/modelo2/copo1.webp"
+                        src="/images/modelo2/copo2.webp"
                         width={110}
                         height={110}
                         loading="lazy"
-                        alt="1 Copo Açaí 300ml"
+                        alt="2 Copos Açaí 300ml"
                       />
                     </figure>
                   </div>

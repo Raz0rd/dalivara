@@ -37,3 +37,6 @@ chavesheets.json
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# tenant configurations (preserve domain settings)
+config/tenants.ts
