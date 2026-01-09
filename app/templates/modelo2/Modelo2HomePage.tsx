@@ -151,13 +151,6 @@ export default function Modelo2HomePage() {
 
   const acai: Product[] = [
     {
-      id: "acai-300ml",
-      name: "1 Copo Açaí 300ml",
-      description: "9 Complementos Grátis",
-      price: 19.90,
-      image: "/images/modelo2/copo1.webp",
-    },
-    {
       id: "acai-500ml",
       name: "1 Copo Açaí 500ml",
       description: "9 Complementos Grátis",
