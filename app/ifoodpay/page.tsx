@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ChevronDown, ChevronRight, Info, LockKeyhole } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useUser } from "@/contexts/UserContext";
+import { useTenant } from "@/contexts/TenantContext";
 import { sendUtmifyConversion, saveUtmsToStorage, getUtmParams, sendGoogleAdsConversion } from "@/utils/utmify";
 import { formatCPF, formatPhone, validateCPF, validatePhone } from "@/utils/formatters";
 import DeliveryOptions from "@/components/DeliveryOptions";
@@ -19,6 +20,7 @@ export default function IfoodPayPage() {
   const router = useRouter();
   const { items, getTotalPrice, addItem, removeItem, clearCart } = useCart();
   const { userData } = useUser();
+  const tenant = useTenant();
   
   const [showSummary, setShowSummary] = useState(false);
   const [couponCode, setCouponCode] = useState("");
@@ -121,6 +123,22 @@ export default function IfoodPayPage() {
   };
 
   const handleContinueFromPersonal = () => {
+    // Validar CPF
+    if (!cpf || !validateCPF(cpf)) {
+      setToastMessage("Por favor, insira um CPF válido");
+      setToastType("error");
+      setShowToast(true);
+      return;
+    }
+
+    // Validar telefone
+    if (!phone || !validatePhone(phone)) {
+      setToastMessage("Por favor, insira um telefone válido");
+      setToastType("error");
+      setShowToast(true);
+      return;
+    }
+
     setCurrentStep("delivery");
   };
 
@@ -364,7 +382,16 @@ export default function IfoodPayPage() {
           
           // Verificar se gtag está disponível
           if (typeof (window as any).gtag === 'function') {
-            await sendGoogleAdsConversion(transactionId, totalWithTip, 'BRL', userData?.email, phone, totalWithTip);
+            await sendGoogleAdsConversion(
+              transactionId, 
+              totalWithTip, 
+              'BRL', 
+              userData?.email, 
+              phone, 
+              totalWithTip,
+              tenant.googleAdsConversionId,
+              tenant.googleAdsConversionLabel
+            );
           } else {
             console.error('❌ [Google Ads] gtag não está disponível no navegador');
           }

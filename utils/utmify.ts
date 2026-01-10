@@ -160,7 +160,9 @@ export async function sendGoogleAdsConversion(
   currency: string = 'BRL',
   email?: string,
   phone?: string,
-  totalValue?: number
+  totalValue?: number,
+  googleAdsConversionId?: string,
+  googleAdsConversionLabel?: string
 ): Promise<void> {
   if (typeof window === 'undefined' || typeof (window as any).gtag !== 'function') {
     console.warn('⚠️ [Google Ads] gtag não disponível');
@@ -202,19 +204,15 @@ export async function sendGoogleAdsConversion(
       console.log('📱 Telefone hasheado:', userData.phone_number.substring(0, 10) + '...');
     }
 
-    // Obter configurações do Google Ads do .env.local
-    // Next.js substitui process.env.NEXT_PUBLIC_* em tempo de build
-    const accountId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ACCOUNT_ID || '';
-    const conversionLabel = process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL || '';
-    
-    if (!accountId || !conversionLabel) {
-      console.error('❌ [Google Ads] NEXT_PUBLIC_GOOGLE_ADS_ACCOUNT_ID ou NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL não configurados no .env.local');
-      console.error('   Account ID:', accountId || 'não definido');
-      console.error('   Conversion Label:', conversionLabel || 'não definido');
+    // Usar configurações do tenant (multitenant)
+    if (!googleAdsConversionId || !googleAdsConversionLabel) {
+      console.error('❌ [Google Ads] googleAdsConversionId ou googleAdsConversionLabel não fornecidos');
+      console.error('   Conversion ID:', googleAdsConversionId || 'não definido');
+      console.error('   Conversion Label:', googleAdsConversionLabel || 'não definido');
       return;
     }
     
-    const sendTo = `${accountId}/${conversionLabel}`;
+    const sendTo = `${googleAdsConversionId}/${googleAdsConversionLabel}`;
     console.log('🎯 [Google Ads] Send To:', sendTo);
     
     // Preparar dados de conversão

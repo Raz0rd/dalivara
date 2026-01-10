@@ -10,7 +10,6 @@ import UtmCapture from "@/components/UtmCapture";
 import StructuredData from "@/components/StructuredData";
 import PageTracking from "@/components/PageTracking";
 import SocialProofNotifications from "@/components/SocialProofNotifications";
-import { GoogleAdsConversionScript } from "@/components/GoogleAdsConversion";
 
 export async function generateMetadata(): Promise<Metadata> {
   const tenant = await getCurrentTenant();
@@ -149,7 +148,6 @@ export default async function RootLayout({
         <PageTracking />
         <SocialProofNotifications />
         <TenantProvider tenant={tenant}>
-          <GoogleAdsConversionScript />
           <UserProvider>
             <CartProvider>{children}</CartProvider>
           </UserProvider>
