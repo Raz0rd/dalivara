@@ -141,7 +141,6 @@ export default async function RootLayout({
             `,
           }}
         />
-        <StructuredData />
       </head>
       <body>
         <UtmCapture />
