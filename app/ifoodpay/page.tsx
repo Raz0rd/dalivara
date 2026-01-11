@@ -47,6 +47,12 @@ export default function IfoodPayPage() {
   const totalPrice = getTotalPrice();
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
 
+  // Debug: Log para verificar items e total
+  useEffect(() => {
+    console.log('📦 Items no carrinho:', items);
+    console.log('💰 Total calculado:', totalPrice);
+  }, [items, totalPrice]);
+
   // Sincronizar selectedOrderBumps com os itens do carrinho
   useEffect(() => {
     const orderBumpIds = ['agua-500ml', 'bombom-garoto', 'copo-extra-500ml', 'pote-felicidade', 'coca-cola-2un'];
@@ -139,23 +145,25 @@ export default function IfoodPayPage() {
     const newSelected = new Set(selectedOrderBumps);
     
     if (newSelected.has(productId)) {
-      // Remover do carrinho
+      // Remover do carrinho - busca pelo productId correto
       newSelected.delete(productId);
       const itemToRemove = items.find(item => item.productId === productId);
       if (itemToRemove) {
+        console.log('🗑️ Removendo order bump:', itemToRemove);
         removeItem(itemToRemove.id);
       }
     } else {
-      // Adicionar ao carrinho
+      // Adicionar ao carrinho - usa productId consistente
       newSelected.add(productId);
       addItem({
         id: Date.now().toString(),
-        productId: product.id,
+        productId: productId, // CORRIGIDO: usar productId ao invés de product.id
         name: product.name,
         price: product.price,
         quantity: 1,
         image: product.image,
       });
+      console.log('✅ Order bump adicionado:', productId);
     }
     
     setSelectedOrderBumps(newSelected);
