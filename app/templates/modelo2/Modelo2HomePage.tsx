@@ -274,6 +274,15 @@ export default function Modelo2HomePage() {
           </div>
         </div>
 
+        {/* Fita de Promoção */}
+        <div className="Promo-do-Dia-bar">
+          <div className="Promo-do-Dia-track">
+            <span>😱 Promo do dia {tenant.storeName} • Descontos irresistíveis • Pague 1, leve 2 • </span>
+            <span>😱 Promo do dia {tenant.storeName} • Descontos irresistíveis • Pague 1, leve 2 • </span>
+            <span>😱 Promo do dia {tenant.storeName} • Descontos irresistíveis • Pague 1, leve 2 • </span>
+          </div>
+        </div>
+
         {/* Menu Categorias */}
         <div id="menuCategorias">
           <div className="container">

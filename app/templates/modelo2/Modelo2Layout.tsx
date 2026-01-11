@@ -73,6 +73,30 @@ export default function Modelo2Layout({ children }: Modelo2LayoutProps) {
         100% { transform: translateX(-50%); }
       }
       
+      .Promo-do-Dia-bar {
+        background: #FFFFFF;
+        color: #c90a02;
+        overflow: hidden;
+        white-space: nowrap;
+        border-top: 2px solid #ffffff;
+        border-bottom: 2px solid #ffffff;
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+      .Promo-do-Dia-track {
+        display: inline-block;
+        padding: 4px 0;
+        animation: promo-scroll 18s linear infinite;
+      }
+      .Promo-do-Dia-track span {
+        padding-right: 3rem;
+      }
+      @keyframes promo-scroll {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+      }
+      
       /* Bottom Navigation Bar */
       .bottomBar {
         position: fixed;

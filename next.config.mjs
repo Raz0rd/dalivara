@@ -6,6 +6,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'client-assets.anota.ai',
       },
+      {
+        protocol: 'https',
+        hostname: 'cloudfox-digital-products.s3.amazonaws.com',
+      },
     ],
   },
   async headers() {

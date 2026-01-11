@@ -44,9 +44,24 @@ export default function IfoodPayPage() {
   const [toastMessage, setToastMessage] = useState("");
   const [toastType, setToastType] = useState<"success" | "error" | "info">("error");
   const [showToast, setShowToast] = useState(false);
+  const [selectedOrderBumps, setSelectedOrderBumps] = useState<Set<string>>(new Set());
 
   const totalPrice = getTotalPrice();
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+
+  // Sincronizar selectedOrderBumps com os itens do carrinho
+  useEffect(() => {
+    const orderBumpIds = ['agua-500ml', 'bombom-garoto', 'copo-extra-500ml', 'pote-felicidade', 'coca-cola-2un'];
+    const newSelected = new Set<string>();
+    
+    orderBumpIds.forEach(id => {
+      if (items.some(item => item.productId === id)) {
+        newSelected.add(id);
+      }
+    });
+    
+    setSelectedOrderBumps(newSelected);
+  }, [items]);
 
   // Ref para armazenar a função de limpeza do polling
   const [cleanupPolling, setCleanupPolling] = useState<(() => void) | null>(null);
@@ -120,6 +135,32 @@ export default function IfoodPayPage() {
   const handleStartNewOrder = () => {
     localStorage.removeItem('pendingOrder');
     setShowRecoverModal(false);
+  };
+
+  const toggleOrderBump = (productId: string, product: any) => {
+    const newSelected = new Set(selectedOrderBumps);
+    
+    if (newSelected.has(productId)) {
+      // Remover do carrinho
+      newSelected.delete(productId);
+      const itemToRemove = items.find(item => item.productId === productId);
+      if (itemToRemove) {
+        removeItem(itemToRemove.id);
+      }
+    } else {
+      // Adicionar ao carrinho
+      newSelected.add(productId);
+      addItem({
+        id: Date.now().toString(),
+        productId: product.id,
+        name: product.name,
+        price: product.price,
+        quantity: 1,
+        image: product.image,
+      });
+    }
+    
+    setSelectedOrderBumps(newSelected);
   };
 
   const handleContinueFromPersonal = () => {
@@ -751,69 +792,760 @@ export default function IfoodPayPage() {
             {/* Resumo do Pedido */}
             {currentStep === "summary" && (
               <>
-                {/* Oferta de Água - Só mostra se não tiver água no carrinho */}
-                {!items.some(item => item.productId === "agua-500ml") && (
-                <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg p-5 mb-5 border-2 border-blue-200 max-sm:rounded-none">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="relative w-24 h-24 flex-shrink-0">
-                      <Image
-                        src="/products/1_agua.png"
-                        alt="Água Mineral"
-                        fill
-                        className="object-contain"
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-bold text-gray-900 text-lg mb-1">
-                        💧 Que tal uma água geladinha?
-                      </h3>
-                      <p className="text-sm text-gray-600 mb-2">
-                        Perfeito para acompanhar seu açaí! Água Mineral 500ml
-                      </p>
-                      <p className="text-xs text-blue-700 font-semibold">
-                        ✨ Apenas R$ 2,50 cada
-                      </p>
-                    </div>
+                {/* Order Bumps Container */}
+                <div className="orderbump-container mb-5">
+                  <div style={{
+                    background: '#f0fdf4',
+                    border: '1px solid #8b5cf6',
+                    borderRadius: '8px',
+                    padding: '12px',
+                    marginBottom: '10px'
+                  }}>
+                    <span style={{
+                      color: '#7c3aed',
+                      fontWeight: '600',
+                      fontSize: '14px'
+                    }}>
+                      🎁 Ofertas disponíveis para você:
+                    </span>
                   </div>
                   
-                  <div className="flex gap-3">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        addItem({
-                          id: Date.now().toString(),
-                          productId: "agua-500ml",
-                          name: "Água Mineral 500ml",
-                          price: 2.50,
-                          quantity: 1,
-                          image: "/products/1_agua.png",
-                        });
-                      }}
-                      className="flex-1 py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-                    >
-                      <span className="text-lg">💧</span>
-                      <span>Adicionar 1</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        addItem({
-                          id: Date.now().toString(),
-                          productId: "agua-500ml",
-                          name: "Água Mineral 500ml",
-                          price: 2.50,
-                          quantity: 2,
-                          image: "/products/1_agua.png",
-                        });
-                      }}
-                      className="flex-1 py-3 px-4 border-2 border-blue-600 text-blue-600 font-semibold rounded-lg hover:bg-blue-50 transition-colors flex items-center justify-center gap-2"
-                    >
-                      <span className="text-lg">💧💧</span>
-                      <span>Adicionar 2</span>
-                    </button>
+                  <div className="orderbump-list" style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '12px'
+                  }}>
+                    {/* Order Bump - Água */}
+                    {!items.some(item => item.productId === "agua-500ml") && (
+                      <div 
+                        className="orderbump-item"
+                        style={{
+                          background: selectedOrderBumps.has('agua-500ml') ? '#fee2e2' : '#fecaca',
+                          border: selectedOrderBumps.has('agua-500ml') ? '2px solid #dc2626' : '2px dashed #dc2626',
+                          borderRadius: '10px',
+                          padding: '12px',
+                          transition: 'all 0.3s ease'
+                        }}
+                      >
+                        {!selectedOrderBumps.has('agua-500ml') ? (
+                          <div className="orderbump-normal">
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                              <Image
+                                src="/products/1_agua.png"
+                                alt="Água Mineral"
+                                width={55}
+                                height={55}
+                                style={{
+                                  objectFit: 'cover',
+                                  borderRadius: '8px',
+                                  flexShrink: 0
+                                }}
+                              />
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ fontWeight: '700', fontSize: '13px', color: '#1f2937' }}>
+                                  Água Mineral 500ml
+                                </div>
+                                <div style={{ fontSize: '11px', color: '#6b7280', marginTop: '2px' }}>
+                                  Perfeita para acompanhar seu açaí!
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '3px' }}>
+                                  <span style={{ textDecoration: 'line-through', color: '#9ca3af', fontSize: '11px' }}>
+                                    R$ 5,00
+                                  </span>
+                                  <span style={{ fontWeight: '700', color: '#dc2626', fontSize: '14px' }}>
+                                    R$ 2,50
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => toggleOrderBump('agua-500ml', {
+                                id: 'agua-500ml',
+                                name: 'Água Mineral 500ml',
+                                price: 2.50,
+                                image: '/products/1_agua.png'
+                              })}
+                              style={{
+                                background: '#dc2626',
+                                color: 'white',
+                                padding: '8px 16px',
+                                borderRadius: '6px',
+                                fontWeight: '600',
+                                fontSize: '12px',
+                                border: 'none',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '6px',
+                                width: '100%',
+                                marginTop: '10px'
+                              }}
+                            >
+                              ✓ PEGAR OFERTA
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="orderbump-selected">
+                            <div style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              marginBottom: '10px'
+                            }}>
+                              <span style={{
+                                background: '#8b5cf6',
+                                color: 'white',
+                                padding: '5px 12px',
+                                borderRadius: '20px',
+                                fontSize: '11px',
+                                fontWeight: '600',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '5px'
+                              }}>
+                                OFERTA ADQUIRIDA ✓
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => toggleOrderBump('agua-500ml', {
+                                  id: 'agua-500ml',
+                                  name: 'Água Mineral 500ml',
+                                  price: 2.50,
+                                  image: '/products/1_agua.png'
+                                })}
+                                style={{
+                                  background: 'transparent',
+                                  border: 'none',
+                                  color: '#9ca3af',
+                                  cursor: 'pointer',
+                                  fontSize: '14px'
+                                }}
+                                title="Remover"
+                              >
+                                🗑️
+                              </button>
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                              <Image
+                                src="/products/1_agua.png"
+                                alt="Água Mineral"
+                                width={55}
+                                height={55}
+                                style={{
+                                  objectFit: 'cover',
+                                  borderRadius: '8px',
+                                  flexShrink: 0
+                                }}
+                              />
+                              <div style={{ flex: 1 }}>
+                                <div style={{ fontWeight: '700', fontSize: '13px', color: '#1f2937' }}>
+                                  Água Mineral 500ml
+                                </div>
+                                <div style={{ fontSize: '11px', color: '#6b7280', marginTop: '2px' }}>
+                                  Perfeita para acompanhar seu açaí!
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '3px' }}>
+                                  <span style={{ textDecoration: 'line-through', color: '#9ca3af', fontSize: '11px' }}>
+                                    R$ 5,00
+                                  </span>
+                                  <span style={{ fontWeight: '700', color: '#dc2626', fontSize: '14px' }}>
+                                    R$ 2,50
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Order Bump - Bombons */}
+                    {!items.some(item => item.productId === "bombom-garoto") && (
+                      <div 
+                        className="orderbump-item"
+                        style={{
+                          background: selectedOrderBumps.has('bombom-garoto') ? '#fee2e2' : '#fecaca',
+                          border: selectedOrderBumps.has('bombom-garoto') ? '2px solid #dc2626' : '2px dashed #dc2626',
+                          borderRadius: '10px',
+                          padding: '12px',
+                          transition: 'all 0.3s ease'
+                        }}
+                      >
+                        {!selectedOrderBumps.has('bombom-garoto') ? (
+                          <div className="orderbump-normal">
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                              <Image
+                                src="/garoto.png"
+                                alt="2 Caixas de Bombom Garoto"
+                                width={55}
+                                height={55}
+                                style={{
+                                  objectFit: 'cover',
+                                  borderRadius: '8px',
+                                  flexShrink: 0
+                                }}
+                              />
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ fontWeight: '700', fontSize: '13px', color: '#1f2937' }}>
+                                  2 CAIXAS DE BOMBOM GAROTO
+                                </div>
+                                <div style={{ fontSize: '11px', color: '#6b7280', marginTop: '2px' }}>
+                                  60% DE DESCONTO!
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '3px' }}>
+                                  <span style={{ textDecoration: 'line-through', color: '#9ca3af', fontSize: '11px' }}>
+                                    R$ 29,00
+                                  </span>
+                                  <span style={{ fontWeight: '700', color: '#dc2626', fontSize: '14px' }}>
+                                    R$ 11,00
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => toggleOrderBump('bombom-garoto', {
+                                id: 'bombom-garoto',
+                                name: '2 Caixas de Bombom Garoto',
+                                price: 11.00,
+                                image: '/garoto.png'
+                              })}
+                              style={{
+                                background: '#dc2626',
+                                color: 'white',
+                                padding: '8px 16px',
+                                borderRadius: '6px',
+                                fontWeight: '600',
+                                fontSize: '12px',
+                                border: 'none',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '6px',
+                                width: '100%',
+                                marginTop: '10px'
+                              }}
+                            >
+                              ✓ PEGAR OFERTA
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="orderbump-selected">
+                            <div style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              marginBottom: '10px'
+                            }}>
+                              <span style={{
+                                background: '#dc2626',
+                                color: 'white',
+                                padding: '5px 12px',
+                                borderRadius: '20px',
+                                fontSize: '11px',
+                                fontWeight: '600',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '5px'
+                              }}>
+                                OFERTA ADQUIRIDA ✓
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => toggleOrderBump('bombom-garoto', {
+                                  id: 'bombom-garoto',
+                                  name: '2 Caixas de Bombom Garoto',
+                                  price: 11.00,
+                                  image: '/garoto.png'
+                                })}
+                                style={{
+                                  background: 'transparent',
+                                  border: 'none',
+                                  color: '#9ca3af',
+                                  cursor: 'pointer',
+                                  fontSize: '14px'
+                                }}
+                                title="Remover"
+                              >
+                                🗑️
+                              </button>
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                              <Image
+                                src="/garoto.png"
+                                alt="2 Caixas de Bombom Garoto"
+                                width={55}
+                                height={55}
+                                style={{
+                                  objectFit: 'cover',
+                                  borderRadius: '8px',
+                                  flexShrink: 0
+                                }}
+                              />
+                              <div style={{ flex: 1 }}>
+                                <div style={{ fontWeight: '700', fontSize: '13px', color: '#1f2937' }}>
+                                  2 CAIXAS DE BOMBOM GAROTO
+                                </div>
+                                <div style={{ fontSize: '11px', color: '#6b7280', marginTop: '2px' }}>
+                                  60% DE DESCONTO!
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '3px' }}>
+                                  <span style={{ textDecoration: 'line-through', color: '#9ca3af', fontSize: '11px' }}>
+                                    R$ 29,00
+                                  </span>
+                                  <span style={{ fontWeight: '700', color: '#dc2626', fontSize: '14px' }}>
+                                    R$ 11,00
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Order Bump - 1 Copo Extra 500ml */}
+                    {!items.some(item => item.productId === "copo-extra-500ml") && (
+                      <div 
+                        className="orderbump-item"
+                        style={{
+                          background: selectedOrderBumps.has('copo-extra-500ml') ? '#fee2e2' : '#fecaca',
+                          border: selectedOrderBumps.has('copo-extra-500ml') ? '2px solid #dc2626' : '2px dashed #dc2626',
+                          borderRadius: '10px',
+                          padding: '12px',
+                          transition: 'all 0.3s ease'
+                        }}
+                      >
+                        {!selectedOrderBumps.has('copo-extra-500ml') ? (
+                          <div className="orderbump-normal">
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                              <Image
+                                src="/images/modelo2/copo1.webp"
+                                alt="1 Copo Extra de 500ml"
+                                width={55}
+                                height={55}
+                                style={{
+                                  objectFit: 'cover',
+                                  borderRadius: '8px',
+                                  flexShrink: 0
+                                }}
+                              />
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ fontWeight: '700', fontSize: '13px', color: '#1f2937' }}>
+                                  1 COPO EXTRA DE 500ML
+                                </div>
+                                <div style={{ fontSize: '11px', color: '#6b7280', marginTop: '2px' }}>
+                                  Últimas unidades em promoção.
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '3px' }}>
+                                  <span style={{ textDecoration: 'line-through', color: '#9ca3af', fontSize: '11px' }}>
+                                    R$ 22,90
+                                  </span>
+                                  <span style={{ fontWeight: '700', color: '#dc2626', fontSize: '14px' }}>
+                                    R$ 10,90
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => toggleOrderBump('copo-extra-500ml', {
+                                id: 'copo-extra-500ml',
+                                name: '1 Copo Extra de 500ml',
+                                price: 10.90,
+                                image: '/images/modelo2/copo1.webp'
+                              })}
+                              style={{
+                                background: '#dc2626',
+                                color: 'white',
+                                padding: '8px 16px',
+                                borderRadius: '6px',
+                                fontWeight: '600',
+                                fontSize: '12px',
+                                border: 'none',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '6px',
+                                width: '100%',
+                                marginTop: '10px'
+                              }}
+                            >
+                              ✓ PEGAR OFERTA
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="orderbump-selected">
+                            <div style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              marginBottom: '10px'
+                            }}>
+                              <span style={{
+                                background: '#dc2626',
+                                color: 'white',
+                                padding: '5px 12px',
+                                borderRadius: '20px',
+                                fontSize: '11px',
+                                fontWeight: '600',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '5px'
+                              }}>
+                                OFERTA ADQUIRIDA ✓
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => toggleOrderBump('copo-extra-500ml', {
+                                  id: 'copo-extra-500ml',
+                                  name: '1 Copo Extra de 500ml',
+                                  price: 10.90,
+                                  image: '/images/modelo2/copo1.webp'
+                                })}
+                                style={{
+                                  background: 'transparent',
+                                  border: 'none',
+                                  color: '#9ca3af',
+                                  cursor: 'pointer',
+                                  fontSize: '14px'
+                                }}
+                                title="Remover"
+                              >
+                                🗑️
+                              </button>
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                              <Image
+                                src="/images/modelo2/copo1.webp"
+                                alt="1 Copo Extra de 500ml"
+                                width={55}
+                                height={55}
+                                style={{
+                                  objectFit: 'cover',
+                                  borderRadius: '8px',
+                                  flexShrink: 0
+                                }}
+                              />
+                              <div style={{ flex: 1 }}>
+                                <div style={{ fontWeight: '700', fontSize: '13px', color: '#1f2937' }}>
+                                  1 COPO EXTRA DE 500ML
+                                </div>
+                                <div style={{ fontSize: '11px', color: '#6b7280', marginTop: '2px' }}>
+                                  Últimas unidades em promoção.
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '3px' }}>
+                                  <span style={{ textDecoration: 'line-through', color: '#9ca3af', fontSize: '11px' }}>
+                                    R$ 22,90
+                                  </span>
+                                  <span style={{ fontWeight: '700', color: '#dc2626', fontSize: '14px' }}>
+                                    R$ 10,90
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Order Bump - Pote da Felicidade */}
+                    {!items.some(item => item.productId === "pote-felicidade") && (
+                      <div 
+                        className="orderbump-item"
+                        style={{
+                          background: selectedOrderBumps.has('pote-felicidade') ? '#fee2e2' : '#fecaca',
+                          border: selectedOrderBumps.has('pote-felicidade') ? '2px solid #dc2626' : '2px dashed #dc2626',
+                          borderRadius: '10px',
+                          padding: '12px',
+                          transition: 'all 0.3s ease'
+                        }}
+                      >
+                        {!selectedOrderBumps.has('pote-felicidade') ? (
+                          <div className="orderbump-normal">
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                              <Image
+                                src="/images/modelo2/orderbump2.jpg"
+                                alt="Pote da Felicidade Chocolate e Ninho"
+                                width={55}
+                                height={55}
+                                style={{
+                                  objectFit: 'cover',
+                                  borderRadius: '8px',
+                                  flexShrink: 0
+                                }}
+                              />
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ fontWeight: '700', fontSize: '13px', color: '#1f2937' }}>
+                                  Pote da Felicidade Chocolate e Ninho
+                                </div>
+                                <div style={{ fontSize: '11px', color: '#6b7280', marginTop: '2px' }}>
+                                  Últimas unidades em promoção.
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '3px' }}>
+                                  <span style={{ textDecoration: 'line-through', color: '#9ca3af', fontSize: '11px' }}>
+                                    R$ 29,90
+                                  </span>
+                                  <span style={{ fontWeight: '700', color: '#dc2626', fontSize: '14px' }}>
+                                    R$ 14,90
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => toggleOrderBump('pote-felicidade', {
+                                id: 'pote-felicidade',
+                                name: 'Pote da Felicidade Chocolate e Ninho',
+                                price: 14.90,
+                                image: '/images/modelo2/orderbump2.jpg'
+                              })}
+                              style={{
+                                background: '#dc2626',
+                                color: 'white',
+                                padding: '8px 16px',
+                                borderRadius: '6px',
+                                fontWeight: '600',
+                                fontSize: '12px',
+                                border: 'none',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '6px',
+                                width: '100%',
+                                marginTop: '10px'
+                              }}
+                            >
+                              ✓ PEGAR OFERTA
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="orderbump-selected">
+                            <div style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              marginBottom: '10px'
+                            }}>
+                              <span style={{
+                                background: '#dc2626',
+                                color: 'white',
+                                padding: '5px 12px',
+                                borderRadius: '20px',
+                                fontSize: '11px',
+                                fontWeight: '600',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '5px'
+                              }}>
+                                OFERTA ADQUIRIDA ✓
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => toggleOrderBump('pote-felicidade', {
+                                  id: 'pote-felicidade',
+                                  name: 'Pote da Felicidade Chocolate e Ninho',
+                                  price: 14.90,
+                                  image: '/images/modelo2/orderbump2.jpg'
+                                })}
+                                style={{
+                                  background: 'transparent',
+                                  border: 'none',
+                                  color: '#9ca3af',
+                                  cursor: 'pointer',
+                                  fontSize: '14px'
+                                }}
+                                title="Remover"
+                              >
+                                🗑️
+                              </button>
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                              <Image
+                                src="/images/modelo2/orderbump2.jpg"
+                                alt="Pote da Felicidade Chocolate e Ninho"
+                                width={55}
+                                height={55}
+                                style={{
+                                  objectFit: 'cover',
+                                  borderRadius: '8px',
+                                  flexShrink: 0
+                                }}
+                              />
+                              <div style={{ flex: 1 }}>
+                                <div style={{ fontWeight: '700', fontSize: '13px', color: '#1f2937' }}>
+                                  Pote da Felicidade Chocolate e Ninho
+                                </div>
+                                <div style={{ fontSize: '11px', color: '#6b7280', marginTop: '2px' }}>
+                                  Últimas unidades em promoção.
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '3px' }}>
+                                  <span style={{ textDecoration: 'line-through', color: '#9ca3af', fontSize: '11px' }}>
+                                    R$ 29,90
+                                  </span>
+                                  <span style={{ fontWeight: '700', color: '#dc2626', fontSize: '14px' }}>
+                                    R$ 14,90
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Order Bump - 2 Coca Cola */}
+                    {!items.some(item => item.productId === "coca-cola-2un") && (
+                      <div 
+                        className="orderbump-item"
+                        style={{
+                          background: selectedOrderBumps.has('coca-cola-2un') ? '#fee2e2' : '#fecaca',
+                          border: selectedOrderBumps.has('coca-cola-2un') ? '2px solid #dc2626' : '2px dashed #dc2626',
+                          borderRadius: '10px',
+                          padding: '12px',
+                          transition: 'all 0.3s ease'
+                        }}
+                      >
+                        {!selectedOrderBumps.has('coca-cola-2un') ? (
+                          <div className="orderbump-normal">
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                              <Image
+                                src="/images/modelo2/cocacola.png"
+                                alt="2 Coca Cola"
+                                width={55}
+                                height={55}
+                                style={{
+                                  objectFit: 'cover',
+                                  borderRadius: '8px',
+                                  flexShrink: 0
+                                }}
+                              />
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ fontWeight: '700', fontSize: '13px', color: '#1f2937' }}>
+                                  2 COCA COLA
+                                </div>
+                                <div style={{ fontSize: '11px', color: '#6b7280', marginTop: '2px' }}>
+                                  50% DE DESCONTO!😍
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '3px' }}>
+                                  <span style={{ textDecoration: 'line-through', color: '#9ca3af', fontSize: '11px' }}>
+                                    R$ 12,99
+                                  </span>
+                                  <span style={{ fontWeight: '700', color: '#dc2626', fontSize: '14px' }}>
+                                    R$ 6,50
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => toggleOrderBump('coca-cola-2un', {
+                                id: 'coca-cola-2un',
+                                name: '2 Coca Cola',
+                                price: 6.50,
+                                image: '/images/modelo2/cocacola.png'
+                              })}
+                              style={{
+                                background: '#dc2626',
+                                color: 'white',
+                                padding: '8px 16px',
+                                borderRadius: '6px',
+                                fontWeight: '600',
+                                fontSize: '12px',
+                                border: 'none',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '6px',
+                                width: '100%',
+                                marginTop: '10px'
+                              }}
+                            >
+                              ✓ PEGAR OFERTA
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="orderbump-selected">
+                            <div style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              marginBottom: '10px'
+                            }}>
+                              <span style={{
+                                background: '#8b5cf6',
+                                color: 'white',
+                                padding: '5px 12px',
+                                borderRadius: '20px',
+                                fontSize: '11px',
+                                fontWeight: '600',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '5px'
+                              }}>
+                                OFERTA ADQUIRIDA ✓
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => toggleOrderBump('coca-cola-2un', {
+                                  id: 'coca-cola-2un',
+                                  name: '2 Coca Cola',
+                                  price: 6.50,
+                                  image: '/images/modelo2/cocacola.png'
+                                })}
+                                style={{
+                                  background: 'transparent',
+                                  border: 'none',
+                                  color: '#9ca3af',
+                                  cursor: 'pointer',
+                                  fontSize: '14px'
+                                }}
+                                title="Remover"
+                              >
+                                🗑️
+                              </button>
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                              <Image
+                                src="/images/modelo2/cocacola.png"
+                                alt="2 Coca Cola"
+                                width={55}
+                                height={55}
+                                style={{
+                                  objectFit: 'cover',
+                                  borderRadius: '8px',
+                                  flexShrink: 0
+                                }}
+                              />
+                              <div style={{ flex: 1 }}>
+                                <div style={{ fontWeight: '700', fontSize: '13px', color: '#1f2937' }}>
+                                  2 COCA COLA
+                                </div>
+                                <div style={{ fontSize: '11px', color: '#6b7280', marginTop: '2px' }}>
+                                  50% DE DESCONTO!😍
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '3px' }}>
+                                  <span style={{ textDecoration: 'line-through', color: '#9ca3af', fontSize: '11px' }}>
+                                    R$ 12,99
+                                  </span>
+                                  <span style={{ fontWeight: '700', color: '#dc2626', fontSize: '14px' }}>
+                                    R$ 6,50
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
-                )}
 
                 <OrderSummary 
                   items={items}
