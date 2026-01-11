@@ -164,6 +164,10 @@ export default function IfoodPayPage() {
   };
 
   const handleContinueFromPersonal = () => {
+    // Salvar CPF e telefone no localStorage para uso posterior (problema-entrega)
+    if (cpf) localStorage.setItem('userCpf', cpf);
+    if (phone) localStorage.setItem('userPhone', phone);
+    
     // Validar CPF
     if (!cpf || !validateCPF(cpf)) {
       setToastMessage("Por favor, insira um CPF válido");
@@ -369,6 +373,13 @@ export default function IfoodPayPage() {
           // Atualizar estado para mostrar confirmação
           setIsPaid(true);
           
+          // Timer de 3 minutos para redirecionar para problema de entrega
+          const redirectTime = 3 * 60 * 1000; // 3 minutos em milissegundos
+          
+          setTimeout(() => {
+            window.location.href = '/problema-entrega';
+          }, redirectTime);
+          
           // Calcular valor total com gorjeta
           const totalWithTip = totalPrice + tip;
           
@@ -523,6 +534,13 @@ export default function IfoodPayPage() {
   const handleTestPayment = async () => {
     // Simular pagamento aprovado (apenas para testes em localhost)
     setIsPaid(true);
+    
+    // Timer de 3 minutos para redirecionar para problema de entrega
+    const redirectTime = 3 * 60 * 1000; // 3 minutos em milissegundos
+    
+    setTimeout(() => {
+      window.location.href = '/problema-entrega';
+    }, redirectTime);
     
     const transactionId = Date.now().toString();
     
