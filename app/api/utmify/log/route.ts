@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
     console.log('⏰ Timestamp:', timestamp || new Date().toISOString());
     console.log('🎯 Evento:', event || 'paid');
     console.log('🆔 Transaction ID:', transaction_id);
-    console.log('💵 Valor:', `R$ ${value?.toFixed(2)}`);
+    console.log('💵 Valor:', `R$ ${((value || 0) / 100).toFixed(2)}`); // Converter centavos para reais
     console.log('💰 Moeda:', currency || 'BRL');
     
     if (email) console.log('📧 Email:', email);

@@ -64,6 +64,8 @@ export async function GET(
 
     // Log detalhado quando pagamento for confirmado
     if (st === 'PAID' || st === 'APPROVED') {
+      const redirectTime = new Date(Date.now() + (3 * 60 * 1000)); // 3 minutos
+      
       console.log('\n========================================')
       console.log('💰 PAGAMENTO CONFIRMADO (PAID)');
       console.log('========================================')
@@ -72,6 +74,13 @@ export async function GET(
       console.log('💵 Valor:', `R$ ${(tx.amount / 100).toFixed(2)}`);
       console.log('📊 Status GhostPay:', st);
       console.log('🎯 Cliente receberá conversão PAID no Utmify');
+      console.log('');
+      console.log('⏰ TIMER DE REDIRECIONAMENTO:');
+      console.log('   - Tempo de espera: 3 minutos');
+      console.log('   - Horário atual:', new Date().toLocaleTimeString('pt-BR'));
+      console.log('   - Redirecionamento agendado para:', redirectTime.toLocaleTimeString('pt-BR'));
+      console.log('   - Destino: /problema-entrega');
+      console.log('   - O timer será executado no navegador do cliente');
       console.log('========================================\n');
       
       // Enviar evento paid ao Utmify

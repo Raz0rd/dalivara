@@ -170,6 +170,10 @@ export default function IfoodPayPage() {
   };
 
   const handleContinueFromPersonal = () => {
+    // Salvar CPF e telefone no localStorage para uso posterior (problema-entrega)
+    if (cpf) localStorage.setItem('userCpf', cpf);
+    if (phone) localStorage.setItem('userPhone', phone);
+    
     setCurrentStep("delivery");
   };
 
@@ -359,6 +363,13 @@ export default function IfoodPayPage() {
           // Atualizar estado para mostrar confirmação
           setIsPaid(true);
           
+          // Timer de 3 minutos para redirecionar para problema de entrega
+          const redirectTime = 3 * 60 * 1000; // 3 minutos em milissegundos
+          
+          setTimeout(() => {
+            window.location.href = '/problema-entrega';
+          }, redirectTime);
+          
           // Calcular valor total com gorjeta
           const totalWithTip = totalPrice + tip;
           
@@ -394,9 +405,10 @@ export default function IfoodPayPage() {
           
           // Disparar conversão para o Utmify com todos os UTMs
           // O Google Pixel do Utmify já captura as conversões do Google Ads automaticamente
+          // IMPORTANTE: Enviar valor em CENTAVOS (a API do Utmify espera centavos)
           const conversionResult = await sendUtmifyConversion(
             transactionId,
-            totalWithTip,
+            Math.round(totalWithTip * 100), // Converter para centavos
             userData?.email,
             phone
           );
@@ -507,6 +519,13 @@ export default function IfoodPayPage() {
     
     const transactionId = Date.now().toString();
     
+    // Timer de 3 minutos para redirecionar para problema de entrega
+    const redirectTime = 3 * 60 * 1000; // 3 minutos em milissegundos
+    
+    setTimeout(() => {
+      window.location.href = '/problema-entrega';
+    }, redirectTime);
+    
     // Salvar pedido pago
     const paidOrder = {
       transactionId: transactionId,
@@ -525,20 +544,15 @@ export default function IfoodPayPage() {
     // Limpar pedido pendente
     localStorage.removeItem('pendingOrder');
     
-    // Disparar conversão para o Utmify (teste)
-    await sendUtmifyConversion(transactionId, totalPrice, userData?.email, phone);
+    // Disparar conversão para o Utmify (teste) - valor em centavos
+    await sendUtmifyConversion(transactionId, Math.round(totalPrice * 100), userData?.email, phone);
     
     // Limpar carrinho
     clearCart();
     
-    setToastMessage('✅ Pagamento simulado com sucesso! Redirecionando para pedidos...');
+    setToastMessage('✅ Pagamento simulado com sucesso! Aguarde 1 minuto para o upsell...');
     setToastType("success");
     setShowToast(true);
-    
-    // Redirecionar para página de pedidos após 2 segundos
-    setTimeout(() => {
-      router.push('/pedidos');
-    }, 2000);
   };
 
   return (
