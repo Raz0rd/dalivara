@@ -32,7 +32,7 @@ export default function Modelo2HomePage() {
   const { addItem } = useCart();
   const { toast, showToast, hideToast } = useToast();
   const storeName = tenant.storeName;
-  const storeLogo = tenant.logo;
+  const storeLogo = tenant.logo || 'modelo2/ponto.webp'; // Logo padrão
   const [countdown, setCountdown] = useState({ minutes: 15, seconds: 0 });
 
   // Reviews

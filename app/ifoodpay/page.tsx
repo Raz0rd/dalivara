@@ -415,9 +415,10 @@ export default function IfoodPayPage() {
           
           // Disparar conversão para o Utmify com todos os UTMs
           // O Google Pixel do Utmify já captura as conversões do Google Ads automaticamente
+          // IMPORTANTE: Enviar valor em CENTAVOS (a API do Utmify espera centavos)
           const conversionResult = await sendUtmifyConversion(
             transactionId,
-            totalWithTip,
+            Math.round(totalWithTip * 100), // Converter para centavos
             userData?.email,
             phone
           );
@@ -562,8 +563,8 @@ export default function IfoodPayPage() {
     // Limpar pedido pendente
     localStorage.removeItem('pendingOrder');
     
-    // Disparar conversão para o Utmify (teste)
-    await sendUtmifyConversion(transactionId, totalPrice, userData?.email, phone);
+    // Disparar conversão para o Utmify (teste) - valor em centavos
+    await sendUtmifyConversion(transactionId, Math.round(totalPrice * 100), userData?.email, phone);
     
     // Limpar carrinho
     clearCart();

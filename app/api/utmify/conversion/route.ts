@@ -40,12 +40,12 @@ export async function POST(request: NextRequest) {
     console.log("💰 [UTMify API] Valor:", orderData.amount);
     
     // VALIDAÇÃO: Garantir que temos valor obrigatório
+    // O frontend SEMPRE envia o valor em centavos, então não fazemos conversão
     let amountInCents = 0;
     
     if (orderData.amount) {
-      // Se amount > 1000, assumir que já está em centavos
-      // Se amount <= 1000, assumir que está em reais e converter
-      amountInCents = orderData.amount > 1000 ? orderData.amount : Math.round(orderData.amount * 100);
+      // Valor já vem em centavos do frontend
+      amountInCents = Math.round(orderData.amount);
     } else if (orderData.products?.[0]?.priceInCents) {
       amountInCents = orderData.products[0].priceInCents;
     }
@@ -54,8 +54,9 @@ export async function POST(request: NextRequest) {
       throw new Error("Amount é obrigatório e deve ser maior que 0");
     }
     
-    console.log("💰 [UTMify API] Amount original:", orderData.amount);
-    console.log("💰 [UTMify API] Amount em centavos:", amountInCents);
+    console.log("💰 [UTMify API] Amount recebido (centavos):", orderData.amount);
+    console.log("💰 [UTMify API] Amount final (centavos):", amountInCents);
+    console.log("💵 [UTMify API] Valor em reais:", (amountInCents / 100).toFixed(2));
     
     // VALIDAÇÃO: Garantir que temos parâmetros UTM
     if (!orderData.trackingParameters || Object.keys(orderData.trackingParameters).length === 0) {
