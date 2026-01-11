@@ -123,13 +123,6 @@ const allProducts: Record<string, Product> = {
     originalPrice: 81.80,
     image: "/images/modelo2/zero2.webp",
   },
-  "acai-300ml": {
-    id: "acai-300ml",
-    name: "1 Copo Açaí 300ml",
-    description: "9 Complementos Grátis",
-    price: 19.90,
-    image: "/images/modelo2/copo1.webp",
-  },
   "acai-500ml": {
     id: "acai-500ml",
     name: "1 Copo Açaí 500ml",
@@ -150,13 +143,6 @@ const allProducts: Record<string, Product> = {
     description: "9 Complementos Grátis",
     price: 37.90,
     image: "/images/modelo2/copo1.webp",
-  },
-  "acai-300ml-zero": {
-    id: "acai-300ml-zero",
-    name: "1 Copo Açaí 300ml Zero açúcar",
-    description: "9 Complementos Grátis",
-    price: 22.90,
-    image: "/images/modelo2/zero1.webp",
   },
   "acai-500ml-zero": {
     id: "acai-500ml-zero",

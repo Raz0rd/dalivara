@@ -30,7 +30,7 @@ export default function Modelo2HomePage() {
   const { addItem } = useCart();
   const { toast, showToast, hideToast } = useToast();
   const storeName = process.env.NEXT_PUBLIC_STORE_NAME || 'Nacional Açaí';
-  const storeLogo = process.env.NEXT_PUBLIC_STORE_LOGO || 'ponto.webp';
+  const storeLogo = process.env.NEXT_PUBLIC_STORE_LOGO || 'modelo2/ponto.webp';
   const [countdown, setCountdown] = useState({ minutes: 15, seconds: 0 });
 
   // Reviews
@@ -149,13 +149,6 @@ export default function Modelo2HomePage() {
 
   const acai: Product[] = [
     {
-      id: "acai-300ml",
-      name: "1 Copo Açaí 300ml",
-      description: "9 Complementos Grátis",
-      price: 19.90,
-      image: "/images/modelo2/copo1.webp",
-    },
-    {
       id: "acai-500ml",
       name: "1 Copo Açaí 500ml",
       description: "9 Complementos Grátis",
@@ -179,13 +172,6 @@ export default function Modelo2HomePage() {
   ];
 
   const acaiZero: Product[] = [
-    {
-      id: "acai-300ml-zero",
-      name: "1 Copo Açaí 300ml Zero açúcar",
-      description: "9 Complementos Grátis",
-      price: 22.90,
-      image: "/images/modelo2/zero1.webp",
-    },
     {
       id: "acai-500ml-zero",
       name: "1 Copo Açaí 500ml Zero açúcar",
@@ -279,6 +265,15 @@ export default function Modelo2HomePage() {
           </div>
         </div>
 
+        {/* Fita de Promoção */}
+        <div className="Promo-do-Dia-bar">
+          <div className="Promo-do-Dia-track">
+            <span>😱 Promo do dia {storeName} • Descontos irresistíveis • Pague 1, leve 2 • </span>
+            <span>😱 Promo do dia {storeName} • Descontos irresistíveis • Pague 1, leve 2 • </span>
+            <span>😱 Promo do dia {storeName} • Descontos irresistíveis • Pague 1, leve 2 • </span>
+          </div>
+        </div>
+
         {/* Menu Categorias */}
         <div id="menuCategorias">
           <div className="container">
@@ -327,24 +322,24 @@ export default function Modelo2HomePage() {
                       display: 'block',
                       fontWeight: 'bold'
                     }}>
-                      🔥 PERFEITO PARA COMEÇAR
+                      PERFEITO PARA COMEÇAR
                     </span>
-                    <h3>1 Copo Açaí 300ml</h3>
-                    <span>9 Complementos Grátis</span>
+                    <h3>2 Copos Açaí 300ml</h3>
+                    <span>Pague 1, Leve 2 • 9 Complementos Grátis</span>
                     <span className="preco" style={{fontSize: '20px'}}>
                       <b style={{background: '#ff6b35', color: 'white', borderRadius: '8px', padding: '0px 4px'}}>
                         R$ 19,90
                       </b>
                     </span>
                   </div>
-                  <div className="fotoProduto">
+                  <div>
                     <figure>
-                      <Image 
-                        src="/images/modelo2/copo1.webp"
+                      <Image
+                        src="/images/modelo2/copo2.webp"
                         width={110}
                         height={110}
                         loading="lazy"
-                        alt="1 Copo Açaí 300ml"
+                        alt="2 Copos Açaí 300ml"
                       />
                     </figure>
                   </div>

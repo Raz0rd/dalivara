@@ -91,11 +91,15 @@ export default function CompanyInfoModal({ isOpen, onClose }: CompanyInfoModalPr
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-gray-600">Razão Social:</span>
-                <span className="font-semibold text-gray-900">CINTHIA LEA DOS SANTOS RODRIGUES</span>
+                <span className="font-semibold text-gray-900">Distribuidor Nacional de Açaí</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">CNPJ:</span>
-                <span className="font-semibold text-gray-900">52.634.869/0001-91</span>
+                <span className="font-semibold text-gray-900">34.224.999/0001-04</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Fone:</span>
+                <span className="font-semibold text-gray-900">(11) 93110-1138</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Nome Fantasia:</span>
