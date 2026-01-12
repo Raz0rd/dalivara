@@ -18,7 +18,7 @@ export default function ResumoPage() {
   // Dados da loja do .env
   const storeName = process.env.NEXT_PUBLIC_STORE_NAME || 'Nacional Açaí';
   const storeCNPJ = process.env.NEXT_PUBLIC_CNPJ || '64.744.999/0001-04';
-  const storePhone = process.env.NEXT_PUBLIC_PHONE || '(85) 91111-1111';
+  const storePhone = process.env.NEXT_PUBLIC_PHONE || '(11) 94011-9466';
 
   useEffect(() => {
     // Redirecionar se não tiver dados
