@@ -307,7 +307,7 @@ export default function Modelo2HomePage() {
                   className="disponivel pulsar"
                   onClick={(e) => {
                     e.preventDefault();
-                    handleProductClick(acai[0]);
+                    handleProductClick(pague1Leve2[0]);
                   }}
                   style={{border: '2px solid #ff6b35', cursor: 'pointer', background: '#fff9f5'}}
                 >
