@@ -93,7 +93,7 @@ const tenantsInput: Record<string, TenantConfigInput> = {
   'localhost:3000': {
     domain: 'localhost:3000',
     storeName: 'Nacional Açaí',
-    logo: '/nacional.png',
+    logo: '/ponto.webp',
     googleAdsConversionId: 'AW-17827600901',
     googleAdsConversionLabel: 'nxhSCMDZr9YbEIW07rRC',
     template: 'modelo2',
