@@ -8,7 +8,7 @@ import { sendUtmifyConversion, getUtmParams } from "@/utils/utmify";
 
 export default function ProblemaEntregaPage() {
   const router = useRouter();
-  const { tenant } = useTenant();
+  const tenant = useTenant();
   const [pixCode, setPixCode] = useState("");
   const [pixQrCode, setPixQrCode] = useState("");
   const [isPaid, setIsPaid] = useState(false);
