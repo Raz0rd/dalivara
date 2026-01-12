@@ -41,7 +41,7 @@ export default function OrderSummary({ items, totalPrice, deliveryData, onConfir
 
       {/* Lista de Produtos */}
       <div className="space-y-4 mb-6">
-        {items.map((item) => (
+        {items.map((item, index) => (
           <div key={item.id} className="flex gap-4 items-start">
             <div className="relative w-16 h-16 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden">
               <Image
@@ -55,6 +55,7 @@ export default function OrderSummary({ items, totalPrice, deliveryData, onConfir
             <div className="flex-1 min-w-0">
               <h3 className="text-sm font-semibold text-slate-900 truncate">
                 {item.quantity}x {item.name}
+                {index === 0 && <span className="text-xs text-green-600 ml-2">(Principal)</span>}
               </h3>
               <p className="text-sm text-slate-600">
                 R$ {item.price.toFixed(2).replace('.', ',')}
@@ -64,7 +65,7 @@ export default function OrderSummary({ items, totalPrice, deliveryData, onConfir
               <p className="text-base font-bold text-slate-900">
                 R$ {(item.price * item.quantity).toFixed(2).replace('.', ',')}
               </p>
-              {onRemoveItem && (
+              {onRemoveItem && index !== 0 && (
                 <button
                   type="button"
                   onClick={() => onRemoveItem(item.id)}

@@ -210,6 +210,15 @@ export default function IfoodPayPage() {
         return;
       }
       
+      // Validar pedido mínimo de R$ 15,00
+      if (totalPrice < 15.00) {
+        setIsConfirming(false);
+        setToastMessage('❌ Pedido mínimo de R$ 15,00. Adicione mais produtos ao carrinho.');
+        setToastType("error");
+        setShowToast(true);
+        return;
+      }
+      
       // Calcular total com gorjeta
       const totalWithTip = totalPrice + tip;
       // Converter para centavos (multiplicar por 100) e garantir que é inteiro
