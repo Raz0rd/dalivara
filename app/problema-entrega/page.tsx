@@ -41,13 +41,12 @@ export default function UpsellEntregaPage() {
           clearInterval(intervalId);
           
           // Enviar conversão para Utmify
-          const utmParams = getUtmParams();
-          await sendUtmifyConversion({
-            email: '',
-            phone: '',
-            value: 9.90,
-            utmParams
-          });
+          await sendUtmifyConversion(
+            transactionId,
+            990, // R$ 9,90 em centavos
+            userData?.email || '',
+            userData?.phone || ''
+          );
 
           // Redirecionar para página de pedidos após 3 segundos
           setTimeout(() => {
