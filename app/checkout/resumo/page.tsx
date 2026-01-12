@@ -20,7 +20,7 @@ export default function ResumoPage() {
   // Dados da loja do tenant
   const storeName = tenant.storeName;
   const storeCNPJ = '64.744.999/0001-04'; // TODO: Adicionar ao tenant se necessário
-  const storePhone = tenant.whatsappNumber || '(85) 91111-1111';
+  const storePhone = tenant.whatsappNumber || '(11) 94011-9466';
 
   useEffect(() => {
     // Redirecionar se não tiver dados
