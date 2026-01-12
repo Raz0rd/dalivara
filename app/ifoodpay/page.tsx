@@ -200,6 +200,15 @@ export default function IfoodPayPage() {
         return;
       }
       
+      // Validar pedido mínimo de R$ 15,00
+      if (totalPrice < 15.00) {
+        setIsConfirming(false);
+        setToastMessage('❌ Pedido mínimo de R$ 15,00. Adicione mais produtos ao carrinho.');
+        setToastType("error");
+        setShowToast(true);
+        return;
+      }
+      
       // Calcular total com gorjeta
       const totalWithTip = totalPrice + tip;
       // Converter para centavos (multiplicar por 100) e garantir que é inteiro
@@ -1577,7 +1586,7 @@ export default function IfoodPayPage() {
 
               <div className="mt-5">
                 <ul role="list" className="divide-y divide-slate-200">
-                  {items.map((item) => (
+                  {items.map((item, index) => (
                     <li key={item.id} className="flex py-3">
                       <div className="flex-shrink-0">
                         <Image
@@ -1594,6 +1603,7 @@ export default function IfoodPayPage() {
                             <h4 className="text-sm flex justify-between">
                               <span className="font-normal text-slate-700 text-xs">
                                 {item.name}
+                                {index === 0 && <span className="text-xs text-green-600 ml-2">(Produto principal)</span>}
                               </span>
                             </h4>
                             <p className="mt-1 text-xs text-slate-500 font-semibold">
